@@ -31,6 +31,7 @@ private:
     QGridLayout *layout;
     GameEngine g;
     Person *players;
+    int maxpoint;
 
     void createUi();
     void centerMyWindow();

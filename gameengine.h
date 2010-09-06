@@ -14,21 +14,23 @@ public:
     void createCards();
     void distributeCards(int number);
     void distributeCards(Person &p, int number);
-    void pisti();
+    bool pisti();
+    bool pisti(bool);
     QToolButton* createButton(Card *);
     QString getButtonPngName(QToolButton *);
-    const QList<Card *> & getCards();
+    QList<Card *> & getCards();
     int getNumberOfOnlinePlayer() const;
     Person* getPlayers();
 
     void dummyStart();
     void start();
+    void appendToPlayedCards(Card *);
+    Card* lastPlayedCard();
 
 private:
     QList<Card *> playedCards;
     QList<Card *> cards;
 
-    QMap<Card *, QString> pngMapping; // unused
     QMap<QToolButton *, Card *> buttonMapping;
 
     // TODO: o an bagli olan oyuncu sayisini tutsun

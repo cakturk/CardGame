@@ -72,21 +72,23 @@ void GameEngine::distributeCards(Person &p, int number)
     p.setHand(tmp);
 }
 
-void GameEngine::pisti()
+bool GameEngine::pisti()
 {
     // TODO currentPlayer son karti atan oyuncu olmali
 
     if (playedCards.size() < 2)
-        return;
+        return false;
 
     Card *currentCard = playedCards.at(playedCards.size() - 1);
     Card *lastPlayedCard =
             playedCards.at(playedCards.size() - 2);
 
+    bool retVal = false;
     if (currentCard->equals(lastPlayedCard)) {
         /* Pisti */
         if (playedCards.size() == 2) {
             currentPlayer->pistiCount++;
+            retVal = true;
         }
 
         /* Yerdeki kartlari topla  */
@@ -97,7 +99,40 @@ void GameEngine::pisti()
     } else if (currentCard->cardNumber == 11) {
         currentPlayer->collectCards(playedCards);
         lastWinner = currentPlayer;
+        retVal = true;
     }
+
+    return retVal;
+}
+
+bool GameEngine::pisti(bool b)
+{
+    // TODO currentPlayer son karti atan oyuncu olmali
+
+    if (playedCards.size() < 2)
+        return false;
+
+    Card *currentCard = playedCards.at(playedCards.size() - 1);
+    Card *lastPlayedCard =
+            playedCards.at(playedCards.size() - 2);
+
+    bool retVal = false;
+    if (currentCard->equals(lastPlayedCard)) {
+        /* Pisti */
+        if (playedCards.size() == 2) {
+            currentPlayer->pistiCount++;
+            retVal = true;
+        }
+
+        lastWinner = currentPlayer;
+
+        // Vale
+    } else if (currentCard->cardNumber == 11) {
+        lastWinner = currentPlayer;
+        retVal = true;
+    }
+
+    return retVal;
 }
 
 #if 0
@@ -224,7 +259,7 @@ QToolButton* GameEngine::createButton(Card *c)
     return tb;
 }
 
-const QList<Card *> & GameEngine::getCards()
+QList<Card *> & GameEngine::getCards()
 {
     return cards;
 }
@@ -257,4 +292,17 @@ void GameEngine::start()
     for (int i = 0; i < 4; i++) {
 
     }
+}
+
+void GameEngine::appendToPlayedCards(Card *c)
+{
+    playedCards.append(c);
+}
+
+Card* GameEngine::lastPlayedCard()
+{
+    if (cards.size() > 0)
+    return cards.last();
+
+    return NULL;
 }

@@ -36,6 +36,8 @@ Card* Person::play(Card *lastPlayedCard)
             if (vale->cardNumber == 11) {
                 retVal = hand.takeAt(index);
                 break;
+            } else {
+                retVal = hand.takeFirst();
             }
         }
     }

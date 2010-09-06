@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'widget.ui'
 **
-** Created: Mon Sep 6 12:07:25 2010
+** Created: Mon Sep 6 17:23:34 2010
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -15,6 +15,7 @@
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QFrame>
+#include <QtGui/QGridLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QStackedWidget>
 #include <QtGui/QWidget>
@@ -24,13 +25,15 @@ QT_BEGIN_NAMESPACE
 class Ui_Widget
 {
 public:
+    QGridLayout *gridLayout_2;
     QStackedWidget *stackedWidget;
     QWidget *page_2;
-    QFrame *southHand;
+    QGridLayout *gridLayout;
     QFrame *westHand;
     QFrame *northHand;
-    QFrame *table;
     QFrame *eastHand;
+    QFrame *table;
+    QFrame *southHand;
 
     void setupUi(QWidget *Widget)
     {
@@ -38,39 +41,65 @@ public:
             Widget->setObjectName(QString::fromUtf8("Widget"));
         Widget->resize(576, 410);
         Widget->setAutoFillBackground(false);
+        gridLayout_2 = new QGridLayout(Widget);
+        gridLayout_2->setSpacing(6);
+        gridLayout_2->setContentsMargins(11, 11, 11, 11);
+        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         stackedWidget = new QStackedWidget(Widget);
         stackedWidget->setObjectName(QString::fromUtf8("stackedWidget"));
-        stackedWidget->setGeometry(QRect(20, 30, 537, 351));
         page_2 = new QWidget();
         page_2->setObjectName(QString::fromUtf8("page_2"));
-        southHand = new QFrame(page_2);
-        southHand->setObjectName(QString::fromUtf8("southHand"));
-        southHand->setGeometry(QRect(0, 270, 531, 81));
-        southHand->setMinimumSize(QSize(50, 50));
-        southHand->setFrameShape(QFrame::StyledPanel);
-        southHand->setFrameShadow(QFrame::Raised);
+        gridLayout = new QGridLayout(page_2);
+        gridLayout->setSpacing(6);
+        gridLayout->setContentsMargins(11, 11, 11, 11);
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         westHand = new QFrame(page_2);
         westHand->setObjectName(QString::fromUtf8("westHand"));
-        westHand->setGeometry(QRect(0, 10, 121, 251));
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(westHand->sizePolicy().hasHeightForWidth());
+        westHand->setSizePolicy(sizePolicy);
         westHand->setFrameShape(QFrame::StyledPanel);
         westHand->setFrameShadow(QFrame::Raised);
+        westHand->setLineWidth(1);
+
+        gridLayout->addWidget(westHand, 0, 0, 2, 1);
+
         northHand = new QFrame(page_2);
         northHand->setObjectName(QString::fromUtf8("northHand"));
-        northHand->setGeometry(QRect(130, 10, 281, 71));
         northHand->setFrameShape(QFrame::StyledPanel);
         northHand->setFrameShadow(QFrame::Raised);
         northHand->setLineWidth(1);
-        table = new QFrame(page_2);
-        table->setObjectName(QString::fromUtf8("table"));
-        table->setGeometry(QRect(130, 90, 281, 171));
-        table->setFrameShape(QFrame::StyledPanel);
-        table->setFrameShadow(QFrame::Raised);
+
+        gridLayout->addWidget(northHand, 0, 1, 1, 1);
+
         eastHand = new QFrame(page_2);
         eastHand->setObjectName(QString::fromUtf8("eastHand"));
-        eastHand->setGeometry(QRect(420, 10, 111, 251));
         eastHand->setFrameShape(QFrame::StyledPanel);
         eastHand->setFrameShadow(QFrame::Raised);
+
+        gridLayout->addWidget(eastHand, 0, 2, 2, 1);
+
+        table = new QFrame(page_2);
+        table->setObjectName(QString::fromUtf8("table"));
+        table->setFrameShape(QFrame::StyledPanel);
+        table->setFrameShadow(QFrame::Raised);
+
+        gridLayout->addWidget(table, 1, 1, 1, 1);
+
+        southHand = new QFrame(page_2);
+        southHand->setObjectName(QString::fromUtf8("southHand"));
+        southHand->setMinimumSize(QSize(50, 50));
+        southHand->setFrameShape(QFrame::StyledPanel);
+        southHand->setFrameShadow(QFrame::Raised);
+
+        gridLayout->addWidget(southHand, 2, 0, 1, 3);
+
         stackedWidget->addWidget(page_2);
+
+        gridLayout_2->addWidget(stackedWidget, 0, 0, 1, 1);
+
 
         retranslateUi(Widget);
 

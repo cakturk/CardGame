@@ -13,5 +13,4 @@ HEADERS += widget.h \
     card.h \
     gameengine.h
 FORMS += widget.ui
-RESOURCES += application.qrc \
-    graphics.qrc
+RESOURCES += 

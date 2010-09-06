@@ -79,7 +79,7 @@ void Widget::centerMyWindow() {
 /* create card game UI */
 void Widget::createUi()
 {
-    QLayout *frameLayout = ui->southHand->layout();
+    // QLayout *frameLayout = ui->southHand->layout();
     Person *players = g.getPlayers();
     QList<Card *> playersHand;
 
@@ -112,6 +112,10 @@ void Widget::createUi()
 
 void Widget::start()
 {
+    // test value
+    maxpoint = 100;
+
+    // Initial adjustment
     QFrame *frame;
     QLayout *currentLayout;
     QHBoxLayout *hbox;
@@ -121,17 +125,24 @@ void Widget::start()
     QList<Card *> playersHand;
     QString pos;
     bool myself = false;
+    Person *currentPlayer;
+    int row, column;
 
     g.createCards();
 
     players = g.getPlayers();
 
     for (int i = 0; i < 4; i++) {
+        Card *c = g.getCards().takeFirst();
+        g.appendToPlayedCards(c);
+    }
+
+    for (int i = 0; i < 4; i++) {
         g.distributeCards(players[i], 4);
     }
 
     for (int i = 0; i < 4; i++) {
-        Person *currentPlayer = &players[i];
+        currentPlayer = &players[i];
         playersHand = currentPlayer->getHand();
 
         switch (i) {
@@ -139,6 +150,7 @@ void Widget::start()
             frame = ui->southHand;
             hbox = new QHBoxLayout;
             currentLayout = hbox;
+            hbox->setContentsMargins(200, 0, 200, 0);
             frame->setLayout(hbox);
             myself = true;
             break;
@@ -173,13 +185,49 @@ void Widget::start()
             QToolButton *but;
             if (myself) {
                 but = g.createButton(playersHand.at(j));
+                but->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
                 currentLayout->addWidget(but);
             } else {
                 but = new QToolButton;
-                but->setStyleSheet(QString("border-image: url(:/graph_items/graphics/back/4%1.png);").arg(pos));
+                but->setStyleSheet(QString("border-image: url(./graphics/back/4%1.png);").arg(pos));
+                but->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
                 currentLayout->addWidget(but);
                 break;
             }
         }
+    }
+
+    currentPlayer = &players[0];
+
+    int playerIndex = 0;
+    bool play = true;
+    while (play) {
+        /* El bittiyse kart dagit */ 
+        if (currentPlayer->getNumberOfCards() == 0) {
+            for (int i = 0; i < 4; i++) {
+                playerIndex = (playerIndex + 1) % 4; // Next player
+                currentPlayer = &players[playerIndex];
+                g.distributeCards(*currentPlayer, 4);
+            }
+        }
+
+        Card *lastcard = g.lastPlayedCard();
+        if (lastcard != NULL) {
+            Card *c = currentPlayer->play(lastcard);
+            g.appendToPlayedCards(c);
+        }
+
+        QList<QToolButton *> list;
+        if (g.pisti(true)) {
+            QList<QToolButton *> list = ui->table->findChildren<QToolButton *>();
+
+            for (int i = 0; list.size(); i++)
+                currentLayout->removeWidget(list.at(i));
+        }
+
+        playerIndex = (playerIndex + 1) % 4;
+
+        if (g.getCards().size() == 0)
+            play = false;
     }
 }

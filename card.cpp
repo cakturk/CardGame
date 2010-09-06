@@ -25,7 +25,7 @@ Card::Card(int ct, int cn) :
     }
 
     cardName = this->toString();
-    cardImageName = ":/graph_items/graphics/" + cardName.toLower();
+    cardImageName = "./graphics/" + cardName.toLower();
 }
 
 QString Card::toString()
