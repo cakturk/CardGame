@@ -21,6 +21,28 @@ Card* Person::play(int index)
     return NULL;
 }
 
+Card* Person::play(Card *lastPlayedCard)
+{
+    Card *retVal;
+
+    if (hand.contains(lastPlayedCard)) {
+        int index = hand.indexOf(lastPlayedCard);
+        retVal = hand.takeAt(index);
+    } else {
+        Card *vale;
+        for (int index = 0; index < hand.size(); index++) {
+            vale = hand.at(index);
+
+            if (vale->cardNumber == 11) {
+                retVal = hand.takeAt(index);
+                break;
+            }
+        }
+    }
+
+    return retVal;
+}
+
 void Person::collectCards(QList<Card *> &c)
 {
     Card *card;

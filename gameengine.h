@@ -22,6 +22,7 @@ public:
     Person* getPlayers();
 
     void dummyStart();
+    void start();
 
 private:
     QList<Card *> playedCards;

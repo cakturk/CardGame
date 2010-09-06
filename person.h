@@ -20,6 +20,7 @@ public:
     void reset();
     int getNumberOfCards();
     Card* play(int index);
+    Card* play(Card* lastPlayedCard);
 
     void setPlayerName(QString name)
     {

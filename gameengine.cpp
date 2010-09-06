@@ -247,3 +247,14 @@ void GameEngine::dummyStart()
     distributeCards(players[0], 4);
     distributeCards(players[1], 4);
 }
+
+void GameEngine::start()
+{
+    for (int i = 0; i < 4; i++) {
+        distributeCards(players[i], 4);
+    }
+
+    for (int i = 0; i < 4; i++) {
+
+    }
+}

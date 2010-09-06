@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'widget.ui'
 **
-** Created: Sat Sep 4 13:35:10 2010
+** Created: Mon Sep 6 12:07:25 2010
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -15,12 +15,8 @@
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QFrame>
-#include <QtGui/QGridLayout>
-#include <QtGui/QHBoxLayout>
 #include <QtGui/QHeaderView>
-#include <QtGui/QSpacerItem>
 #include <QtGui/QStackedWidget>
-#include <QtGui/QToolButton>
 #include <QtGui/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -31,14 +27,7 @@ public:
     QStackedWidget *stackedWidget;
     QWidget *page_2;
     QFrame *southHand;
-    QHBoxLayout *horizontalLayout;
-    QSpacerItem *horizontalSpacer_2;
-    QToolButton *toolButton;
-    QToolButton *toolButton_2;
-    QToolButton *toolButton_3;
-    QSpacerItem *horizontalSpacer;
     QFrame *westHand;
-    QGridLayout *gridLayout;
     QFrame *northHand;
     QFrame *table;
     QFrame *eastHand;
@@ -60,48 +49,11 @@ public:
         southHand->setMinimumSize(QSize(50, 50));
         southHand->setFrameShape(QFrame::StyledPanel);
         southHand->setFrameShadow(QFrame::Raised);
-        horizontalLayout = new QHBoxLayout(southHand);
-        horizontalLayout->setSpacing(2);
-        horizontalLayout->setContentsMargins(0, 0, 0, 0);
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout->addItem(horizontalSpacer_2);
-
-        toolButton = new QToolButton(southHand);
-        toolButton->setObjectName(QString::fromUtf8("toolButton"));
-        toolButton->setMinimumSize(QSize(50, 50));
-        toolButton->setStyleSheet(QString::fromUtf8("border-image: url(:/new/prefix1/pics/splash.png);"));
-
-        horizontalLayout->addWidget(toolButton);
-
-        toolButton_2 = new QToolButton(southHand);
-        toolButton_2->setObjectName(QString::fromUtf8("toolButton_2"));
-        toolButton_2->setMinimumSize(QSize(50, 50));
-        toolButton_2->setStyleSheet(QString::fromUtf8("border-image: url(:/new/prefix1/pics/splash.png);"));
-
-        horizontalLayout->addWidget(toolButton_2);
-
-        toolButton_3 = new QToolButton(southHand);
-        toolButton_3->setObjectName(QString::fromUtf8("toolButton_3"));
-        toolButton_3->setMinimumSize(QSize(50, 50));
-        toolButton_3->setStyleSheet(QString::fromUtf8("border-image: url(:/new/prefix1/pics/splash.png);"));
-
-        horizontalLayout->addWidget(toolButton_3);
-
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout->addItem(horizontalSpacer);
-
         westHand = new QFrame(page_2);
         westHand->setObjectName(QString::fromUtf8("westHand"));
         westHand->setGeometry(QRect(0, 10, 121, 251));
         westHand->setFrameShape(QFrame::StyledPanel);
         westHand->setFrameShadow(QFrame::Raised);
-        gridLayout = new QGridLayout(westHand);
-        gridLayout->setSpacing(6);
-        gridLayout->setContentsMargins(11, 11, 11, 11);
-        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         northHand = new QFrame(page_2);
         northHand->setObjectName(QString::fromUtf8("northHand"));
         northHand->setGeometry(QRect(130, 10, 281, 71));
@@ -131,9 +83,6 @@ public:
     void retranslateUi(QWidget *Widget)
     {
         Widget->setWindowTitle(QApplication::translate("Widget", "Widget", 0, QApplication::UnicodeUTF8));
-        toolButton->setText(QApplication::translate("Widget", "...", 0, QApplication::UnicodeUTF8));
-        toolButton_2->setText(QApplication::translate("Widget", "...", 0, QApplication::UnicodeUTF8));
-        toolButton_3->setText(QApplication::translate("Widget", "...", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

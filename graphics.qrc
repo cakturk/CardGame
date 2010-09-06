@@ -58,12 +58,6 @@
         <file>graphics/sinekkiz.png</file>
         <file>graphics/sinekpapaz.png</file>
         <file>graphics/sinekvale.png</file>
-        <file>graphics/back/1.png</file>
-        <file>graphics/back/2.png</file>
-        <file>graphics/back/3.png</file>
-        <file>graphics/back/4.png</file>
-        <file>graphics/back/5.png</file>
-        <file>graphics/back/6.png</file>
         <file>graphics/back/7.png</file>
         <file>graphics/back/8.png</file>
         <file>graphics/back/9.png</file>
@@ -71,5 +65,15 @@
         <file>graphics/back/11.png</file>
         <file>graphics/back/12.png</file>
         <file>graphics/back/13.png</file>
+        <file>graphics/back/1v.png</file>
+        <file>graphics/back/2v.png</file>
+        <file>graphics/back/3v.png</file>
+        <file>graphics/back/4v.png</file>
+        <file>graphics/back/1h.png</file>
+        <file>graphics/back/2h.png</file>
+        <file>graphics/back/3h.png</file>
+        <file>graphics/back/4h.png</file>
+        <file>graphics/back/5h.png</file>
+        <file>graphics/back/6h.png</file>
     </qresource>
 </RCC>

@@ -21,6 +21,8 @@ public:
     Widget(QWidget *parent = 0);
     ~Widget();
 
+    void start();
+
 protected:
     void changeEvent(QEvent *e);
 
@@ -28,6 +30,7 @@ private:
     Ui::Widget *ui;
     QGridLayout *layout;
     GameEngine g;
+    Person *players;
 
     void createUi();
     void centerMyWindow();
