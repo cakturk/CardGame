@@ -232,6 +232,7 @@ void GameEngine::startGameSession()
 
 }
 
+#if 0
 // TODO: define a method that returns image name
 QString GameEngine::getButtonPngName(QToolButton *b)
 {
@@ -239,6 +240,7 @@ QString GameEngine::getButtonPngName(QToolButton *b)
 
     return retVal;
 }
+#endif
 
 QToolButton* GameEngine::createButton(Card *c)
 {
@@ -254,7 +256,7 @@ QToolButton* GameEngine::createButton(Card *c)
     tb->setMinimumSize(QSize(50, 50));
     tb->setStyleSheet(QString("border-image: url(%1);").arg(str));
 
-    buttonMapping.insert(tb, c);
+    buttonMapping.insert(c, tb);
 
     return tb;
 }
@@ -301,8 +303,13 @@ void GameEngine::appendToPlayedCards(Card *c)
 
 Card* GameEngine::lastPlayedCard()
 {
-    if (cards.size() > 0)
-    return cards.last();
-
+    if (cards.isEmpty())
     return NULL;
+
+    return cards.last();
+}
+
+QList<Card *> & GameEngine::getPlayedCards()
+{
+    return playedCards;
 }

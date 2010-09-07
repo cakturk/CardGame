@@ -28,13 +28,14 @@ protected:
 
 private:
     Ui::Widget *ui;
-    QGridLayout *layout;
+    QGridLayout *grid;
     GameEngine g;
     Person *players;
     int maxpoint;
 
     void createUi();
     void centerMyWindow();
+    void showCardOnTable(Card *c, int playerindex);
 };
 
 #endif // WIDGET_H

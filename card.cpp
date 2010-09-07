@@ -26,6 +26,7 @@ Card::Card(int ct, int cn) :
 
     cardName = this->toString();
     cardImageName = "./graphics/" + cardName.toLower();
+    buttonPtr = getButton();
 }
 
 QString Card::toString()
@@ -90,4 +91,14 @@ bool Card::operator ==(const Card &other) const {
 bool Card::equals(Card *c)
 {
     return (this->cardNumber == c->cardNumber);
+}
+
+QToolButton* Card::getButton()
+{
+    QToolButton *but = new QToolButton;
+    but->setMinimumSize(QSize(50, 50));
+    but->setStyleSheet(QString("border-image: url(%1);").arg(this->cardImageName));
+    // buttonPtr = but;
+
+    return but;
 }

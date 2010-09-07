@@ -10,8 +10,10 @@ Widget::Widget(QWidget *parent) :
 
     this->setWindowTitle("Card Game");
     centerMyWindow();
-
+    grid = new QGridLayout;
+    ui->table->setLayout(grid);
     start();
+    qDebug() << "end of start()";
 
 //    g.createCards();
 //    g.dummyStart();
@@ -77,6 +79,7 @@ void Widget::centerMyWindow() {
 }
 
 /* create card game UI */
+#if 0
 void Widget::createUi()
 {
     // QLayout *frameLayout = ui->southHand->layout();
@@ -109,6 +112,7 @@ void Widget::createUi()
         }
     }
 }
+#endif
 
 void Widget::start()
 {
@@ -126,7 +130,7 @@ void Widget::start()
     QString pos;
     bool myself = false;
     Person *currentPlayer;
-    int row, column;
+    // int row, column;
 
     g.createCards();
 
@@ -157,6 +161,7 @@ void Widget::start()
         case 1:
             frame = ui->eastHand;
             vbox = new QVBoxLayout;
+            vbox->setAlignment(Qt::AlignCenter);
             currentLayout = vbox;
             frame->setLayout(vbox);
             myself = false;
@@ -165,6 +170,7 @@ void Widget::start()
         case 2:
             frame = ui->northHand;
             hbox = new QHBoxLayout;
+            hbox->setAlignment(Qt::AlignCenter);
             currentLayout = hbox;
             frame->setLayout(hbox);
             hbox->setContentsMargins(11, 0, 11, 0);
@@ -174,6 +180,7 @@ void Widget::start()
         case 3:
             frame = ui->westHand;
             vbox = new QVBoxLayout;
+            vbox->setAlignment(Qt::AlignCenter);
             currentLayout = vbox;
             frame->setLayout(vbox);
             myself = false;
@@ -184,12 +191,13 @@ void Widget::start()
         for (int j = 0; j < currentPlayer->getHand().size(); j++) {
             QToolButton *but;
             if (myself) {
-                but = g.createButton(playersHand.at(j));
+                but = playersHand.at(j)->getButton();
                 but->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
                 currentLayout->addWidget(but);
             } else {
                 but = new QToolButton;
                 but->setStyleSheet(QString("border-image: url(./graphics/back/4%1.png);").arg(pos));
+                but->setMinimumSize(75, 75);
                 but->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
                 currentLayout->addWidget(but);
                 break;
@@ -212,22 +220,53 @@ void Widget::start()
         }
 
         Card *lastcard = g.lastPlayedCard();
-        if (lastcard != NULL) {
-            Card *c = currentPlayer->play(lastcard);
-            g.appendToPlayedCards(c);
-        }
+        Card *c = currentPlayer->play(lastcard);
+        g.appendToPlayedCards(c);
+        showCardOnTable(c, playerIndex);
 
-        QList<QToolButton *> list;
         if (g.pisti(true)) {
-            QList<QToolButton *> list = ui->table->findChildren<QToolButton *>();
+            QList<Card *> &l = g.getPlayedCards();
 
-            for (int i = 0; list.size(); i++)
-                currentLayout->removeWidget(list.at(i));
+            for (int i = 0; i < l.size(); i++) {
+                QWidget *widget = (QWidget *) l.at(i)->buttonPtr;
+                currentLayout->removeWidget(widget);
+            }
+            
+            currentPlayer->collectCards(l);
         }
 
         playerIndex = (playerIndex + 1) % 4;
+        currentPlayer = &players[playerIndex];
 
-        if (g.getCards().size() == 0)
+        // if (currentPlayer->getNumberOfCards() == 0);
+
+        if (g.getCards().size() == 0 && currentPlayer->getNumberOfCards() == 0)
             play = false;
     }
+}
+
+void Widget::showCardOnTable(Card *c, int position)
+{
+    int row, column;
+    switch (position) {
+    case 0: // south
+        row = 2;
+        column = 1;
+        break;
+    case 1: // east
+        row = 1;
+        column = 3;
+        break;
+    case 2: // north
+        row = 0;
+        column = 1;
+        break;
+    case 3: // west
+        row = 1;
+        column = 0;
+        break;
+    }
+
+    /* c->getButton() */
+    grid->addWidget((QWidget *) c->buttonPtr, row, column);
 }

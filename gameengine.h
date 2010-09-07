@@ -26,12 +26,13 @@ public:
     void start();
     void appendToPlayedCards(Card *);
     Card* lastPlayedCard();
+    QList<Card *> & getPlayedCards();
 
 private:
     QList<Card *> playedCards;
     QList<Card *> cards;
 
-    QMap<QToolButton *, Card *> buttonMapping;
+    QMap<Card *, QToolButton *> buttonMapping;
 
     // TODO: o an bagli olan oyuncu sayisini tutsun
     int numberOfOnlinePlayer;
