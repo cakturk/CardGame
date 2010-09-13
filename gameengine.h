@@ -7,7 +7,8 @@
 
 class GameEngine : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
+
 public:
     explicit GameEngine(QObject *parent = 0);
 
@@ -16,6 +17,7 @@ public:
     void distributeCards(Person &p, int number);
     bool pisti();
     bool pisti(bool);
+    bool pisti(Person *p);
     QToolButton* createButton(Card *);
     QString getButtonPngName(QToolButton *);
     QList<Card *> & getCards();
@@ -27,6 +29,7 @@ public:
     void appendToPlayedCards(Card *);
     Card* lastPlayedCard();
     QList<Card *> & getPlayedCards();
+    Person* getlastWinner() const;
 
 private:
     QList<Card *> playedCards;

@@ -2,6 +2,8 @@
 #include "ui_widget.h"
 #include <QThread>
 
+#define TESTT
+
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
@@ -10,8 +12,23 @@ Widget::Widget(QWidget *parent) :
 
     this->setWindowTitle("Card Game");
     centerMyWindow();
-    grid = new QGridLayout;
+    grid = new QGridLayout(ui->table);
     ui->table->setLayout(grid);
+
+#if 0
+    Card *c = new Card(0, 3);
+    Card *c2 = new Card(0, 1);
+    QToolButton *but = c->getButton();
+    QToolButton *but2 = c2->getButton();
+#endif
+
+    //grid->addWidget(but, 2, 0);
+    //grid->addWidget(but2, 1, 2);
+    //grid->removeWidget(but);
+
+    //grid->removeWidget(but2);
+    //ui->table->layout()->removeWidget(but);
+
     start();
     qDebug() << "end of start()";
 
@@ -189,11 +206,14 @@ void Widget::start()
         }
 
         for (int j = 0; j < currentPlayer->getHand().size(); j++) {
-            QToolButton *but;
+            QWidget *but;
             if (myself) {
+                // playersHand.at(j)->getButton() olmayacak
+                // but = (QWidget *) playersHand.at(j)->buttonPtr;
                 but = playersHand.at(j)->getButton();
                 but->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
                 currentLayout->addWidget(but);
+                but->show();
             } else {
                 but = new QToolButton;
                 but->setStyleSheet(QString("border-image: url(./graphics/back/4%1.png);").arg(pos));
@@ -205,10 +225,18 @@ void Widget::start()
         }
     }
 
+    /*
+    Card *cd = players[0].getHand().at(3);
+    QWidget *test = ui->southHand->layout()->itemAt(2)->widget();
+    ui->southHand->layout()->removeWidget(test);
+    test->hide(); */
+
     currentPlayer = &players[0];
 
     int playerIndex = 0;
     bool play = true;
+
+    int counter = 0;
     while (play) {
         /* El bittiyse kart dagit */ 
         if (currentPlayer->getNumberOfCards() == 0) {
@@ -219,17 +247,32 @@ void Widget::start()
             }
         }
 
+        if (playerIndex == 0)
+            currentLayout = ui->southHand->layout();
+
         Card *lastcard = g.lastPlayedCard();
         Card *c = currentPlayer->play(lastcard);
         g.appendToPlayedCards(c);
         showCardOnTable(c, playerIndex);
 
-        if (g.pisti(true)) {
+/*
+        if (currentPlayer == &players[0]) {
+            QWidget *w = (QWidget *) c->buttonPtr;
+            QLayout *lay = ui->southHand->layout();
+            int index = lay->indexOf(w);
+            lay->removeWidget(w);
+            w->hide();
+        }
+*/
+
+        if (g.pisti(currentPlayer)) {
             QList<Card *> &l = g.getPlayedCards();
 
             for (int i = 0; i < l.size(); i++) {
                 QWidget *widget = (QWidget *) l.at(i)->buttonPtr;
-                currentLayout->removeWidget(widget);
+                // currentLayout->removeWidget(widget);
+                grid->removeWidget(widget);
+                widget->hide();
             }
             
             currentPlayer->collectCards(l);
@@ -242,7 +285,29 @@ void Widget::start()
 
         if (g.getCards().size() == 0 && currentPlayer->getNumberOfCards() == 0)
             play = false;
+
+        counter++;
+        if(counter == 42)
+            qDebug() <<  "16 oldu";
     }
+
+
+    QList<Card *> &cardsOnTable = g.getPlayedCards();
+    for (int i = 0; i < cardsOnTable.size(); i++) {
+        QWidget *widget = (QWidget *) cardsOnTable.at(i)->buttonPtr;
+        grid->removeWidget(widget);
+        widget->hide();
+    }
+    g.getlastWinner()->collectCards(cardsOnTable);
+
+#ifdef TEST
+    // test begin
+    QWidget *tmpwidget = ui->southHand->layout()->itemAt(0)->widget();
+    ui->southHand->layout()->removeWidget(tmpwidget);
+    tmpwidget->hide();
+    // test end
+#endif
+
 }
 
 void Widget::showCardOnTable(Card *c, int position)
@@ -268,5 +333,6 @@ void Widget::showCardOnTable(Card *c, int position)
     }
 
     /* c->getButton() */
+    /* (QWidget *) c->buttonPtr */
     grid->addWidget((QWidget *) c->buttonPtr, row, column);
 }

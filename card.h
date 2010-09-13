@@ -15,7 +15,7 @@ public:
     static void shuffleList(QList<Card *> &p);
     bool operator ==(const Card &other) const;
     bool equals(Card *c);
-    QToolButton* getButton();
+    QWidget* getButton();
 
     enum card_type {
         KUPA,
@@ -31,6 +31,8 @@ public:
     QString cardName;
     QString cardImageName;
     void *buttonPtr;
+
+    QWidget *toolButton;
 
 private:
 };

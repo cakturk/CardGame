@@ -135,6 +135,36 @@ bool GameEngine::pisti(bool b)
     return retVal;
 }
 
+bool GameEngine::pisti(Person *p)
+{
+    currentPlayer = p;
+
+    if (playedCards.size() < 2)
+        return false;
+
+    Card *currentCard = playedCards.at(playedCards.size() - 1);
+    Card *lastPlayedCard =
+            playedCards.at(playedCards.size() - 2);
+
+    bool retVal = false;
+    if (currentCard->equals(lastPlayedCard)) {
+        /* Pisti */
+        if (playedCards.size() == 2) {
+            currentPlayer->pistiCount++;
+            retVal = true;
+        }
+
+        lastWinner = currentPlayer;
+
+        // Vale
+    } else if (currentCard->cardNumber == 11) {
+        lastWinner = currentPlayer;
+        retVal = true;
+    }
+
+    return retVal;
+}
+
 #if 0
 bool GameEngine::cardsEquals(Card *first, Card *sec)
 {
@@ -312,4 +342,9 @@ Card* GameEngine::lastPlayedCard()
 QList<Card *> & GameEngine::getPlayedCards()
 {
     return playedCards;
+}
+
+Person* GameEngine::getlastWinner() const
+{
+    return lastWinner;
 }

@@ -10,6 +10,7 @@
 class Person : public QObject
 {
     Q_OBJECT
+
 public:
     explicit Person(QObject *parent = 0);
 

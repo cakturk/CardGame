@@ -17,6 +17,7 @@ namespace Ui {
 
 class Widget : public QWidget {
     Q_OBJECT
+
 public:
     Widget(QWidget *parent = 0);
     ~Widget();
@@ -36,6 +37,7 @@ private:
     void createUi();
     void centerMyWindow();
     void showCardOnTable(Card *c, int playerindex);
+    void showCardOnFrame(Card *c, int playerindex);
 };
 
 #endif // WIDGET_H

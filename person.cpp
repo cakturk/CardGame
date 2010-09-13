@@ -23,10 +23,6 @@ Card* Person::play(int index)
 
 Card* Person::play(Card *lastPlayedCard)
 {
-    //Card *retVal;
-    if (lastPlayedCard == NULL)
-        hand.takeFirst();
-
     if (hand.contains(lastPlayedCard)) {
         int index = hand.indexOf(lastPlayedCard);
         return (hand.takeAt(index));
@@ -35,12 +31,8 @@ Card* Person::play(Card *lastPlayedCard)
         for (int index = 0; index < hand.size(); index++) {
             vale = hand.at(index);
 
-            if (vale->cardNumber == 11) {
+            if (vale->cardNumber == 11)
                 return (hand.takeAt(index));
-                //break;
-            }/* else {
-                retVal = hand.takeFirst();
-            }*/
         }
     }
 
