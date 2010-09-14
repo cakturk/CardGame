@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'widget.h'
 **
-** Created: Mon Sep 13 18:44:35 2010
+** Created: Tue Sep 14 18:22:08 2010
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.6.2)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,18 +23,23 @@ static const uint qt_meta_data_Widget[] = {
        4,       // revision
        0,       // classname
        0,    0, // classinfo
-       0,    0, // methods
+       2,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
        0,       // signalCount
 
+ // slots: signature, parameters, type, tag, flags
+       8,    7,    7,    7, 0x08,
+      36,   32,    7,    7, 0x08,
+
        0        // eod
 };
 
 static const char qt_meta_stringdata_Widget[] = {
-    "Widget\0"
+    "Widget\0\0on_pushButton_clicked()\0obj\0"
+    "cardClicked(QObject*)\0"
 };
 
 const QMetaObject Widget::staticMetaObject = {
@@ -64,6 +69,14 @@ int Widget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     _id = QWidget::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        switch (_id) {
+        case 0: on_pushButton_clicked(); break;
+        case 1: cardClicked((*reinterpret_cast< QObject*(*)>(_a[1]))); break;
+        default: ;
+        }
+        _id -= 2;
+    }
     return _id;
 }
 QT_END_MOC_NAMESPACE

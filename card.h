@@ -8,8 +8,10 @@
 
 class Card : public QObject
 {
+
 public:
     Card(int cardType, int cardNumber);
+    //~Card();
 
     QString toString();
     static void shuffleList(QList<Card *> &p);
@@ -35,6 +37,9 @@ public:
     QWidget *toolButton;
 
 private:
+
+private slots:
+
 };
 
 #endif // CARD_H

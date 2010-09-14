@@ -26,8 +26,23 @@ Card::Card(int ct, int cn) :
 
     cardName = this->toString();
     cardImageName = "./graphics/" + cardName.toLower();
-    buttonPtr = (void *) getButton();
+    cardImageName.append(".png");
+
+    QToolButton *foo = new QToolButton;
+    foo->setMinimumSize(QSize(50, 50));
+    foo->setStyleSheet(QString("border-image: url(%1);").arg(this->cardImageName));
+
+    this->buttonPtr = static_cast<void *>(foo);
+
+    //buttonPtr = (void *) getButton();
 }
+
+/*
+Card::~Card()
+{
+    qDebug() << "object destructed...";
+}
+*/
 
 QString Card::toString()
 {
@@ -98,7 +113,14 @@ QWidget* Card::getButton()
     toolButton = new QToolButton;
     toolButton->setMinimumSize(QSize(50, 50));
     toolButton->setStyleSheet(QString("border-image: url(%1);").arg(this->cardImageName));
-    // buttonPtr = toolButton;
 
-    return toolButton;
+    /* refresh button */
+    // delete (QToolButton *) buttonPtr;
+
+    QToolButton *old = (QToolButton *) buttonPtr;
+    buttonPtr = static_cast<void *>(toolButton);
+
+    qDebug() << "getButton()";
+
+    return old;
 }

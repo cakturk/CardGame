@@ -35,7 +35,6 @@ void GameEngine::createCards()
         for (int j = 1; j <= 13; j++) {
            newCard = new Card(i, j);
            cards.append(newCard);
-
 #if 0
            QString pngName = ":/graph_items/graphics/" + (newCard->cardName).toLower();
            pngName.append(".png");
@@ -151,10 +150,10 @@ bool GameEngine::pisti(Person *p)
         /* Pisti */
         if (playedCards.size() == 2) {
             currentPlayer->pistiCount++;
-            retVal = true;
         }
 
         lastWinner = currentPlayer;
+        retVal = true;
 
         // Vale
     } else if (currentCard->cardNumber == 11) {

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'widget.ui'
 **
-** Created: Mon Sep 6 17:23:34 2010
+** Created: Tue Sep 14 18:21:21 2010
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -17,6 +17,7 @@
 #include <QtGui/QFrame>
 #include <QtGui/QGridLayout>
 #include <QtGui/QHeaderView>
+#include <QtGui/QPushButton>
 #include <QtGui/QStackedWidget>
 #include <QtGui/QWidget>
 
@@ -34,6 +35,7 @@ public:
     QFrame *eastHand;
     QFrame *table;
     QFrame *southHand;
+    QPushButton *pushButton;
 
     void setupUi(QWidget *Widget)
     {
@@ -60,7 +62,7 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(westHand->sizePolicy().hasHeightForWidth());
         westHand->setSizePolicy(sizePolicy);
-        westHand->setFrameShape(QFrame::StyledPanel);
+        westHand->setFrameShape(QFrame::NoFrame);
         westHand->setFrameShadow(QFrame::Raised);
         westHand->setLineWidth(1);
 
@@ -68,7 +70,7 @@ public:
 
         northHand = new QFrame(page_2);
         northHand->setObjectName(QString::fromUtf8("northHand"));
-        northHand->setFrameShape(QFrame::StyledPanel);
+        northHand->setFrameShape(QFrame::NoFrame);
         northHand->setFrameShadow(QFrame::Raised);
         northHand->setLineWidth(1);
 
@@ -76,14 +78,14 @@ public:
 
         eastHand = new QFrame(page_2);
         eastHand->setObjectName(QString::fromUtf8("eastHand"));
-        eastHand->setFrameShape(QFrame::StyledPanel);
+        eastHand->setFrameShape(QFrame::NoFrame);
         eastHand->setFrameShadow(QFrame::Raised);
 
         gridLayout->addWidget(eastHand, 0, 2, 2, 1);
 
         table = new QFrame(page_2);
         table->setObjectName(QString::fromUtf8("table"));
-        table->setFrameShape(QFrame::StyledPanel);
+        table->setFrameShape(QFrame::NoFrame);
         table->setFrameShadow(QFrame::Raised);
 
         gridLayout->addWidget(table, 1, 1, 1, 1);
@@ -91,14 +93,18 @@ public:
         southHand = new QFrame(page_2);
         southHand->setObjectName(QString::fromUtf8("southHand"));
         southHand->setMinimumSize(QSize(50, 50));
-        southHand->setFrameShape(QFrame::StyledPanel);
         southHand->setFrameShadow(QFrame::Raised);
 
         gridLayout->addWidget(southHand, 2, 0, 1, 3);
 
         stackedWidget->addWidget(page_2);
 
-        gridLayout_2->addWidget(stackedWidget, 0, 0, 1, 1);
+        gridLayout_2->addWidget(stackedWidget, 1, 0, 1, 1);
+
+        pushButton = new QPushButton(Widget);
+        pushButton->setObjectName(QString::fromUtf8("pushButton"));
+
+        gridLayout_2->addWidget(pushButton, 0, 0, 1, 1);
 
 
         retranslateUi(Widget);
@@ -112,6 +118,7 @@ public:
     void retranslateUi(QWidget *Widget)
     {
         Widget->setWindowTitle(QApplication::translate("Widget", "Widget", 0, QApplication::UnicodeUTF8));
+        pushButton->setText(QApplication::translate("Widget", "Restart Game", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

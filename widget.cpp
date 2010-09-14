@@ -3,6 +3,8 @@
 #include <QThread>
 
 #define TESTT
+#define TEST_CONST
+#undef TEST_CONST
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -10,27 +12,42 @@ Widget::Widget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    mapper = new QSignalMapper(this);
+    connect(mapper, SIGNAL(mapped(QObject *)), this, SLOT(cardClicked(QObject *)));
+
     this->setWindowTitle("Card Game");
     centerMyWindow();
+
+    /* set layouts */
     grid = new QGridLayout(ui->table);
     ui->table->setLayout(grid);
+    ui->table->setEnabled(false); // disable table so no one can click on it.
 
-#if 0
-    Card *c = new Card(0, 3);
-    Card *c2 = new Card(0, 1);
-    QToolButton *but = c->getButton();
-    QToolButton *but2 = c2->getButton();
+    hbox = new QHBoxLayout(ui->southHand);
+    hbox->setAlignment(Qt::AlignCenter);
+    ui->southHand->setLayout(hbox);
+    hbox = new QHBoxLayout(ui->northHand);
+    hbox->setAlignment(Qt::AlignCenter);
+    ui->northHand->setLayout(hbox);
+
+    vbox = new QVBoxLayout(ui->eastHand);
+    vbox->setAlignment(Qt::AlignCenter);
+    ui->eastHand->setLayout(vbox);
+    vbox = new QVBoxLayout(ui->westHand);
+    vbox->setAlignment(Qt::AlignCenter);
+    ui->westHand->setLayout(vbox);
+
+#ifdef TEST_CONST
+    g.createCards();
+    players = g.getPlayers();
+    g.distributeCards(players[0], 4);
+    QList<Card *> playersHand = players[0].getHand();
+    QWidget *wid = (QWidget *) playersHand.at(0)->buttonPtr;
+    ui->southHand->layout()->addWidget(wid);
 #endif
 
-    //grid->addWidget(but, 2, 0);
-    //grid->addWidget(but2, 1, 2);
-    //grid->removeWidget(but);
-
-    //grid->removeWidget(but2);
-    //ui->table->layout()->removeWidget(but);
-
-    start();
-    qDebug() << "end of start()";
+    // start();
+    modifiedstart();
 
 //    g.createCards();
 //    g.dummyStart();
@@ -59,6 +76,7 @@ Widget::Widget(QWidget *parent) :
 Widget::~Widget()
 {
     delete ui;
+    delete mapper;
 }
 
 void Widget::changeEvent(QEvent *e)
@@ -136,21 +154,16 @@ void Widget::start()
     // test value
     maxpoint = 100;
 
-    // Initial adjustment
     QFrame *frame;
     QLayout *currentLayout;
     QHBoxLayout *hbox;
-    // hbox->setContentsMargins(100, 0, 100, 0);
     QVBoxLayout *vbox;
-    // vbox->setContentsMargins(0, 100, 0, 100);
     QList<Card *> playersHand;
     QString pos;
     bool myself = false;
     Person *currentPlayer;
-    // int row, column;
 
     g.createCards();
-
     players = g.getPlayers();
 
     for (int i = 0; i < 4; i++) {
@@ -210,26 +223,45 @@ void Widget::start()
             if (myself) {
                 // playersHand.at(j)->getButton() olmayacak
                 // but = (QWidget *) playersHand.at(j)->buttonPtr;
-                but = playersHand.at(j)->getButton();
-                but->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
-                currentLayout->addWidget(but);
-                but->show();
+                //playersHand.at(j)->getButton();
+                // QWidget *voidButt = (QWidget *) playersHand.at(j)->buttonPtr;
+                // qDebug() << voidButt->styleSheet() << voidButt->geometry() << voidButt;
+                // but->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
+                // ui->southHand->layout()->addWidget(voidButt);
+                // voidButt->show();
+
+                // players[0].getHand().at(0)->getButton();
+                showCardOnTable(players[0].getHand().at(0), 1);
+
             } else {
+#if 0
                 but = new QToolButton;
                 but->setStyleSheet(QString("border-image: url(./graphics/back/4%1.png);").arg(pos));
                 but->setMinimumSize(75, 75);
                 but->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
                 currentLayout->addWidget(but);
+#endif
+                QList<Card *> bar = players[2].getHand();
+                // currentLayout->addWidget(static_cast<QWidget *>(bar.at(3)->buttonPtr));
+                qDebug() << bar.at(0)->buttonPtr << (QWidget *) bar.at(0)->buttonPtr;
+                // bar.at(0)->getButton();
+                qDebug() << bar.at(0)->buttonPtr << (QWidget *) bar.at(0)->buttonPtr;
+                QToolButton *debugvar = (QToolButton *) bar.at(0)->buttonPtr;
+                qDebug() << bar.at(0)->buttonPtr << (QWidget *) bar.at(0)->buttonPtr;
+                // QWidget *debugvatGet = bar.at(0)->getButton();
+                //debugvar->setParent(ui->table);
+                grid->addWidget(bar.at(0)->getButton(), 1, 2);
                 break;
             }
         }
     }
 
-    /*
+ /*
     Card *cd = players[0].getHand().at(3);
     QWidget *test = ui->southHand->layout()->itemAt(2)->widget();
     ui->southHand->layout()->removeWidget(test);
-    test->hide(); */
+    test->hide();
+*/
 
     currentPlayer = &players[0];
 
@@ -270,7 +302,6 @@ void Widget::start()
 
             for (int i = 0; i < l.size(); i++) {
                 QWidget *widget = (QWidget *) l.at(i)->buttonPtr;
-                // currentLayout->removeWidget(widget);
                 grid->removeWidget(widget);
                 widget->hide();
             }
@@ -281,16 +312,13 @@ void Widget::start()
         playerIndex = (playerIndex + 1) % 4;
         currentPlayer = &players[playerIndex];
 
-        // if (currentPlayer->getNumberOfCards() == 0);
-
         if (g.getCards().size() == 0 && currentPlayer->getNumberOfCards() == 0)
             play = false;
 
         counter++;
         if(counter == 42)
-            qDebug() <<  "16 oldu";
+            qDebug() <<  "42 ";
     }
-
 
     QList<Card *> &cardsOnTable = g.getPlayedCards();
     for (int i = 0; i < cardsOnTable.size(); i++) {
@@ -335,4 +363,85 @@ void Widget::showCardOnTable(Card *c, int position)
     /* c->getButton() */
     /* (QWidget *) c->buttonPtr */
     grid->addWidget((QWidget *) c->buttonPtr, row, column);
+}
+
+void Widget::showCardOnFrame(Card *c, int playerindex)
+{
+    if (playerindex == 0) {
+        ui->southHand->layout()->addWidget((QWidget *) c->buttonPtr);
+    }
+}
+
+void Widget::modifiedstart()
+{
+    // which player to play
+    int currentPlayerIndex = 0;
+    Person *currentPlayer;
+
+    players = g.getPlayers();
+    g.createCards();
+
+    for (int i = 0; i < 4; i++) {
+        Card *c = g.getCards().takeFirst();
+        g.appendToPlayedCards(c);
+    }
+    QToolButton *but = new QToolButton;
+    but->setStyleSheet(QString("border-image: url(./graphics/back/3h.png);"));
+    but->setMinimumSize(75, 55);
+    but->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
+    grid->addWidget(but, 1, 1);
+
+    Card *card = g.getPlayedCards().last();
+    // TODO: getButton()
+    // card->getButton();
+    grid->addWidget(static_cast<QWidget *>(card->buttonPtr), 1, 1);
+
+    // TODO: i < numbeerOfPlayers
+    for (int i = 0 ; i < 4; i++) {
+        currentPlayer = &players[i];
+        g.distributeCards( *currentPlayer, 4 );
+    }
+
+    // connect button signals to slots
+    for (int i = 0; i < currentPlayer->getNumberOfCards(); i++) {
+        QList<Card *> l = currentPlayer->getHand();
+        connect(static_cast<QToolButton *>(l.at(i)->buttonPtr), SIGNAL(clicked()),
+                mapper, SLOT(map()));
+        mapper->setMapping(static_cast<QObject *>(l.at(i)->buttonPtr),
+                           static_cast<QObject *>(l.at(i)));
+        ui->southHand->layout()->addWidget(static_cast<QWidget *>(l.at(i)->buttonPtr));
+    }
+
+    // grid->addWidget(static_cast<QWidget *>(currentPlayer->getHand().at(1)->buttonPtr), 0, 3);
+}
+
+void Widget::cardClicked(QObject *obj)
+{
+    Card *c = static_cast<Card *>(obj);
+    g.appendToPlayedCards(c);
+    showCardOnTable(c, 0);
+
+    if (g.pisti(&players[0])) {
+        QList<Card *> &l = g.getPlayedCards();
+
+        for (int i = 0; i < l.size(); i++) {
+            QWidget *widget = (QWidget *) l.at(i)->buttonPtr;
+            grid->removeWidget(widget);
+            widget->hide();
+        }
+
+        players[0].collectCards(l);
+    }
+
+    qDebug() << c->cardImageName;
+}
+
+void Widget::simulateOthers()
+{
+
+}
+
+void Widget::on_pushButton_clicked()
+{
+    modifiedstart();
 }
