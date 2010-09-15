@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'widget.ui'
 **
-** Created: Tue Sep 14 18:21:21 2010
+** Created: Wed Sep 15 18:38:27 2010
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -43,6 +43,7 @@ public:
             Widget->setObjectName(QString::fromUtf8("Widget"));
         Widget->resize(576, 410);
         Widget->setAutoFillBackground(false);
+        Widget->setStyleSheet(QString::fromUtf8("background-color: rgb(54, 111, 195);"));
         gridLayout_2 = new QGridLayout(Widget);
         gridLayout_2->setSpacing(6);
         gridLayout_2->setContentsMargins(11, 11, 11, 11);
@@ -103,6 +104,13 @@ public:
 
         pushButton = new QPushButton(Widget);
         pushButton->setObjectName(QString::fromUtf8("pushButton"));
+        pushButton->setCursor(QCursor(Qt::PointingHandCursor));
+        pushButton->setStyleSheet(QString::fromUtf8("color: rgb(222, 222, 222);\n"
+"font: 75 10pt \"DejaVu Sans Mono\";\n"
+"\n"
+""));
+        pushButton->setCheckable(false);
+        pushButton->setFlat(true);
 
         gridLayout_2->addWidget(pushButton, 0, 0, 1, 1);
 
@@ -118,6 +126,12 @@ public:
     void retranslateUi(QWidget *Widget)
     {
         Widget->setWindowTitle(QApplication::translate("Widget", "Widget", 0, QApplication::UnicodeUTF8));
+#ifndef QT_NO_TOOLTIP
+        pushButton->setToolTip(QString());
+#endif // QT_NO_TOOLTIP
+#ifndef QT_NO_STATUSTIP
+        pushButton->setStatusTip(QString());
+#endif // QT_NO_STATUSTIP
         pushButton->setText(QApplication::translate("Widget", "Restart Game", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 

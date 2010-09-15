@@ -30,6 +30,8 @@ private:
     Ui::Widget *ui;
     GameEngine g;
     Person *players;
+    Person *currentPlayer;
+    int currentPlayerIndex;
     int maxpoint;
     QSignalMapper *mapper;
 
@@ -45,6 +47,7 @@ private:
     void showCardOnTable(Card *c, int playerindex);
     void showCardOnFrame(Card *c, int playerindex);
     void simulateOthers();
+    inline void delay(int count, int sleep = 10000);
 
 private slots:
     void on_pushButton_clicked();

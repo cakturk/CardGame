@@ -30,7 +30,7 @@ Card::Card(int ct, int cn) :
 
     QToolButton *foo = new QToolButton;
     foo->setMinimumSize(QSize(50, 50));
-    foo->setStyleSheet(QString("border-image: url(%1);").arg(this->cardImageName));
+    foo->setStyleSheet(QString("border-image: url(%1)").arg(this->cardImageName));
 
     this->buttonPtr = static_cast<void *>(foo);
 
@@ -112,7 +112,7 @@ QWidget* Card::getButton()
 {
     toolButton = new QToolButton;
     toolButton->setMinimumSize(QSize(50, 50));
-    toolButton->setStyleSheet(QString("border-image: url(%1);").arg(this->cardImageName));
+    toolButton->setStyleSheet(QString("border-image: url(%1)").arg(this->cardImageName));
 
     /* refresh button */
     // delete (QToolButton *) buttonPtr;

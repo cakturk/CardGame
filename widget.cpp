@@ -12,6 +12,7 @@ Widget::Widget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    currentPlayerIndex = 0;
     mapper = new QSignalMapper(this);
     connect(mapper, SIGNAL(mapped(QObject *)), this, SLOT(cardClicked(QObject *)));
 
@@ -23,8 +24,19 @@ Widget::Widget(QWidget *parent) :
     ui->table->setLayout(grid);
     ui->table->setEnabled(false); // disable table so no one can click on it.
 
+    QToolButton *dummybutton;
+    for (int row = 0; row < 3; row++)
+        for (int col = 0; col < 3; col++) {
+            dummybutton = new QToolButton;
+            dummybutton->setStyleSheet(QString("border-image: url(./graphics/53.png)"));
+            grid->addWidget(dummybutton, row, col);
+            dummybutton->hide();
+            dummybutton->setMinimumSize(QSize(50, 50));
+    }
+
     hbox = new QHBoxLayout(ui->southHand);
     hbox->setAlignment(Qt::AlignCenter);
+    hbox->setContentsMargins(200, 0, 200, 0);
     ui->southHand->setLayout(hbox);
     hbox = new QHBoxLayout(ui->northHand);
     hbox->setAlignment(Qt::AlignCenter);
@@ -375,18 +387,18 @@ void Widget::showCardOnFrame(Card *c, int playerindex)
 void Widget::modifiedstart()
 {
     // which player to play
-    int currentPlayerIndex = 0;
-    Person *currentPlayer;
+    // int currentPlayerIndex = 0;
 
     players = g.getPlayers();
     g.createCards();
 
+    /* Yere ucu kapali dort kart at */
     for (int i = 0; i < 4; i++) {
         Card *c = g.getCards().takeFirst();
         g.appendToPlayedCards(c);
     }
     QToolButton *but = new QToolButton;
-    but->setStyleSheet(QString("border-image: url(./graphics/back/3h.png);"));
+    but->setStyleSheet(QString("border-image: url(./graphics/back/3h.png)"));
     but->setMinimumSize(75, 55);
     but->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
     grid->addWidget(but, 1, 1);
@@ -402,6 +414,7 @@ void Widget::modifiedstart()
         g.distributeCards( *currentPlayer, 4 );
     }
 
+    currentPlayer = &players[0];
     // connect button signals to slots
     for (int i = 0; i < currentPlayer->getNumberOfCards(); i++) {
         QList<Card *> l = currentPlayer->getHand();
@@ -417,6 +430,9 @@ void Widget::modifiedstart()
 
 void Widget::cardClicked(QObject *obj)
 {
+    // disable my panel
+    ui->southHand->setEnabled(false);
+
     Card *c = static_cast<Card *>(obj);
     g.appendToPlayedCards(c);
     showCardOnTable(c, 0);
@@ -424,8 +440,10 @@ void Widget::cardClicked(QObject *obj)
     if (g.pisti(&players[0])) {
         QList<Card *> &l = g.getPlayedCards();
 
+        delay(150);
+
         for (int i = 0; i < l.size(); i++) {
-            QWidget *widget = (QWidget *) l.at(i)->buttonPtr;
+            QWidget *widget = static_cast<QWidget *>(l.at(i)->buttonPtr);
             grid->removeWidget(widget);
             widget->hide();
         }
@@ -434,14 +452,53 @@ void Widget::cardClicked(QObject *obj)
     }
 
     qDebug() << c->cardImageName;
+    simulateOthers();
 }
 
 void Widget::simulateOthers()
 {
+    currentPlayerIndex = 1;
 
+    delay(150);
+
+    for (int i = 1; i <= 3; i++) {
+        currentPlayer = &players[currentPlayerIndex];
+        Card *lastcard = g.lastPlayedCard();
+        Card *c = currentPlayer->play(lastcard);
+        g.appendToPlayedCards(c);
+        showCardOnTable(c, currentPlayerIndex);
+
+        delay(150);
+
+        if (g.pisti(currentPlayer)) {
+            QList<Card *> &l = g.getPlayedCards();
+
+            for (int i = 0; i < l.size(); i++) {
+                QWidget *widget = static_cast<QWidget *>(l.at(i)->buttonPtr);
+                grid->removeWidget(widget);
+                widget->hide();
+            }
+            currentPlayer->collectCards(l);
+        }
+
+        // TODO: Oyuncu sayisi dortten az olabilir
+        currentPlayerIndex = (currentPlayerIndex + 1) % 4;
+        currentPlayer = &players[currentPlayerIndex];
+    }
+
+    // Enable my panel
+    ui->southHand->setEnabled(true);
 }
 
 void Widget::on_pushButton_clicked()
 {
     modifiedstart();
+}
+
+inline void Widget::delay(int count, int sleep)
+{
+    while (count--) {
+        usleep(sleep);
+        QApplication::processEvents();
+    }
 }

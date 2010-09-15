@@ -150,6 +150,7 @@ bool GameEngine::pisti(Person *p)
         /* Pisti */
         if (playedCards.size() == 2) {
             currentPlayer->pistiCount++;
+            qDebug() << "pisti";
         }
 
         lastWinner = currentPlayer;
@@ -283,7 +284,7 @@ QToolButton* GameEngine::createButton(Card *c)
 
     QToolButton *tb = new QToolButton();
     tb->setMinimumSize(QSize(50, 50));
-    tb->setStyleSheet(QString("border-image: url(%1);").arg(str));
+    tb->setStyleSheet(QString("border-image: url(%1)").arg(str));
 
     buttonMapping.insert(c, tb);
 
