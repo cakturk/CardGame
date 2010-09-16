@@ -47,6 +47,8 @@ private:
     void showCardOnTable(Card *c, int playerindex);
     void showCardOnFrame(Card *c, int playerindex);
     void simulateOthers();
+    void clearPanel(QLayout *layout, bool dealloc = false);
+    void showPlayerHand(int index, int size = 4);
     inline void delay(int count, int sleep = 10000);
 
 private slots:

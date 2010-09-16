@@ -39,6 +39,32 @@ Card* Person::play(Card *lastPlayedCard)
     return hand.takeFirst();
 }
 
+Card* Person::dummyPlay(Card* lastPlayedCard)
+{
+    if (lastPlayedCard != NULL) {
+        if(hand.contains(lastPlayedCard)) {
+            int index = hand.indexOf(lastPlayedCard);
+            return (hand.takeAt(index));
+        } else {
+            Card *vale;
+            for (int i = 0; i < hand.size(); i++) {
+                vale = hand.at(i);
+                if (vale->cardNumber == 11)
+                    return (hand.takeAt(i));
+            }
+        }
+    } else {
+        for (int i = 0; i < hand.size(); i++) {
+            Card *c;
+            c = hand.at(i);
+            if (c->cardNumber != 11)
+                return (hand.takeAt(i));
+        }
+    }
+
+    return hand.takeFirst();
+}
+
 void Person::collectCards(QList<Card *> &c)
 {
     Card *card;

@@ -22,6 +22,7 @@ public:
     int getNumberOfCards();
     Card* play(int index);
     Card* play(Card* lastPlayedCard);
+    Card* dummyPlay(Card* lastPlayedCard);
 
     void setPlayerName(QString name)
     {

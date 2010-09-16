@@ -333,7 +333,7 @@ void GameEngine::appendToPlayedCards(Card *c)
 
 Card* GameEngine::lastPlayedCard()
 {
-    if (cards.isEmpty())
+    if (playedCards.isEmpty())
     return NULL;
 
     return cards.last();
