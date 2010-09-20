@@ -1,6 +1,5 @@
 #include "widget.h"
 #include "ui_widget.h"
-#include <QThread>
 
 #define TESTT
 #define TEST_CONST
@@ -11,8 +10,10 @@ Widget::Widget(QWidget *parent) :
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
+    ui->gridLayout->setSpacing(1);
 
     currentPlayerIndex = 0;
+
     mapper = new QSignalMapper(this);
     connect(mapper, SIGNAL(mapped(QObject *)), this, SLOT(cardClicked(QObject *)));
 
@@ -21,9 +22,10 @@ Widget::Widget(QWidget *parent) :
     ui->southHand->setCursor(Qt::UpArrowCursor);
 
     /* set layouts */
-    grid = new QGridLayout(ui->table);
-    ui->table->setLayout(grid);
+    //grid = new QGridLayout(ui->table);
+    //ui->table->setLayout(grid);
 
+/*
     QFrame *frame = new QFrame;
     frame->setMinimumHeight(75);
     grid->addWidget(frame, 0, 1);
@@ -43,20 +45,9 @@ Widget::Widget(QWidget *parent) :
     frame = new QFrame;
     frame->setMinimumWidth(75);
     grid->addWidget(frame, 1, 2);
-
-
-    ui->table->setEnabled(false); // disable table so no one can click on it.
-/*
-    QToolButton *dummybutton;
-    for (int row = 0; row < 3; row++)
-        for (int col = 0; col < 3; col++) {
-            dummybutton = new QToolButton;
-            dummybutton->setStyleSheet(QString("border-image: url(./graphics/53.png)"));
-            grid->addWidget(dummybutton, row, col);
-            dummybutton->hide();
-            dummybutton->setMinimumSize(QSize(50, 50));
-    }
 */
+
+    // ui->table->setEnabled(false); // disable table so that no one can click on it.
 
     hbox = new QHBoxLayout(ui->southHand);
     hbox->setAlignment(Qt::AlignCenter);
@@ -73,6 +64,8 @@ Widget::Widget(QWidget *parent) :
     vbox->setAlignment(Qt::AlignCenter);
     ui->westHand->setLayout(vbox);
 
+    modifiedstart();
+
 #ifdef TEST_CONST
     g.createCards();
     players = g.getPlayers();
@@ -83,7 +76,6 @@ Widget::Widget(QWidget *parent) :
 #endif
 
     // start();
-    modifiedstart();
 
 //    g.createCards();
 //    g.dummyStart();
@@ -255,7 +247,6 @@ void Widget::start()
         }
 
         for (int j = 0; j < currentPlayer->getHand().size(); j++) {
-            QWidget *but;
             if (myself) {
                 // playersHand.at(j)->getButton() olmayacak
                 // but = (QWidget *) playersHand.at(j)->buttonPtr;
@@ -282,7 +273,6 @@ void Widget::start()
                 qDebug() << bar.at(0)->buttonPtr << (QWidget *) bar.at(0)->buttonPtr;
                 // bar.at(0)->getButton();
                 qDebug() << bar.at(0)->buttonPtr << (QWidget *) bar.at(0)->buttonPtr;
-                QToolButton *debugvar = (QToolButton *) bar.at(0)->buttonPtr;
                 qDebug() << bar.at(0)->buttonPtr << (QWidget *) bar.at(0)->buttonPtr;
                 // QWidget *debugvatGet = bar.at(0)->getButton();
                 //debugvar->setParent(ui->table);
@@ -376,29 +366,62 @@ void Widget::start()
 
 void Widget::showCardOnTable(Card *c, int position)
 {
-    int row, column;
+    QFrame *frame;
+    QWidget *button;
+    int row, column, parentWidth, width, parentHeight, height;
+    int x, y;
+
     switch (position) {
     case 0: // south
-        row = 2;
-        column = 1;
+        row = 3;
+        column = 2;
+        frame = ui->tableSouth;
         break;
     case 1: // east
-        row = 1;
+        row = 2;
         column = 3;
+        frame = ui->tableEast;
         break;
     case 2: // north
-        row = 0;
-        column = 1;
+        row = 1;
+        column = 2;
+        frame = ui->tableNorth;
         break;
     case 3: // west
-        row = 1;
-        column = 0;
+        row = 2;
+        column = 1;
+        frame = ui->tableWest;
+        break;
+    case 4:
+        frame = ui->tableCenter;
         break;
     }
 
     /* c->getButton() */
     /* (QWidget *) c->buttonPtr */
-    grid->addWidget((QWidget *) c->buttonPtr, row, column);
+    QSize parentWidgetSize = frame->size();
+    QSize buttonSize;
+
+    parentWidth = parentWidgetSize.width();
+    parentHeight = parentWidgetSize.width();
+
+    button = static_cast<QWidget *>(c->buttonPtr);
+    button->setParent(frame);
+
+    // TODO: must be dynamically resized
+    button->resize(60, 70);
+    buttonSize = button->size();
+
+    width = buttonSize.width();
+    height = buttonSize.height();
+    qDebug() << parentWidth << parentHeight;    
+    qDebug() << width << height;
+    x = (parentWidth - width) / 2;
+    y = (parentHeight - height) / 2;
+    y -= y / 2;
+
+    button->move(x, y);
+    button->show();
 }
 
 void Widget::showCardOnFrame(Card *c, int playerindex)
@@ -427,16 +450,15 @@ void Widget::modifiedstart()
         break;
     }
 
-    QToolButton *but = new QToolButton(ui->table);
+    QToolButton *but = new QToolButton(ui->tableCenter);
     but->setStyleSheet(QString("border-image: url(./graphics/back/3h.png)"));
     but->setMinimumSize(75, 55);
     but->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
-    grid->addWidget(but, 1, 1);
 
     Card *card = g.getPlayedCards().last();
     // TODO: getButton()
     // card->getButton();
-    grid->addWidget(static_cast<QWidget *>(card->buttonPtr), 1, 1);
+    (static_cast<QWidget *>(card->buttonPtr))->setParent(ui->tableCenter);
 
     // TODO: i < numbeerOfPlayers
     for (int i = 0 ; i < 4; i++) {
@@ -467,9 +489,9 @@ void Widget::cardClicked(QObject *obj)
 
     Card *c = static_cast<Card *>(obj);
     int del = players[0].getHand().indexOf(c);
-    players[0].getHand().removeAt(del);;
-    g.appendToPlayedCards(c);
+    players[0].getHand().removeAt(del);
     ui->southHand->layout()->removeWidget(static_cast<QWidget *>(c->buttonPtr));
+    g.appendToPlayedCards(c);
     showCardOnTable(c, 0);
 
     if (g.pisti(&players[0])) {
@@ -478,15 +500,11 @@ void Widget::cardClicked(QObject *obj)
         delay(150);
 
         // yerdeki kartlari topla
-#if 0
-        for (int i = 0; i < l.size(); i++) {
-            QWidget *widget = static_cast<QWidget *>(l.at(i)->buttonPtr);
-            grid->removeWidget(widget);
-            widget->hide();
-        }
-#endif
-        clearPanel(grid);
-
+        clearPanel(ui->tableCenter);
+        clearPanel(ui->tableEast);
+        clearPanel(ui->tableNorth);
+        clearPanel(ui->tableWest);
+        clearPanel(ui->tableSouth);
         players[0].collectCards(l);
     }
 
@@ -496,7 +514,7 @@ void Widget::cardClicked(QObject *obj)
 
 void Widget::simulateOthers()
 {
-    QLayout *currentPlayerLayout;
+    QWidget *currentPlayerFrame;
     QString alignment;
     currentPlayerIndex = 1;
 
@@ -505,15 +523,15 @@ void Widget::simulateOthers()
     for (int i = 1; i <= 3; i++) {
         switch (currentPlayerIndex) {
         case 1:
-            currentPlayerLayout = ui->eastHand->layout();
+            currentPlayerFrame = ui->eastHand;
             alignment = "v";
             break;
         case 2:
-            currentPlayerLayout = ui->northHand->layout();
+            currentPlayerFrame = ui->northHand;
             alignment = "h";
             break;
         case 3:
-            currentPlayerLayout = ui->westHand->layout();
+            currentPlayerFrame = ui->westHand;
             alignment = "v";
         }
 
@@ -523,7 +541,6 @@ void Widget::simulateOthers()
         qDebug() << "before" << currentPlayer->getNumberOfCards();
         Card *c = currentPlayer->dummyPlay(lastcard);
         qDebug() << "after"<< currentPlayer->getNumberOfCards();
-
 #if 0
         QLayoutItem *child;
         while ((child = currentPlayerLayout->takeAt(0)) != 0) {
@@ -531,20 +548,9 @@ void Widget::simulateOthers()
             delete child;
         }
 #endif
-        clearPanel(currentPlayerLayout, true);
-
-#if 0
-        if (currentPlayer->getNumberOfCards() != 0) {
-            QString style;
-            QToolButton *but = new QToolButton;
-            style = QString("border-image: url(./graphics/back/%1%2.png)").arg(currentPlayer->getNumberOfCards()).arg(alignment);
-            but->setMinimumSize(QSize(50, 50));
-            but->setStyleSheet(style);
-            currentPlayerLayout->addWidget(but);
-        }
-#endif
+        /* removes card back images */
+        clearPanel(currentPlayerFrame, true);
         showPlayerHand(currentPlayerIndex, currentPlayer->getNumberOfCards());
-
         g.appendToPlayedCards(c);
         showCardOnTable(c, currentPlayerIndex);
 
@@ -552,15 +558,16 @@ void Widget::simulateOthers()
 
         if (g.pisti(currentPlayer)) {
             QList<Card *> &l = g.getPlayedCards();
-#if 0
-            for (int i = 0; i < l.size(); i++) {
-                QWidget *widget = static_cast<QWidget *>(l.at(i)->buttonPtr);
-                grid->removeWidget(widget);
-                widget->hide();
-            }
-#endif
-            clearPanel(grid);
+
+            // clearPanel(grid);
+            clearPanel(ui->tableCenter);
+            clearPanel(ui->tableEast);
+            clearPanel(ui->tableNorth);
+            clearPanel(ui->tableSouth);
+            clearPanel(ui->tableWest);
             currentPlayer->collectCards(l);
+
+            delay(150);
         }
 
         // TODO: Oyuncu sayisi dortten az olabilir
@@ -568,6 +575,8 @@ void Widget::simulateOthers()
         currentPlayerIndex = (currentPlayerIndex + 1) % 4;
         qDebug() << "currentplayerindex :" << currentPlayerIndex;
         currentPlayer = &players[currentPlayerIndex];
+
+        if (g.getCards().size() == 0 && currentPlayer->getNumberOfCards() == 0);
     }
 
     currentPlayer = &players[currentPlayerIndex];
@@ -575,9 +584,21 @@ void Widget::simulateOthers()
         int tmpindex = currentPlayerIndex;
         for (int i = 0 ; i < 4; i++) {
             g.distributeCards( *currentPlayer, 4 );
-            showPlayerHand(i);
+            if (currentPlayerIndex != 0)
+                showPlayerHand(i);
             tmpindex = (tmpindex + 1) % 4;
             currentPlayer = &players[tmpindex];
+        }
+
+        // connect button signals to slots
+        currentPlayer = &players[0];
+        for (int i = 0; i < currentPlayer->getNumberOfCards(); i++) {
+            QList<Card *> l = currentPlayer->getHand();
+            connect(static_cast<QToolButton *>(l.at(i)->buttonPtr), SIGNAL(clicked()),
+                    mapper, SLOT(map()));
+            mapper->setMapping(static_cast<QObject *>(l.at(i)->buttonPtr),
+                               static_cast<QObject *>(l.at(i)));
+            ui->southHand->layout()->addWidget(static_cast<QWidget *>(l.at(i)->buttonPtr));
         }
     }
 
@@ -598,11 +619,13 @@ inline void Widget::delay(int count, int sleep)
     }
 }
 
-void Widget::clearPanel(QLayout *layout, bool dealloc)
+void Widget::clearPanel(QWidget *widget, bool dealloc)
 {
-    QLayoutItem *child;
-    while ((child = layout->takeAt(0)) != 0) {
-        child->widget()->hide();
+    QList<QWidget *> widgets = widget->findChildren<QWidget *>();
+    QWidget *child;
+    while (widgets.size() > 0) {
+        child = widgets.takeFirst();
+        child->hide();
         if (dealloc == true)
             delete child;
     }

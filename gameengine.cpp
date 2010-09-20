@@ -336,7 +336,8 @@ Card* GameEngine::lastPlayedCard()
     if (playedCards.isEmpty())
     return NULL;
 
-    return cards.last();
+    // return cards.last();
+    return playedCards.last();
 }
 
 QList<Card *> & GameEngine::getPlayedCards()
