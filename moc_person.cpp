@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'person.h'
 **
-** Created: Mon Sep 20 16:08:15 2010
+** Created: Tue Sep 21 09:38:23 2010
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.6.2)
 **
 ** WARNING! All changes made in this file will be lost!

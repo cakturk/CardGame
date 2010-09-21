@@ -89,6 +89,7 @@
     <value type="QString">GTK_MODULES=canberra-gtk-module</value>
     <value type="QString">HOME=/home/cihangir</value>
     <value type="QString">LANG=en_US.utf8</value>
+    <value type="QString">LANGUAGE=</value>
     <value type="QString">LD_LIBRARY_PATH=/usr/lib/qtcreator:</value>
     <value type="QString">LOGNAME=cihangir</value>
     <value type="QString">MANDATORY_PATH=/usr/share/gconf/gnome.mandatory.path</value>
@@ -138,6 +139,7 @@
     <value type="QString">GTK_MODULES=canberra-gtk-module</value>
     <value type="QString">HOME=/home/cihangir</value>
     <value type="QString">LANG=en_US.utf8</value>
+    <value type="QString">LANGUAGE=</value>
     <value type="QString">LD_LIBRARY_PATH=/usr/lib/qtcreator:</value>
     <value type="QString">LOGNAME=cihangir</value>
     <value type="QString">MANDATORY_PATH=/usr/share/gconf/gnome.mandatory.path</value>
@@ -171,7 +173,7 @@
   <valuemap type="QVariantMap">
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList">
-    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-lAJ3eSKZUi,guid=3071212a3362d71d9a34b9244c92fe7d</value>
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-qEmNUKdCF5,guid=7c42a53af51239f8160e894d4c96f0d1</value>
     <value type="QString">DEFAULTS_PATH=/usr/share/gconf/gnome.default.path</value>
     <value type="QString">DESKTOP_SESSION=gnome</value>
     <value type="QString">DISPLAY=:0.0</value>
@@ -179,8 +181,8 @@
     <value type="QString">GDM_KEYBOARD_LAYOUT=tr</value>
     <value type="QString">GDM_LANG=en_US.utf8</value>
     <value type="QString">GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
-    <value type="QString">GNOME_KEYRING_CONTROL=/tmp/keyring-zbtJyE</value>
-    <value type="QString">GNOME_KEYRING_PID=1336</value>
+    <value type="QString">GNOME_KEYRING_CONTROL=/tmp/keyring-SHeCcm</value>
+    <value type="QString">GNOME_KEYRING_PID=1325</value>
     <value type="QString">GTK_MODULES=canberra-gtk-module</value>
     <value type="QString">HOME=/home/cihangir</value>
     <value type="QString">LANG=en_US.utf8</value>
@@ -192,17 +194,17 @@
     <value type="QString">PATH=/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
     <value type="QString">PWD=/home/cihangir</value>
     <value type="QString">QTDIR=/usr/share/qt4</value>
-    <value type="QString">SESSION_MANAGER=local/desktop:@/tmp/.ICE-unix/1354,unix/desktop:/tmp/.ICE-unix/1354</value>
+    <value type="QString">SESSION_MANAGER=local/desktop:@/tmp/.ICE-unix/1343,unix/desktop:/tmp/.ICE-unix/1343</value>
     <value type="QString">SHELL=/bin/bash</value>
     <value type="QString">SPEECHD_PORT=7560</value>
-    <value type="QString">SSH_AGENT_PID=1388</value>
-    <value type="QString">SSH_AUTH_SOCK=/tmp/keyring-zbtJyE/ssh</value>
+    <value type="QString">SSH_AGENT_PID=1377</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/keyring-SHeCcm/ssh</value>
     <value type="QString">USER=cihangir</value>
     <value type="QString">USERNAME=cihangir</value>
-    <value type="QString">XAUTHORITY=/var/run/gdm/auth-for-cihangir-eOAOPY/database</value>
+    <value type="QString">XAUTHORITY=/var/run/gdm/auth-for-cihangir-TrnZ4x/database</value>
     <value type="QString">XDG_CONFIG_DIRS=/etc/xdg/xdg-gnome:/etc/xdg</value>
     <value type="QString">XDG_DATA_DIRS=/usr/share/gnome:/usr/local/share/:/usr/share/</value>
-    <value type="QString">XDG_SESSION_COOKIE=0716a80edddff0d6b2df37a14c72a6f4-1284701821.448783-1908434529</value>
+    <value type="QString">XDG_SESSION_COOKIE=0716a80edddff0d6b2df37a14c72a6f4-1284960465.230276-1189091158</value>
    </valuelist>
    <value key="abstractProcess.IgnoreReturnValue" type="bool">true</value>
    <valuelist key="abstractProcess.arguments" type="QVariantList">

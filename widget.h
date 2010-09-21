@@ -49,6 +49,7 @@ private:
     void simulateOthers();
     void clearPanel(QWidget *widget, bool dealloc = false);
     void showPlayerHand(int index, int size = 4);
+    void statistics();
     inline void delay(int count, int sleep = 10000);
 
 private slots:

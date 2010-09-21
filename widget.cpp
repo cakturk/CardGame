@@ -10,8 +10,28 @@ Widget::Widget(QWidget *parent) :
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
-    ui->gridLayout->setSpacing(1);
+    ui->stackedWidget->setCurrentIndex(0);
+    ui->gridLayout->setSpacing(0);
 
+/*
+    QString str = "Game Over!";
+    str.append('\n');
+    str.append("First Team");
+    str += '\t';
+    str += '\t';
+
+    str.append("Second Team");
+    str += '\n';
+    str.append("cihangir");
+    str += '\n';
+    str.append("cihangir");
+    str += '\n';
+    str.append("cihangir");
+    str += '\n';
+    str.append("cihangir");
+
+    ui->resultlabel->setText(str);
+*/
     currentPlayerIndex = 0;
 
     mapper = new QSignalMapper(this);
@@ -576,7 +596,13 @@ void Widget::simulateOthers()
         qDebug() << "currentplayerindex :" << currentPlayerIndex;
         currentPlayer = &players[currentPlayerIndex];
 
-        if (g.getCards().size() == 0 && currentPlayer->getNumberOfCards() == 0);
+        /* Game over */
+        if (g.getCards().size() == 0 && currentPlayer->getNumberOfCards() == 0) {
+            /* yerdeki son kartlari al */
+            g.getlastWinner()->collectCards(g.getPlayedCards());
+            statistics();
+            return;
+        }
     }
 
     currentPlayer = &players[currentPlayerIndex];
@@ -613,6 +639,7 @@ void Widget::on_pushButton_clicked()
 
 inline void Widget::delay(int count, int sleep)
 {
+    count = 30;
     while (count--) {
         usleep(sleep);
         QApplication::processEvents();
@@ -662,4 +689,50 @@ void Widget::showPlayerHand(int index, int size)
     but->setMinimumSize(QSize(60, 60));
     but->setStyleSheet(style);
     layout->addWidget(but);
+}
+
+void Widget::statistics()
+{
+    QString resultStr;
+    int pistiA = 0, pistiB = 0, scoreA = 0, scoreB = 0;
+
+    for (int i = 0; i < 4; i++) {
+        currentPlayer = &players[i];
+        currentPlayer->computePlayerScore();
+    }
+    pistiA = players[0].pistiCount + players[2].pistiCount;
+    pistiB = players[1].pistiCount + players[3].pistiCount;
+    scoreA = players[0].score + players[2].score;
+    scoreB = players[1].score + players[3].score;
+
+    if (players[0].getScoredCards().size() + players[2].getScoredCards().size()>
+        players[1].getScoredCards().size() + players[3].getScoredCards().size())
+        scoreA += 3;
+    else
+        scoreB += 3;
+
+    resultStr.append('\t');
+    resultStr.append("First Team");
+    resultStr.append('\t');
+    resultStr.append("Second Team");
+    resultStr.append('\n');
+
+    resultStr.append("Pisti:");
+    resultStr.append('\t');
+    resultStr.append(QString::number(pistiA));
+    resultStr.append('\t');
+    resultStr.append('\t');
+    resultStr.append(QString::number(pistiB));
+    resultStr.append('\n');
+
+    resultStr.append("Result:");
+    resultStr.append('\t');
+    resultStr.append(QString::number(scoreA));
+    resultStr.append('\t');
+    resultStr.append('\t');
+    resultStr.append(QString::number(scoreB));
+    resultStr.append('\n');
+
+    ui->resultlabel->setText(resultStr);
+    ui->stackedWidget->setCurrentIndex(2);
 }

@@ -103,3 +103,25 @@ QList<Card *>& Person::getHand()
 {
     return hand;
 }
+
+void Person::computePlayerScore()
+{
+    int pCount = pistiCount;
+    while (pCount--)
+        score += 10;
+
+    pCount = 0;
+
+    for (int i = 0; i < scoredCards.size(); i++) {
+        Card *card = scoredCards.at(i);
+
+        if (card->cardNumber == 1)
+            score++;
+        if (card->cardNumber == 11)
+            score++;
+        if (card->type == Card::SINEK && card->cardNumber == 2)
+            score += 2;
+        if (card->type == Card::KARO && card->cardNumber == 10)
+            score += 3;
+    }
+}

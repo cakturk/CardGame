@@ -16,10 +16,11 @@ public:
 
     void setHand(QList<Card *> &h);
     void collectCards(QList<Card *> &c);
+    void reset();
+    void computePlayerScore();
+    int getNumberOfCards();
     const QList<Card *> &getScoredCards();
     QList<Card *> & getHand();
-    void reset();
-    int getNumberOfCards();
     Card* play(int index);
     Card* play(Card* lastPlayedCard);
     Card* dummyPlay(Card* lastPlayedCard);
