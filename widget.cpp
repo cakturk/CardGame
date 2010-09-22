@@ -10,8 +10,10 @@ Widget::Widget(QWidget *parent) :
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
-    ui->stackedWidget->setCurrentIndex(0);
+    ui->stackedWidget->setCurrentIndex(1);
     ui->gridLayout->setSpacing(0);
+
+    game = new GameEngine(2);
 
 /*
     QString str = "Game Over!";
@@ -87,9 +89,9 @@ Widget::Widget(QWidget *parent) :
     modifiedstart();
 
 #ifdef TEST_CONST
-    g.createCards();
-    players = g.getPlayers();
-    g.distributeCards(players[0], 4);
+    game->createCards();
+    players = game->getPlayers();
+    game->distributeCards(players[0], 4);
     QList<Card *> playersHand = players[0].getHand();
     QWidget *wid = (QWidget *) playersHand.at(0)->buttonPtr;
     ui->southHand->layout()->addWidget(wid);
@@ -97,13 +99,13 @@ Widget::Widget(QWidget *parent) :
 
     // start();
 
-//    g.createCards();
-//    g.dummyStart();
+//    game->createCards();
+//    game->dummyStart();
 //    createUi();
     
 #if 0
-    Card *c = g.getCards().first();
-    QToolButton *tb = g.createButton(c);
+    Card *c = game->getCards().first();
+    QToolButton *tb = game->createButton(c);
 
     layout = new QGridLayout;
     ui->table->setLayout(layout);
@@ -166,17 +168,17 @@ void Widget::centerMyWindow() {
 void Widget::createUi()
 {
     // QLayout *frameLayout = ui->southHand->layout();
-    Person *players = g.getPlayers();
+    Person *players = game->getPlayers();
     QList<Card *> playersHand;
 
     QHBoxLayout *hb = new QHBoxLayout;
     ui->northHand->setLayout(hb);
     hb->setContentsMargins(100, 0, 100, 0);
 
-    for (int i = 0; i < g.getNumberOfOnlinePlayer(); i++) {
+    for (int i = 0; i < game->getNumberOfOnlinePlayer(); i++) {
         playersHand = players[i].getHand();
         for (int j = 0; j < players[i].getHand().size(); j++) {
-            QToolButton *but = g.createButton(playersHand.at(j));
+            QToolButton *but = game->createButton(playersHand.at(j));
 
             switch (i) {
             case 0:
@@ -211,16 +213,16 @@ void Widget::start()
     bool myself = false;
     Person *currentPlayer;
 
-    g.createCards();
-    players = g.getPlayers();
+    game->createCards();
+    players = game->getPlayers();
 
     for (int i = 0; i < 4; i++) {
-        Card *c = g.getCards().takeFirst();
-        g.appendToPlayedCards(c);
+        Card *c = game->getCards().takeFirst();
+        game->appendToPlayedCards(c);
     }
 
     for (int i = 0; i < 4; i++) {
-        g.distributeCards(players[i], 4);
+        game->distributeCards(players[i], 4);
     }
 
     for (int i = 0; i < 4; i++) {
@@ -321,16 +323,16 @@ void Widget::start()
             for (int i = 0; i < 4; i++) {
                 playerIndex = (playerIndex + 1) % 4; // Next player
                 currentPlayer = &players[playerIndex];
-                g.distributeCards(*currentPlayer, 4);
+                game->distributeCards(*currentPlayer, 4);
             }
         }
 
         if (playerIndex == 0)
             currentLayout = ui->southHand->layout();
 
-        Card *lastcard = g.lastPlayedCard();
+        Card *lastcard = game->lastPlayedCard();
         Card *c = currentPlayer->play(lastcard);
-        g.appendToPlayedCards(c);
+        game->appendToPlayedCards(c);
         showCardOnTable(c, playerIndex);
 
 /*
@@ -343,8 +345,8 @@ void Widget::start()
         }
 */
 
-        if (g.pisti(currentPlayer)) {
-            QList<Card *> &l = g.getPlayedCards();
+        if (game->pisti(currentPlayer)) {
+            QList<Card *> &l = game->getPlayedCards();
 
             for (int i = 0; i < l.size(); i++) {
                 QWidget *widget = (QWidget *) l.at(i)->buttonPtr;
@@ -358,7 +360,7 @@ void Widget::start()
         playerIndex = (playerIndex + 1) % 4;
         currentPlayer = &players[playerIndex];
 
-        if (g.getCards().size() == 0 && currentPlayer->getNumberOfCards() == 0)
+        if (game->getCards().size() == 0 && currentPlayer->getNumberOfCards() == 0)
             play = false;
 
         counter++;
@@ -366,13 +368,13 @@ void Widget::start()
             qDebug() <<  "42 ";
     }
 
-    QList<Card *> &cardsOnTable = g.getPlayedCards();
+    QList<Card *> &cardsOnTable = game->getPlayedCards();
     for (int i = 0; i < cardsOnTable.size(); i++) {
         QWidget *widget = (QWidget *) cardsOnTable.at(i)->buttonPtr;
         grid->removeWidget(widget);
         widget->hide();
     }
-    g.getlastWinner()->collectCards(cardsOnTable);
+    game->getlastWinner()->collectCards(cardsOnTable);
 
 #ifdef TEST
     // test begin
@@ -456,17 +458,18 @@ void Widget::modifiedstart()
     // which player to play
     // int currentPlayerIndex = 0;
 
-    players = g.getPlayers();
-    g.createCards();
+    players = game->getPlayers();
+    game->createCards();
 
     /* Yere ucu kapali dort kart at */
     for (int i = 0; i < 3; i++) {
-        Card *c = g.getCards().takeFirst();
-        g.appendToPlayedCards(c);
+        Card *c = game->getCards().takeFirst();
+        game->appendToPlayedCards(c);
     }
-    for (int i = 0; i < g.getCards().size(); i++)
-        if (g.getCards().at(i)->cardNumber != 11) {
-        g.appendToPlayedCards(g.getCards().takeAt(i));
+    /* vale disinda bir kart ac */
+    for (int i = 0; i < game->getCards().size(); i++)
+        if (game->getCards().at(i)->cardNumber != 11) {
+        game->appendToPlayedCards(game->getCards().takeAt(i));
         break;
     }
 
@@ -475,22 +478,24 @@ void Widget::modifiedstart()
     but->setMinimumSize(75, 55);
     but->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
 
-    Card *card = g.getPlayedCards().last();
+    Card *card = game->getPlayedCards().last();
     // TODO: getButton()
     // card->getButton();
     (static_cast<QWidget *>(card->buttonPtr))->setParent(ui->tableCenter);
 
     // TODO: i < numbeerOfPlayers
     for (int i = 0 ; i < 4; i++) {
-        currentPlayer = &players[i];
-        g.distributeCards( *currentPlayer, 4 );
+        //-- currentPlayer = &players[i];
+        currentPlayer = game->nextPlayer();
+        game->distributeCards( *currentPlayer, 4 );
     }
 
     for (int i = 1 ; i <= 3; i++) {
         showPlayerHand(i);
     }
     
-    currentPlayer = &players[0];
+    //-- currentPlayer = &players[0];
+    currentPlayer = game->myself();
     // connect button signals to slots
     for (int i = 0; i < currentPlayer->getNumberOfCards(); i++) {
         QList<Card *> l = currentPlayer->getHand();
@@ -506,16 +511,18 @@ void Widget::cardClicked(QObject *obj)
 {
     // disable my panel
     ui->southHand->setEnabled(false);
+    //currentPlayer = game->nextPlayer();
 
     Card *c = static_cast<Card *>(obj);
-    int del = players[0].getHand().indexOf(c);
-    players[0].getHand().removeAt(del);
+    //-- int del = players[0].getHand().indexOf(c);
+    int del = currentPlayer->getHand().indexOf(c);
+    currentPlayer->getHand().removeAt(del);
     ui->southHand->layout()->removeWidget(static_cast<QWidget *>(c->buttonPtr));
-    g.appendToPlayedCards(c);
+    game->appendToPlayedCards(c);
     showCardOnTable(c, 0);
 
-    if (g.pisti(&players[0])) {
-        QList<Card *> &l = g.getPlayedCards();
+    if (game->pisti(currentPlayer)) {
+        QList<Card *> &l = game->getPlayedCards();
 
         delay(150);
 
@@ -525,7 +532,8 @@ void Widget::cardClicked(QObject *obj)
         clearPanel(ui->tableNorth);
         clearPanel(ui->tableWest);
         clearPanel(ui->tableSouth);
-        players[0].collectCards(l);
+        //-- players[0].collectCards(l);
+        currentPlayer->collectCards(l);
     }
 
     qDebug() << c->cardImageName;
@@ -540,7 +548,8 @@ void Widget::simulateOthers()
 
     delay(150);
 
-    for (int i = 1; i <= 3; i++) {
+#if 0
+    for (int i = 1; currentPlayer != g.myself(); i++) {
         switch (currentPlayerIndex) {
         case 1:
             currentPlayerFrame = ui->eastHand;
@@ -555,8 +564,9 @@ void Widget::simulateOthers()
             alignment = "v";
         }
 
-        currentPlayer = &players[currentPlayerIndex];
-        Card *lastcard = g.lastPlayedCard();
+        //-- currentPlayer = &players[currentPlayerIndex];
+        currentPlayer = game->nextPlayer();
+        Card *lastcard = game->lastPlayedCard();
 
         qDebug() << "before" << currentPlayer->getNumberOfCards();
         Card *c = currentPlayer->dummyPlay(lastcard);
@@ -570,14 +580,14 @@ void Widget::simulateOthers()
 #endif
         /* removes card back images */
         clearPanel(currentPlayerFrame, true);
-        showPlayerHand(currentPlayerIndex, currentPlayer->getNumberOfCards());
-        g.appendToPlayedCards(c);
-        showCardOnTable(c, currentPlayerIndex);
+        showPlayerHand(game->playerIndex(), currentPlayer->getNumberOfCards());
+        game->appendToPlayedCards(c);
+        showCardOnTable(c, game->playerIndex());
 
         delay(150);
 
-        if (g.pisti(currentPlayer)) {
-            QList<Card *> &l = g.getPlayedCards();
+        if (game->pisti(currentPlayer)) {
+            QList<Card *> &l = game->getPlayedCards();
 
             // clearPanel(grid);
             clearPanel(ui->tableCenter);
@@ -592,32 +602,82 @@ void Widget::simulateOthers()
 
         // TODO: Oyuncu sayisi dortten az olabilir
         qDebug() << "end of tour" << currentPlayer->getNumberOfCards();
-        currentPlayerIndex = (currentPlayerIndex + 1) % 4;
+        //-- currentPlayerIndex = (currentPlayerIndex + 1) % 4;
+        currentPlayerIndex = (currentPlayerIndex + 1) % game->getNumberOfOnlinePlayer();
         qDebug() << "currentplayerindex :" << currentPlayerIndex;
-        currentPlayer = &players[currentPlayerIndex];
+        //-- currentPlayer = &players[currentPlayerIndex];
+        currentPlayer = game->nextPlayer();
 
         /* Game over */
-        if (g.getCards().size() == 0 && currentPlayer->getNumberOfCards() == 0) {
+        if (game->getCards().size() == 0 && currentPlayer->getNumberOfCards() == 0) {
             /* yerdeki son kartlari al */
-            g.getlastWinner()->collectCards(g.getPlayedCards());
+            game->getlastWinner()->collectCards(game->getPlayedCards());
             statistics();
             return;
         }
     }
+#endif
 
-    currentPlayer = &players[currentPlayerIndex];
+    do
+    {
+        switch (g.playerIndex()) {
+        case 0:
+            currentPlayerFrame = ui->southHand;
+            break;
+        case 1:
+            currentPlayerFrame = ui->eastHand;
+            alignment = "v";
+            break;
+        case 2:
+            currentPlayerFrame = ui->northHand;
+            alignment = "h";
+            break;
+        case 3:
+            currentPlayerFrame = ui->westHand;
+            alignment = "v";
+        }
+
+        currentPlayer = game->nextPlayer();
+        Card *lastcard = game->lastPlayedCard();
+        Card *c = currentPlayer->dummyPlay(lastcard);
+
+        clearPanel(ui->eastHand, true);
+        showPlayerHand(game->playerIndex(), currentPlayer->getNumberOfCards());
+        game->appendToPlayedCards(c);
+        showCardOnTable(c, game->playerIndex());
+
+        if (game->pisti(currentPlayer)) {
+            QList<Card *> &l = game->getPlayedCards();
+
+            // clearPanel(grid);
+            clearPanel(ui->tableCenter);
+            clearPanel(ui->tableEast);
+            clearPanel(ui->tableNorth);
+            clearPanel(ui->tableSouth);
+            clearPanel(ui->tableWest);
+            currentPlayer->collectCards(l);
+
+            delay(150);
+        }
+
+    } while (currentPlayer != g.myself());
+
+    //-- currentPlayer = &players[currentPlayerIndex];    
     if (currentPlayer->getNumberOfCards() == 0) {
-        int tmpindex = currentPlayerIndex;
-        for (int i = 0 ; i < 4; i++) {
-            g.distributeCards( *currentPlayer, 4 );
-            if (currentPlayerIndex != 0)
+        //-- int tmpindex = currentPlayerIndex;
+        int tmpindex = game->playerIndex();
+        for (int i = 0 ; i < game->getNumberOfOnlinePlayer(); i++) {
+            game->distributeCards( *currentPlayer, 4 );
+            if (game->playerIndex() != 0)
                 showPlayerHand(i);
-            tmpindex = (tmpindex + 1) % 4;
-            currentPlayer = &players[tmpindex];
+            tmpindex = (tmpindex + 1) % game->getNumberOfOnlinePlayer();
+            //-- currentPlayer = &players[tmpindex];
+            currentPlayer = game->nextPlayer();
         }
 
         // connect button signals to slots
-        currentPlayer = &players[0];
+        //-- currentPlayer = &players[0];
+        currentPlayer = game->myself();
         for (int i = 0; i < currentPlayer->getNumberOfCards(); i++) {
             QList<Card *> l = currentPlayer->getHand();
             connect(static_cast<QToolButton *>(l.at(i)->buttonPtr), SIGNAL(clicked()),

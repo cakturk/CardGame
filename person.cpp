@@ -7,6 +7,13 @@ Person::Person(QObject *parent) :
     pistiCount = score = 0;
 }
 
+Person::Person(QString name, QObject *parent) :
+        QObject(parent), playerName(name)
+{
+    turn = false;
+    pistiCount = score = 0;
+}
+
 void Person::setHand(QList<Card *> &h)
 {
     this->hand = h;
@@ -125,3 +132,9 @@ void Person::computePlayerScore()
             score += 3;
     }
 }
+
+void Person::setTurn(bool b)
+{
+    turn = b;
+}
+

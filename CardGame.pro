@@ -14,3 +14,4 @@ HEADERS += widget.h \
     gameengine.h
 FORMS += widget.ui
 RESOURCES += 
+OTHER_FILES += TODO.txt

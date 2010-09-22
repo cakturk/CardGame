@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'widget.ui'
 **
-** Created: Tue Sep 21 17:40:15 2010
+** Created: Wed Sep 22 16:00:13 2010
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -17,7 +17,6 @@
 #include <QtGui/QComboBox>
 #include <QtGui/QFrame>
 #include <QtGui/QGridLayout>
-#include <QtGui/QHBoxLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
@@ -35,12 +34,10 @@ public:
     QPushButton *pushButton;
     QStackedWidget *stackedWidget;
     QWidget *page_3;
-    QLabel *label_2;
-    QPushButton *pushButton_2;
-    QPushButton *pushButton_3;
-    QWidget *widget;
-    QHBoxLayout *horizontalLayout;
-    QToolButton *styletool;
+    QWidget *layoutWidget;
+    QVBoxLayout *verticalLayout_2;
+    QToolButton *styletoolSingle;
+    QToolButton *styletoolMulti;
     QComboBox *stylecombo;
     QWidget *page_2;
     QGridLayout *gridLayout;
@@ -59,7 +56,6 @@ public:
     QLabel *label;
     QFrame *line;
     QLabel *resultlabel;
-    QButtonGroup *buttonGroup;
 
     void setupUi(QWidget *Widget)
     {
@@ -88,30 +84,22 @@ public:
         stackedWidget->setObjectName(QString::fromUtf8("stackedWidget"));
         page_3 = new QWidget();
         page_3->setObjectName(QString::fromUtf8("page_3"));
-        label_2 = new QLabel(page_3);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setGeometry(QRect(360, 40, 101, 17));
-        pushButton_2 = new QPushButton(page_3);
-        buttonGroup = new QButtonGroup(Widget);
-        buttonGroup->setObjectName(QString::fromUtf8("buttonGroup"));
-        buttonGroup->addButton(pushButton_2);
-        pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
-        pushButton_2->setGeometry(QRect(110, 220, 93, 27));
-        pushButton_3 = new QPushButton(page_3);
-        buttonGroup->addButton(pushButton_3);
-        pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
-        pushButton_3->setGeometry(QRect(110, 260, 93, 27));
-        widget = new QWidget(page_3);
-        widget->setObjectName(QString::fromUtf8("widget"));
-        widget->setGeometry(QRect(130, 60, 359, 36));
-        horizontalLayout = new QHBoxLayout(widget);
-        horizontalLayout->setSpacing(6);
-        horizontalLayout->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        horizontalLayout->setContentsMargins(0, 0, 0, 0);
-        styletool = new QToolButton(widget);
-        styletool->setObjectName(QString::fromUtf8("styletool"));
-        styletool->setStyleSheet(QString::fromUtf8(" QToolButton#styletool {\n"
+        layoutWidget = new QWidget(page_3);
+        layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
+        layoutWidget->setGeometry(QRect(210, 60, 181, 171));
+        verticalLayout_2 = new QVBoxLayout(layoutWidget);
+        verticalLayout_2->setSpacing(6);
+        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+        verticalLayout_2->setContentsMargins(0, 0, 0, 0);
+        styletoolSingle = new QToolButton(layoutWidget);
+        styletoolSingle->setObjectName(QString::fromUtf8("styletoolSingle"));
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(styletoolSingle->sizePolicy().hasHeightForWidth());
+        styletoolSingle->setSizePolicy(sizePolicy);
+        styletoolSingle->setStyleSheet(QString::fromUtf8(" QToolButton#styletoolSingle {\n"
 "     background-color: red;\n"
 "     border-style: outset;\n"
 "     border-width: 2px;\n"
@@ -122,16 +110,40 @@ public:
 "     padding: 6px;\n"
 " }\n"
 "\n"
-" QToolButton#styletool:pressed {\n"
+" QToolButton#styletoolSingle:pressed {\n"
 "	 padding: 5px;\n"
 "     background-color: rgb(195, 0, 0);\n"
 "     border-style: inset;\n"
 " }\n"
 ""));
 
-        horizontalLayout->addWidget(styletool);
+        verticalLayout_2->addWidget(styletoolSingle);
 
-        stylecombo = new QComboBox(widget);
+        styletoolMulti = new QToolButton(layoutWidget);
+        styletoolMulti->setObjectName(QString::fromUtf8("styletoolMulti"));
+        sizePolicy.setHeightForWidth(styletoolMulti->sizePolicy().hasHeightForWidth());
+        styletoolMulti->setSizePolicy(sizePolicy);
+        styletoolMulti->setStyleSheet(QString::fromUtf8(" QToolButton#styletoolMulti {\n"
+"     background-color: red;\n"
+"     border-style: outset;\n"
+"     border-width: 2px;\n"
+"     border-radius: 10px;\n"
+"     border-color: beige;\n"
+"     font: bold 12px;\n"
+"     min-width: 10em;\n"
+"     padding: 6px;\n"
+" }\n"
+"\n"
+" QToolButton#styletoolMulti:pressed {\n"
+"	 padding: 5px;\n"
+"     background-color: rgb(195, 0, 0);\n"
+"     border-style: inset;\n"
+" }\n"
+""));
+
+        verticalLayout_2->addWidget(styletoolMulti);
+
+        stylecombo = new QComboBox(layoutWidget);
         stylecombo->setObjectName(QString::fromUtf8("stylecombo"));
         stylecombo->setStyleSheet(QString::fromUtf8(" QComboBox#stylecombo {\n"
 "     background-color: red;\n"
@@ -142,16 +154,9 @@ public:
 "     font: bold 12px;\n"
 "     min-width: 10em;\n"
 "     padding: 6px;\n"
-" }\n"
-"\n"
-"  QComboBox#stylecombo:pressed {\n"
-"	 padding: 5px;\n"
-"     background-color: rgb(224, 0, 0);\n"
-"     border-style: inset;\n"
-" }\n"
-""));
+" }"));
 
-        horizontalLayout->addWidget(stylecombo);
+        verticalLayout_2->addWidget(stylecombo);
 
         stackedWidget->addWidget(page_3);
         page_2 = new QWidget();
@@ -162,11 +167,11 @@ public:
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         westHand = new QFrame(page_2);
         westHand->setObjectName(QString::fromUtf8("westHand"));
-        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(westHand->sizePolicy().hasHeightForWidth());
-        westHand->setSizePolicy(sizePolicy);
+        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(westHand->sizePolicy().hasHeightForWidth());
+        westHand->setSizePolicy(sizePolicy1);
         westHand->setFrameShape(QFrame::NoFrame);
         westHand->setFrameShadow(QFrame::Raised);
         westHand->setLineWidth(1);
@@ -257,8 +262,8 @@ public:
 
         resultlabel = new QLabel(verticalLayoutWidget);
         resultlabel->setObjectName(QString::fromUtf8("resultlabel"));
-        sizePolicy.setHeightForWidth(resultlabel->sizePolicy().hasHeightForWidth());
-        resultlabel->setSizePolicy(sizePolicy);
+        sizePolicy1.setHeightForWidth(resultlabel->sizePolicy().hasHeightForWidth());
+        resultlabel->setSizePolicy(sizePolicy1);
         resultlabel->setStyleSheet(QString::fromUtf8("font: 75 11pt \"Bitstream Charter\";"));
 
         verticalLayout->addWidget(resultlabel);
@@ -269,6 +274,8 @@ public:
 
 
         retranslateUi(Widget);
+        QObject::connect(styletoolSingle, SIGNAL(clicked()), Widget, SLOT(showFullScreen()));
+        QObject::connect(styletoolMulti, SIGNAL(clicked()), Widget, SLOT(showNormal()));
 
         stackedWidget->setCurrentIndex(0);
 
@@ -286,10 +293,8 @@ public:
         pushButton->setStatusTip(QString());
 #endif // QT_NO_STATUSTIP
         pushButton->setText(QApplication::translate("Widget", "Restart Game", 0, QApplication::UnicodeUTF8));
-        label_2->setText(QApplication::translate("Widget", "Game Type", 0, QApplication::UnicodeUTF8));
-        pushButton_2->setText(QApplication::translate("Widget", "PushButton", 0, QApplication::UnicodeUTF8));
-        pushButton_3->setText(QApplication::translate("Widget", "PushButton", 0, QApplication::UnicodeUTF8));
-        styletool->setText(QApplication::translate("Widget", "New Game", 0, QApplication::UnicodeUTF8));
+        styletoolSingle->setText(QApplication::translate("Widget", "Single Player", 0, QApplication::UnicodeUTF8));
+        styletoolMulti->setText(QApplication::translate("Widget", "Multiplayer", 0, QApplication::UnicodeUTF8));
         stylecombo->clear();
         stylecombo->insertItems(0, QStringList()
          << QApplication::translate("Widget", "4 Player", 0, QApplication::UnicodeUTF8)

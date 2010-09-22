@@ -13,6 +13,7 @@ class Person : public QObject
 
 public:
     explicit Person(QObject *parent = 0);
+    explicit Person(QString name, QObject *parent = 0);
 
     void setHand(QList<Card *> &h);
     void collectCards(QList<Card *> &c);
@@ -24,6 +25,7 @@ public:
     Card* play(int index);
     Card* play(Card* lastPlayedCard);
     Card* dummyPlay(Card* lastPlayedCard);
+    void setTurn(bool b);
 
     void setPlayerName(QString name)
     {
@@ -35,10 +37,6 @@ public:
         return this->playerName;
     }
 
-    void setTurn(bool b)
-    {
-        turn = b;
-    }
 
     int pistiCount;
     int score;

@@ -28,9 +28,12 @@ protected:
 
 private:
     Ui::Widget *ui;
+
     GameEngine g;
+    GameEngine *game;
     Person *players;
     Person *currentPlayer;
+
     int currentPlayerIndex;
     int maxpoint;
     QSignalMapper *mapper;

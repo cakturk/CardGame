@@ -11,6 +11,7 @@ class GameEngine : public QObject
 
 public:
     explicit GameEngine(QObject *parent = 0);
+    explicit GameEngine(int playerNumber, QObject *parent = 0);
 
     void createCards();
     void distributeCards(int number);
@@ -22,7 +23,11 @@ public:
     QString getButtonPngName(QToolButton *);
     QList<Card *> & getCards();
     int getNumberOfOnlinePlayer() const;
+    int playerIndex();
+
     Person* getPlayers();
+    Person* nextPlayer();
+    Person* myself();
 
     void dummyStart();
     void start();
@@ -34,14 +39,17 @@ public:
 private:
     QList<Card *> playedCards;
     QList<Card *> cards;
+    QList<Person *> gamePlayers;
 
     QMap<Card *, QToolButton *> buttonMapping;
 
     // TODO: o an bagli olan oyuncu sayisini tutsun
     int numberOfOnlinePlayer;
+    int current_index;
+
     Person players[4];
     Person *currentPlayer, *lastWinner;
-    QWidget *guiHandle;
+    Person *sPlayer, *nPlayer, *ePlayer, *wPlayer;
 
     bool cardsEquals(Card *first, Card *sec);
     void computePlayerScore(Person *player);

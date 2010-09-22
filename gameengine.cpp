@@ -26,6 +26,31 @@ GameEngine::GameEngine(QObject *parent) :
 #endif
 }
 
+GameEngine::GameEngine(int playerNumber, QObject *parent) :
+        QObject(parent), numberOfOnlinePlayer(playerNumber)
+{
+    if (numberOfOnlinePlayer == 2) {
+        sPlayer = new Person(QString("Gokay"));
+        nPlayer = new Person(QString("Selin"));
+        gamePlayers << sPlayer << nPlayer;
+        currentPlayer = nPlayer;
+    }
+
+    if (numberOfOnlinePlayer > 2) {
+        numberOfOnlinePlayer = 4;
+
+        ePlayer = new Person(QString("Mert"));
+        wPlayer = new Person(QString("Mr. Pink"));
+        sPlayer = new Person(QString("Gokay"));
+        nPlayer = new Person(QString("Selin"));
+
+        gamePlayers << sPlayer << ePlayer << nPlayer << wPlayer << sPlayer << nPlayer;
+        currentPlayer = ePlayer;
+    }
+    /* dagitanin sagindaki oyuncu ilk karti atar */
+    current_index = 0;
+}
+
 /* Create cards and map them to card graphics */
 void GameEngine::createCards()
 {
@@ -348,4 +373,44 @@ QList<Card *> & GameEngine::getPlayedCards()
 Person* GameEngine::getlastWinner() const
 {
     return lastWinner;
+}
+
+Person* GameEngine::nextPlayer()
+{
+#if 0
+    // TODO: returns next payer in turn
+    if (numberOfOnlinePlayer == 2) {
+        // TODO: iki oyuncu icin gameengine
+        currentPlayer->setTurn(false);
+        current_index = (current_index + 1) % numberOfOnlinePlayer;
+        currentPlayer = gamePlayers.at(current_index);
+        currentPlayer->setTurn(true);
+
+    } else if (numberOfOnlinePlayer == 4) {
+        currentPlayer->setTurn(false);
+        current_index = (current_index + 1) % numberOfOnlinePlayer;
+        currentPlayer = gamePlayers.at(current_index);
+        currentPlayer->setTurn(true);
+    }
+#endif
+
+    currentPlayer->setTurn(false);
+    current_index = (current_index + 1) % numberOfOnlinePlayer;
+    currentPlayer = gamePlayers.at(current_index);
+    currentPlayer->setTurn(true);
+
+    return currentPlayer;
+}
+
+int GameEngine::playerIndex()
+{
+    return current_index;
+}
+
+Person* GameEngine::myself()
+{
+    if (! gamePlayers.isEmpty())
+    return gamePlayers.at(0);
+
+    return NULL;
 }
