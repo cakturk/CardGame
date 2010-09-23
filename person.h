@@ -19,7 +19,7 @@ public:
     void collectCards(QList<Card *> &c);
     void reset();
     void computePlayerScore();
-    int getNumberOfCards();
+    int getNumberOfCards() const;
     const QList<Card *> &getScoredCards();
     QList<Card *> & getHand();
     Card* play(int index);

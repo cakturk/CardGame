@@ -29,26 +29,33 @@ GameEngine::GameEngine(QObject *parent) :
 GameEngine::GameEngine(int playerNumber, QObject *parent) :
         QObject(parent), numberOfOnlinePlayer(playerNumber)
 {
+    /* dagitanin sagindaki oyuncu ilk karti atar */
+
     if (numberOfOnlinePlayer == 2) {
+        increment = 2;
         sPlayer = new Person(QString("Gokay"));
         nPlayer = new Person(QString("Selin"));
         gamePlayers << sPlayer << nPlayer;
         currentPlayer = nPlayer;
+        current_index = 2;
     }
 
     if (numberOfOnlinePlayer > 2) {
         numberOfOnlinePlayer = 4;
+        increment = 1;
 
-        ePlayer = new Person(QString("Mert"));
-        wPlayer = new Person(QString("Mr. Pink"));
         sPlayer = new Person(QString("Gokay"));
+        ePlayer = new Person(QString("Mert"));
         nPlayer = new Person(QString("Selin"));
+        wPlayer = new Person(QString("Mr. Pink"));
 
-        gamePlayers << sPlayer << ePlayer << nPlayer << wPlayer << sPlayer << nPlayer;
+        gamePlayers << sPlayer << ePlayer << nPlayer << wPlayer;
         currentPlayer = ePlayer;
+        current_index = 1;
     }
-    /* dagitanin sagindaki oyuncu ilk karti atar */
-    current_index = 0;
+
+    it = new QListIterator<Person *>(gamePlayers);
+    it->next(); it->next();
 }
 
 /* Create cards and map them to card graphics */
@@ -200,7 +207,7 @@ bool GameEngine::cardsEquals(Card *first, Card *sec)
 }
 #endif
 
-void GameEngine::computePlayerScore(Person *player)
+void GameEngine::computePlayerScore(Person *player) const
 {
     int pCount = player->pistiCount;
     while (pCount--)
@@ -378,25 +385,25 @@ Person* GameEngine::getlastWinner() const
 Person* GameEngine::nextPlayer()
 {
 #if 0
-    // TODO: returns next payer in turn
-    if (numberOfOnlinePlayer == 2) {
-        // TODO: iki oyuncu icin gameengine
-        currentPlayer->setTurn(false);
-        current_index = (current_index + 1) % numberOfOnlinePlayer;
-        currentPlayer = gamePlayers.at(current_index);
-        currentPlayer->setTurn(true);
+    static int ptr = 1;
 
-    } else if (numberOfOnlinePlayer == 4) {
-        currentPlayer->setTurn(false);
-        current_index = (current_index + 1) % numberOfOnlinePlayer;
-        currentPlayer = gamePlayers.at(current_index);
-        currentPlayer->setTurn(true);
-    }
-#endif
-
+    qDebug() << gamePlayers.at(0)->getPlayerName() << gamePlayers.at(1)->getPlayerName();
     currentPlayer->setTurn(false);
-    current_index = (current_index + 1) % numberOfOnlinePlayer;
-    currentPlayer = gamePlayers.at(current_index);
+    current_index = (current_index + increment) % 4;
+    ptr = (ptr + 1) % numberOfOnlinePlayer;
+    currentPlayer = gamePlayers.at(ptr);
+    currentPlayer->setTurn(true);
+#endif
+    currentPlayer->setTurn(false);
+
+    if (it->hasNext()) {
+        currentPlayer = it->next();
+        current_index = (current_index + increment) % 4;
+    } else {
+        it->toFront();
+        currentPlayer = it->next();
+        current_index = (current_index + increment) % 4;
+    }
     currentPlayer->setTurn(true);
 
     return currentPlayer;
@@ -409,8 +416,28 @@ int GameEngine::playerIndex()
 
 Person* GameEngine::myself()
 {
-    if (! gamePlayers.isEmpty())
-    return gamePlayers.at(0);
+#if 0
+    if (! gamePlayers.isEmpty()) {
+        currentPlayer->setTurn(false);
+        current_index = 0;
+        currentPlayer = gamePlayers.at(current_index);
+        currentPlayer->setTurn(true);
+        return currentPlayer;
+    }
+#endif
 
+    if (! gamePlayers.isEmpty()) {
+        currentPlayer->setTurn(false);
+        current_index = 0;
+        it->toFront();
+        currentPlayer = it->next();
+        currentPlayer->setTurn(true);
+        return currentPlayer;
+    }
     return NULL;
+}
+
+const Person* GameEngine::me() const
+{
+    return sPlayer;
 }

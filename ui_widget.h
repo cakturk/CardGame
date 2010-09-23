@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'widget.ui'
 **
-** Created: Wed Sep 22 16:00:13 2010
+** Created: Thu Sep 23 18:24:25 2010
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -39,6 +39,7 @@ public:
     QToolButton *styletoolSingle;
     QToolButton *styletoolMulti;
     QComboBox *stylecombo;
+    QPushButton *pushButton_2;
     QWidget *page_2;
     QGridLayout *gridLayout;
     QFrame *westHand;
@@ -158,6 +159,10 @@ public:
 
         verticalLayout_2->addWidget(stylecombo);
 
+        pushButton_2 = new QPushButton(page_3);
+        pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
+        pushButton_2->setGeometry(QRect(10, 420, 141, 71));
+        pushButton_2->setCheckable(true);
         stackedWidget->addWidget(page_3);
         page_2 = new QWidget();
         page_2->setObjectName(QString::fromUtf8("page_2"));
@@ -274,8 +279,6 @@ public:
 
 
         retranslateUi(Widget);
-        QObject::connect(styletoolSingle, SIGNAL(clicked()), Widget, SLOT(showFullScreen()));
-        QObject::connect(styletoolMulti, SIGNAL(clicked()), Widget, SLOT(showNormal()));
 
         stackedWidget->setCurrentIndex(0);
 
@@ -300,6 +303,7 @@ public:
          << QApplication::translate("Widget", "4 Player", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("Widget", "2 Player", 0, QApplication::UnicodeUTF8)
         );
+        pushButton_2->setText(QApplication::translate("Widget", "Toggle Full Screen", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("Widget", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"

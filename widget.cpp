@@ -10,10 +10,10 @@ Widget::Widget(QWidget *parent) :
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
-    ui->stackedWidget->setCurrentIndex(1);
+    ui->stackedWidget->setCurrentIndex(0);
     ui->gridLayout->setSpacing(0);
 
-    game = new GameEngine(2);
+    // game = new GameEngine(2);
 
 /*
     QString str = "Game Over!";
@@ -86,7 +86,7 @@ Widget::Widget(QWidget *parent) :
     vbox->setAlignment(Qt::AlignCenter);
     ui->westHand->setLayout(vbox);
 
-    modifiedstart();
+    // modifiedstart();
 
 #ifdef TEST_CONST
     game->createCards();
@@ -484,7 +484,7 @@ void Widget::modifiedstart()
     (static_cast<QWidget *>(card->buttonPtr))->setParent(ui->tableCenter);
 
     // TODO: i < numbeerOfPlayers
-    for (int i = 0 ; i < 4; i++) {
+    for (int i = 0 ; i < game->getNumberOfOnlinePlayer(); i++) {
         //-- currentPlayer = &players[i];
         currentPlayer = game->nextPlayer();
         game->distributeCards( *currentPlayer, 4 );
@@ -511,15 +511,13 @@ void Widget::cardClicked(QObject *obj)
 {
     // disable my panel
     ui->southHand->setEnabled(false);
-    //currentPlayer = game->nextPlayer();
 
     Card *c = static_cast<Card *>(obj);
-    //-- int del = players[0].getHand().indexOf(c);
     int del = currentPlayer->getHand().indexOf(c);
     currentPlayer->getHand().removeAt(del);
     ui->southHand->layout()->removeWidget(static_cast<QWidget *>(c->buttonPtr));
     game->appendToPlayedCards(c);
-    showCardOnTable(c, 0);
+    showCardOnTable(c, game->playerIndex());
 
     if (game->pisti(currentPlayer)) {
         QList<Card *> &l = game->getPlayedCards();
@@ -536,10 +534,90 @@ void Widget::cardClicked(QObject *obj)
         currentPlayer->collectCards(l);
     }
 
+    if (currentPlayer->getNumberOfCards() <= 1 && game->getCards().size() < 10) {
+        qDebug() << "condition";
+    }
+
     qDebug() << c->cardImageName;
     simulateOthers();
 }
 
+void Widget::simulateOthers()
+{
+    QWidget *currentPlayerFrame;
+
+    while ((currentPlayer = game->nextPlayer()) != game->me()) {
+        /* bu kosul nedeniyle oyuncu son kartini oynamadan oyun bitiyor */
+        if ((game->getCards().size() == 0 || currentPlayer->getNumberOfCards() == 0 )
+            && game->me()->getNumberOfCards() == 0) {
+            clearPanel(ui->tableCenter);
+            clearPanel(ui->tableEast);
+            clearPanel(ui->tableNorth);
+            clearPanel(ui->tableWest);
+            clearPanel(ui->tableSouth);
+
+            game->getlastWinner()->collectCards(game->getPlayedCards());
+            statistics();
+            return;
+        }
+
+        switch (game->playerIndex()) {
+        case 1:
+            currentPlayerFrame = ui->eastHand;
+            break;
+        case 2:
+            currentPlayerFrame = ui->northHand;
+            break;
+        case 3:
+            currentPlayerFrame = ui->westHand;
+        }
+        delay(150);
+
+        Card *lastCard = game->lastPlayedCard();
+        Card *recentCard = currentPlayer->dummyPlay(lastCard);
+        game->appendToPlayedCards(recentCard);
+
+        clearPanel(currentPlayerFrame, true);
+        showPlayerHand(game->playerIndex(), currentPlayer->getNumberOfCards());
+        showCardOnTable(recentCard, game->playerIndex());
+        delay(150);
+
+        if (game->pisti(currentPlayer)) {
+            QList<Card *> &l = game->getPlayedCards();
+
+            clearPanel(ui->tableCenter);
+            clearPanel(ui->tableEast);
+            clearPanel(ui->tableNorth);
+            clearPanel(ui->tableWest);
+            clearPanel(ui->tableSouth);
+
+            currentPlayer->collectCards(l);
+            delay(150);
+        }
+    }
+
+    if (currentPlayer->getNumberOfCards() == 0 && game->getCards().size() != 0) {
+        for (int i = 0; i < game->getNumberOfOnlinePlayer(); i++) {
+            game->distributeCards( *currentPlayer, 4);
+
+            if (currentPlayer != game->me()) {
+                showPlayerHand(game->playerIndex(), currentPlayer->getNumberOfCards());
+            } else {
+                for (int j = 0; j < currentPlayer->getNumberOfCards(); j++) {
+                    QList<Card *> m = currentPlayer->getHand();
+                    connect(static_cast<QToolButton *>(m.at(j)->buttonPtr), SIGNAL(clicked()), mapper, SLOT(map()));
+                    mapper->setMapping(static_cast<QObject *>(m.at(j)->buttonPtr), static_cast<QObject *>(m.at(j)));
+                    ui->southHand->layout()->addWidget(static_cast<QWidget *>(m.at(j)->buttonPtr));
+                }
+            }
+            currentPlayer = game->nextPlayer();
+        }
+    }
+
+    ui->southHand->setEnabled(true);
+}
+
+#if 0
 void Widget::simulateOthers()
 {
     QWidget *currentPlayerFrame;
@@ -548,7 +626,6 @@ void Widget::simulateOthers()
 
     delay(150);
 
-#if 0
     for (int i = 1; currentPlayer != g.myself(); i++) {
         switch (currentPlayerIndex) {
         case 1:
@@ -617,7 +694,7 @@ void Widget::simulateOthers()
         }
     }
 #endif
-
+#if 0
     do
     {
         switch (g.playerIndex()) {
@@ -691,6 +768,7 @@ void Widget::simulateOthers()
     // Enable my panel
     ui->southHand->setEnabled(true);
 }
+#endif
 
 void Widget::on_pushButton_clicked()
 {
@@ -753,6 +831,7 @@ void Widget::showPlayerHand(int index, int size)
 
 void Widget::statistics()
 {
+#if 0
     QString resultStr;
     int pistiA = 0, pistiB = 0, scoreA = 0, scoreB = 0;
 
@@ -795,4 +874,75 @@ void Widget::statistics()
 
     ui->resultlabel->setText(resultStr);
     ui->stackedWidget->setCurrentIndex(2);
+#endif
+    
+    QString resultStr;
+    const int SIZE = game->getNumberOfOnlinePlayer();
+    int scores[SIZE], pisti[SIZE], pistiA = 0, pistiB = 0, scoreA = 0, scoreB = 0;
+
+    currentPlayer = game->myself();
+    for (int i = 0; i < game->getNumberOfOnlinePlayer(); i++) {
+        currentPlayer->computePlayerScore();
+        scores[i] = currentPlayer->score;
+        pisti[i] = currentPlayer->pistiCount;
+        currentPlayer = game->nextPlayer();
+    }
+
+    if (SIZE > 2) {
+        pistiA = pisti[0] + pisti[2];
+        scoreA = scores[0] + scores[2];
+        pistiB = pisti[1] + pisti[3];
+        scoreB = scores[1] + scores[3];
+    } else {
+        pistiA = pisti[0];
+        scoreA = scores[0];
+        pistiB = pisti[1];
+        scoreA = scores[1];
+    }
+
+    resultStr.append('\t');
+    resultStr.append("First Team");
+    resultStr.append('\t');
+    resultStr.append('\t');
+    resultStr.append("Second Team");
+    resultStr.append('\n');
+
+    resultStr.append("Pisti:");
+    resultStr.append('\t');
+    resultStr.append(QString::number(pistiA));
+    resultStr.append('\t');
+    resultStr.append('\t');
+    resultStr.append(QString::number(pistiB));
+    resultStr.append('\n');
+
+    resultStr.append("Result:");
+    resultStr.append('\t');
+    resultStr.append(QString::number(scoreA));
+    resultStr.append('\t');
+    resultStr.append('\t');
+    resultStr.append(QString::number(scoreB));
+    resultStr.append('\n');
+
+    ui->resultlabel->setText(resultStr);
+    ui->stackedWidget->setCurrentIndex(2);
+}
+
+void Widget::on_styletoolSingle_clicked()
+{
+    if (ui->stylecombo->currentIndex() == 0) {
+        game = new GameEngine(4);
+    } else if (ui->stylecombo->currentIndex() == 1) {
+        game = new GameEngine(2);
+    }
+
+    modifiedstart();
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+void Widget::on_pushButton_2_toggled(bool checked)
+{
+    if (checked)
+        this->showFullScreen();
+    else
+        this->showNormal();
 }

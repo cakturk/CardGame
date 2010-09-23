@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'widget.h'
 **
-** Created: Wed Sep 22 16:27:27 2010
+** Created: Thu Sep 23 18:24:28 2010
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.6.2)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_Widget[] = {
        4,       // revision
        0,       // classname
        0,    0, // classinfo
-       2,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -31,14 +31,18 @@ static const uint qt_meta_data_Widget[] = {
        0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
-       8,    7,    7,    7, 0x08,
-      36,   32,    7,    7, 0x08,
+      16,    8,    7,    7, 0x08,
+      46,    7,    7,    7, 0x08,
+      75,    7,    7,    7, 0x08,
+     103,   99,    7,    7, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_Widget[] = {
-    "Widget\0\0on_pushButton_clicked()\0obj\0"
+    "Widget\0\0checked\0on_pushButton_2_toggled(bool)\0"
+    "on_styletoolSingle_clicked()\0"
+    "on_pushButton_clicked()\0obj\0"
     "cardClicked(QObject*)\0"
 };
 
@@ -71,11 +75,13 @@ int Widget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
-        case 0: on_pushButton_clicked(); break;
-        case 1: cardClicked((*reinterpret_cast< QObject*(*)>(_a[1]))); break;
+        case 0: on_pushButton_2_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 1: on_styletoolSingle_clicked(); break;
+        case 2: on_pushButton_clicked(); break;
+        case 3: cardClicked((*reinterpret_cast< QObject*(*)>(_a[1]))); break;
         default: ;
         }
-        _id -= 2;
+        _id -= 4;
     }
     return _id;
 }

@@ -33,6 +33,7 @@ private:
     GameEngine *game;
     Person *players;
     Person *currentPlayer;
+    Person *me;
 
     int currentPlayerIndex;
     int maxpoint;
@@ -56,6 +57,8 @@ private:
     inline void delay(int count, int sleep = 10000);
 
 private slots:
+    void on_pushButton_2_toggled(bool checked);
+    void on_styletoolSingle_clicked();
     void on_pushButton_clicked();
     void cardClicked(QObject *obj);
 

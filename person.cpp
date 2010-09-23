@@ -101,7 +101,7 @@ const QList<Card *>& Person::getScoredCards()
     return scoredCards;
 }
 
-int Person::getNumberOfCards()
+int Person::getNumberOfCards() const
 {
     return (this->hand.size());
 }
