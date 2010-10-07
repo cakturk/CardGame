@@ -2,6 +2,7 @@
 #define WIDGET_H
 
 #include <QWidget>
+#include <QFrame>
 #include <QPushButton>
 #include <QGridLayout>
 #include <QDesktopWidget>
@@ -11,6 +12,7 @@
 #include <QSignalMapper>
 #include "card.h"
 #include "gameengine.h"
+#include "gamenet.h"
 
 namespace Ui {
     class Widget;
@@ -29,23 +31,35 @@ protected:
 private:
     Ui::Widget *ui;
 
-    GameEngine g;
     GameEngine *game;
+    GameNet *network;
     Person *players;
     Person *currentPlayer;
     Person *me;
 
-    int currentPlayerIndex;
+    int currentPlayerIndex; // unused
+    int posRelative; /* TODO: locate player's pos */
     int maxpoint;
+
+    bool hostMachine;
+
     QSignalMapper *mapper;
+    QTcpSocket *socket;
+    QList<QTcpSocket *> peers;
 
     /* layouts */
     QGridLayout *grid;
     QHBoxLayout *hbox;
     QVBoxLayout *vbox;
 
+    QPushButton *pushSouth;
+    QPushButton *pushEast;
+    QPushButton *pushNorth;
+    QPushButton *pushWest;
+
     void start();
     void modifiedstart();
+    void preNetStart(bool);
     void createUi();
     void centerMyWindow();
     void showCardOnTable(Card *c, int playerindex);
@@ -55,12 +69,37 @@ private:
     void showPlayerHand(int index, int size = 4);
     void statistics();
     inline void delay(int count, int sleep = 10000);
+    void n_simulateOthers();
+    void n_set_hand();
+    void n_set_player_name();
+    void n_set_player_pos(QTcpSocket *sc);
+    void n_get_player_pos();
+    void n_clear_table();
+    void n_clear_frame();
+    void n_show_card_ontable();
+    void n_current_player();
+    void n_not_current_player();
+    void n_play();
+    void n_update_gui();
+    void n_preNetwork_start(bool b);
+
+    QFrame *getCurrentPlayerFrame() const;
+    QFrame *getPlayerFrame(int pos) const;
 
 private slots:
+    void on_styletoolMulti_clicked();
     void on_pushButton_2_toggled(bool checked);
     void on_styletoolSingle_clicked();
     void on_pushButton_clicked();
     void cardClicked(QObject *obj);
+    void n_cardClicked(QObject *obj);
+    void networkStart();
+    void processMessage(QTcpSocket*);
+    void slotPrepareNetworkUI(int n);
+    void prepareNetworkUI();
+
+    void SCardClicked(QObject *obj);
+    void SNetworkStart();
 
 };
 

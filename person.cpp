@@ -1,16 +1,16 @@
 #include "person.h"
 
-Person::Person(QObject *parent) :
-    QObject(parent)
+Person::Person(int r_pos, QObject *parent) :
+    QObject(parent), realPosition(r_pos)
 {
-    turn = false;
+    turn = _myself = false;
     pistiCount = score = 0;
 }
 
-Person::Person(QString name, QObject *parent) :
-        QObject(parent), playerName(name)
+Person::Person(QString name, int r_pos, QObject *parent) :
+        QObject(parent), playerName(name), realPosition(r_pos)
 {
-    turn = false;
+    turn = _myself = false;
     pistiCount = score = 0;
 }
 
@@ -21,6 +21,9 @@ void Person::setHand(QList<Card *> &h)
 
 Card* Person::play(int index)
 {
+    if (index < 0 || 3 < index)
+        return hand.takeFirst();
+
     Card *c = hand.at(index);
     if (isAcceptable(c))
         return ( hand.takeAt(index) );

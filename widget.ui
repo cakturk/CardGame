@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>635</width>
-    <height>548</height>
+    <width>490</width>
+    <height>440</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -54,26 +54,19 @@ font: 75 10pt &quot;DejaVu Sans Mono&quot;;
       <number>0</number>
      </property>
      <widget class="QWidget" name="page_3">
-      <widget class="QWidget" name="layoutWidget">
-       <property name="geometry">
-        <rect>
-         <x>210</x>
-         <y>60</y>
-         <width>181</width>
-         <height>171</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="QToolButton" name="styletoolSingle">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="styleSheet">
-           <string notr="true"> QToolButton#styletoolSingle {
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="1">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QToolButton" name="styletoolSingle">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"> QToolButton#styletoolSingle {
      background-color: red;
      border-style: outset;
      border-width: 2px;
@@ -90,22 +83,30 @@ font: 75 10pt &quot;DejaVu Sans Mono&quot;;
      border-style: inset;
  }
 </string>
-          </property>
-          <property name="text">
-           <string>Single Player</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="styletoolMulti">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="styleSheet">
-           <string notr="true"> QToolButton#styletoolMulti {
+           </property>
+           <property name="text">
+            <string>Single Player</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
+           <property name="spacing">
+            <number>6</number>
+           </property>
+           <property name="sizeConstraint">
+            <enum>QLayout::SetDefaultConstraint</enum>
+           </property>
+           <item>
+            <widget class="QToolButton" name="styletoolMulti">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"> QToolButton#styletoolMulti {
      background-color: red;
      border-style: outset;
      border-width: 2px;
@@ -122,16 +123,36 @@ font: 75 10pt &quot;DejaVu Sans Mono&quot;;
      border-style: inset;
  }
 </string>
-          </property>
-          <property name="text">
-           <string>Multiplayer</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="stylecombo">
-          <property name="styleSheet">
-           <string notr="true"> QComboBox#stylecombo {
+             </property>
+             <property name="text">
+              <string>Multiplayer</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox">
+             <property name="styleSheet">
+              <string notr="true">     background-color: red;
+     border-style: outset;
+     border-width: 2px;
+     border-radius: 10px;
+     border-color: beige;
+     font: bold 12px;
+     min-width: 10em;
+     padding: 6px;
+</string>
+             </property>
+             <property name="text">
+              <string>Host</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QComboBox" name="stylecombo">
+           <property name="styleSheet">
+            <string notr="true"> QComboBox#stylecombo {
      background-color: red;
      border-style: outset;
      border-width: 2px;
@@ -141,37 +162,72 @@ font: 75 10pt &quot;DejaVu Sans Mono&quot;;
      min-width: 10em;
      padding: 6px;
  }</string>
-          </property>
-          <item>
-           <property name="text">
-            <string>4 Player</string>
            </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>2 Player</string>
+           <item>
+            <property name="text">
+             <string>4 Player</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>2 Player</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QPushButton" name="pushButton_2">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>420</y>
-         <width>141</width>
-         <height>71</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Toggle Full Screen</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
+           <property name="text">
+            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Servers&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QListWidget" name="listWidget">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(211, 211, 211);</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>Server 1</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Server 2</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_2">
+           <property name="text">
+            <string>Toggle Full Screen</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="page_2">
       <layout class="QGridLayout" name="gridLayout">

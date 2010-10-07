@@ -3,33 +3,22 @@
 GameEngine::GameEngine(QObject *parent) :
     QObject(parent)
 {
+    size = 0;
     numberOfOnlinePlayer = 2;
-//    startGameSession();
-
-#if 0
-    createCards();
-    Card *c = cards.first();
-    QToolButton *tb = createButton(c);
-
-    createCards();
-    distributeCards(4);
-
-    Card *c;
-    int j = 4;
-    while (j--) {
-        c = players[j].play(2);
-        playedCards.append(c);
-    }
-
-    players[1].collectCards(playedCards);
-    computePlayerScore(&players[1]);
-#endif
+    vector.resize(4);
 }
 
 GameEngine::GameEngine(int playerNumber, QObject *parent) :
         QObject(parent), numberOfOnlinePlayer(playerNumber)
 {
+    vector.resize(4);
     /* dagitanin sagindaki oyuncu ilk karti atar */
+    if (numberOfOnlinePlayer == 1) {
+        sPlayer = new Person(QString("So Client"));
+        gamePlayers << sPlayer;
+        currentPlayer = sPlayer;
+        current_index = 0;
+    }
 
     if (numberOfOnlinePlayer == 2) {
         increment = 2;
@@ -56,6 +45,19 @@ GameEngine::GameEngine(int playerNumber, QObject *parent) :
 
     it = new QListIterator<Person *>(gamePlayers);
     it->next(); it->next();
+}
+
+GameEngine::GameEngine(bool deneme, int num, QObject *parent) :
+        QObject(parent), numberOfOnlinePlayer(num)
+{
+    size = 0;
+    tIndex = 0;
+    for (int i = 0; i < 4; ++i)
+        tPlayers[i] = NULL;
+
+    if (numberOfOnlinePlayer == 4)
+        tInc = 1;
+    tInc = 2;
 }
 
 /* Create cards and map them to card graphics */
@@ -384,18 +386,7 @@ Person* GameEngine::getlastWinner() const
 
 Person* GameEngine::nextPlayer()
 {
-#if 0
-    static int ptr = 1;
-
-    qDebug() << gamePlayers.at(0)->getPlayerName() << gamePlayers.at(1)->getPlayerName();
     currentPlayer->setTurn(false);
-    current_index = (current_index + increment) % 4;
-    ptr = (ptr + 1) % numberOfOnlinePlayer;
-    currentPlayer = gamePlayers.at(ptr);
-    currentPlayer->setTurn(true);
-#endif
-    currentPlayer->setTurn(false);
-
     if (it->hasNext()) {
         currentPlayer = it->next();
         current_index = (current_index + increment) % 4;
@@ -440,4 +431,53 @@ Person* GameEngine::myself()
 const Person* GameEngine::me() const
 {
     return sPlayer;
+}
+
+void GameEngine::add(Person *player, int pos)
+{
+    static int count = 0;
+    vector.resize(4);
+    if (pos == -1)
+        pos = player->getPosition();
+    vector[pos] = player;
+    if (count == numberOfOnlinePlayer) {
+        gamePlayers = vector.toList();
+        // vector.clear();
+    }
+}
+
+void GameEngine::tAdd(Person *player, int pos)
+{
+    if (pos < 0 && pos > 3) {
+        qDebug() << "tAdd error";
+        return;
+    }
+
+    player->setPosition(pos);
+    tPlayers[pos] = player;
+    size++;
+
+    if (size == numberOfOnlinePlayer)
+    	emit ready();
+}
+
+void GameEngine::tAdd(int pos)
+{
+	Person *p = new Person;
+	tAdd(p, pos);
+}
+
+Person* GameEngine::tNextPlayer()
+{
+    tIndex = (tIndex + tInc) % 4;
+    return tPlayers[tIndex];
+}
+
+int GameEngine::tSize()
+{
+	int count = 0;
+	for (int i = 0; i < 4; i++)
+		count += (tPlayers[i] != NULL) ? 1 : 0;
+
+	return count;
 }

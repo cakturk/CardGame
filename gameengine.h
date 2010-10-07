@@ -12,6 +12,7 @@ class GameEngine : public QObject
 public:
     explicit GameEngine(QObject *parent = 0);
     explicit GameEngine(int playerNumber, QObject *parent = 0);
+    explicit GameEngine(bool deneme, int num, QObject *parent = 0);
 
     void createCards();
     void distributeCards(int number);
@@ -19,13 +20,24 @@ public:
     void dummyStart();
     void start();
     void appendToPlayedCards(Card *);
+    void add(Person *player, int pos = -1);
+    void tAdd(Person *player, int pos = -1);
+    void tAdd(int);
+
+    inline void tSetMyself(bool b) { t_Myself = b;}
+    inline Person* toSouth() { tIndex = 0; return tPlayers[0]; }
+    inline Person* toEast() { tIndex = 1; return tPlayers[1]; }
+    inline Person* toNorth() { tIndex = 2; return tPlayers[2]; }
+    inline Person* toWest() { tIndex = 3; return tPlayers[3]; }
 
     int getNumberOfOnlinePlayer() const;
     int playerIndex();
+    int tSize();
 
     bool pisti();
     bool pisti(bool);
     bool pisti(Person *p);
+    bool tGetMyself() {return t_Myself;}
 
     QToolButton* createButton(Card *);
     QString getButtonPngName(QToolButton *);
@@ -36,6 +48,7 @@ public:
 
     Person* getPlayers();
     Person* nextPlayer();
+    Person* tNextPlayer();
     Person* myself();
     Person* getlastWinner() const;
     const Person* me() const;
@@ -46,16 +59,22 @@ private:
     QList<Card *> playedCards;
     QList<Card *> cards;
     QList<Person *> gamePlayers;
+    QVector<Person *> vector;
     QListIterator<Person *> *it;
 
     QMap<Card *, QToolButton *> buttonMapping;
 
     // TODO: o an bagli olan oyuncu sayisini tutsun
     int numberOfOnlinePlayer;
+    int size;
     int current_index;
     int increment;
+    int tIndex;
+    int tInc;
+    bool t_Myself;
 
     Person players[4];
+    Person *tPlayers[4];
     Person *currentPlayer, *lastWinner;
     Person *sPlayer, *nPlayer, *ePlayer, *wPlayer;
 
@@ -64,6 +83,7 @@ private:
     void startGameSession();
 
 signals:
+	void ready();
 
 public slots:
 

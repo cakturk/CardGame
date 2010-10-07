@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'widget.ui'
 **
-** Created: Thu Sep 23 18:24:25 2010
+** Created: Thu Oct 7 17:37:27 2010
 **      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -14,11 +14,14 @@
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
+#include <QtGui/QCheckBox>
 #include <QtGui/QComboBox>
 #include <QtGui/QFrame>
 #include <QtGui/QGridLayout>
+#include <QtGui/QHBoxLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
+#include <QtGui/QListWidget>
 #include <QtGui/QPushButton>
 #include <QtGui/QStackedWidget>
 #include <QtGui/QToolButton>
@@ -34,11 +37,15 @@ public:
     QPushButton *pushButton;
     QStackedWidget *stackedWidget;
     QWidget *page_3;
-    QWidget *layoutWidget;
+    QGridLayout *gridLayout_3;
     QVBoxLayout *verticalLayout_2;
     QToolButton *styletoolSingle;
+    QHBoxLayout *horizontalLayout;
     QToolButton *styletoolMulti;
+    QCheckBox *checkBox;
     QComboBox *stylecombo;
+    QLabel *label_2;
+    QListWidget *listWidget;
     QPushButton *pushButton_2;
     QWidget *page_2;
     QGridLayout *gridLayout;
@@ -62,7 +69,7 @@ public:
     {
         if (Widget->objectName().isEmpty())
             Widget->setObjectName(QString::fromUtf8("Widget"));
-        Widget->resize(635, 548);
+        Widget->resize(490, 440);
         Widget->setAutoFillBackground(false);
         Widget->setStyleSheet(QString::fromUtf8("background-color: rgb(54, 111, 195);"));
         gridLayout_2 = new QGridLayout(Widget);
@@ -85,15 +92,14 @@ public:
         stackedWidget->setObjectName(QString::fromUtf8("stackedWidget"));
         page_3 = new QWidget();
         page_3->setObjectName(QString::fromUtf8("page_3"));
-        layoutWidget = new QWidget(page_3);
-        layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(210, 60, 181, 171));
-        verticalLayout_2 = new QVBoxLayout(layoutWidget);
+        gridLayout_3 = new QGridLayout(page_3);
+        gridLayout_3->setSpacing(6);
+        gridLayout_3->setContentsMargins(11, 11, 11, 11);
+        gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
+        verticalLayout_2 = new QVBoxLayout();
         verticalLayout_2->setSpacing(6);
-        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
         verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
-        verticalLayout_2->setContentsMargins(0, 0, 0, 0);
-        styletoolSingle = new QToolButton(layoutWidget);
+        styletoolSingle = new QToolButton(page_3);
         styletoolSingle->setObjectName(QString::fromUtf8("styletoolSingle"));
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
@@ -120,7 +126,11 @@ public:
 
         verticalLayout_2->addWidget(styletoolSingle);
 
-        styletoolMulti = new QToolButton(layoutWidget);
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setSpacing(6);
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        horizontalLayout->setSizeConstraint(QLayout::SetDefaultConstraint);
+        styletoolMulti = new QToolButton(page_3);
         styletoolMulti->setObjectName(QString::fromUtf8("styletoolMulti"));
         sizePolicy.setHeightForWidth(styletoolMulti->sizePolicy().hasHeightForWidth());
         styletoolMulti->setSizePolicy(sizePolicy);
@@ -142,9 +152,27 @@ public:
 " }\n"
 ""));
 
-        verticalLayout_2->addWidget(styletoolMulti);
+        horizontalLayout->addWidget(styletoolMulti);
 
-        stylecombo = new QComboBox(layoutWidget);
+        checkBox = new QCheckBox(page_3);
+        checkBox->setObjectName(QString::fromUtf8("checkBox"));
+        checkBox->setStyleSheet(QString::fromUtf8("     background-color: red;\n"
+"     border-style: outset;\n"
+"     border-width: 2px;\n"
+"     border-radius: 10px;\n"
+"     border-color: beige;\n"
+"     font: bold 12px;\n"
+"     min-width: 10em;\n"
+"     padding: 6px;\n"
+""));
+
+        horizontalLayout->addWidget(checkBox);
+
+        horizontalLayout->setStretch(0, 1);
+
+        verticalLayout_2->addLayout(horizontalLayout);
+
+        stylecombo = new QComboBox(page_3);
         stylecombo->setObjectName(QString::fromUtf8("stylecombo"));
         stylecombo->setStyleSheet(QString::fromUtf8(" QComboBox#stylecombo {\n"
 "     background-color: red;\n"
@@ -159,10 +187,35 @@ public:
 
         verticalLayout_2->addWidget(stylecombo);
 
+        label_2 = new QLabel(page_3);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
+        sizePolicy.setHeightForWidth(label_2->sizePolicy().hasHeightForWidth());
+        label_2->setSizePolicy(sizePolicy);
+
+        verticalLayout_2->addWidget(label_2);
+
+        listWidget = new QListWidget(page_3);
+        new QListWidgetItem(listWidget);
+        new QListWidgetItem(listWidget);
+        listWidget->setObjectName(QString::fromUtf8("listWidget"));
+        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(listWidget->sizePolicy().hasHeightForWidth());
+        listWidget->setSizePolicy(sizePolicy1);
+        listWidget->setStyleSheet(QString::fromUtf8("background-color: rgb(211, 211, 211);"));
+
+        verticalLayout_2->addWidget(listWidget);
+
         pushButton_2 = new QPushButton(page_3);
         pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
-        pushButton_2->setGeometry(QRect(10, 420, 141, 71));
         pushButton_2->setCheckable(true);
+
+        verticalLayout_2->addWidget(pushButton_2);
+
+
+        gridLayout_3->addLayout(verticalLayout_2, 0, 1, 1, 1);
+
         stackedWidget->addWidget(page_3);
         page_2 = new QWidget();
         page_2->setObjectName(QString::fromUtf8("page_2"));
@@ -172,11 +225,11 @@ public:
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         westHand = new QFrame(page_2);
         westHand->setObjectName(QString::fromUtf8("westHand"));
-        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(westHand->sizePolicy().hasHeightForWidth());
-        westHand->setSizePolicy(sizePolicy1);
+        QSizePolicy sizePolicy2(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(westHand->sizePolicy().hasHeightForWidth());
+        westHand->setSizePolicy(sizePolicy2);
         westHand->setFrameShape(QFrame::NoFrame);
         westHand->setFrameShadow(QFrame::Raised);
         westHand->setLineWidth(1);
@@ -267,8 +320,8 @@ public:
 
         resultlabel = new QLabel(verticalLayoutWidget);
         resultlabel->setObjectName(QString::fromUtf8("resultlabel"));
-        sizePolicy1.setHeightForWidth(resultlabel->sizePolicy().hasHeightForWidth());
-        resultlabel->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(resultlabel->sizePolicy().hasHeightForWidth());
+        resultlabel->setSizePolicy(sizePolicy2);
         resultlabel->setStyleSheet(QString::fromUtf8("font: 75 11pt \"Bitstream Charter\";"));
 
         verticalLayout->addWidget(resultlabel);
@@ -298,11 +351,26 @@ public:
         pushButton->setText(QApplication::translate("Widget", "Restart Game", 0, QApplication::UnicodeUTF8));
         styletoolSingle->setText(QApplication::translate("Widget", "Single Player", 0, QApplication::UnicodeUTF8));
         styletoolMulti->setText(QApplication::translate("Widget", "Multiplayer", 0, QApplication::UnicodeUTF8));
+        checkBox->setText(QApplication::translate("Widget", "Host", 0, QApplication::UnicodeUTF8));
         stylecombo->clear();
         stylecombo->insertItems(0, QStringList()
          << QApplication::translate("Widget", "4 Player", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("Widget", "2 Player", 0, QApplication::UnicodeUTF8)
         );
+        label_2->setText(QApplication::translate("Widget", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Servers</span></p></body></html>", 0, QApplication::UnicodeUTF8));
+
+        const bool __sortingEnabled = listWidget->isSortingEnabled();
+        listWidget->setSortingEnabled(false);
+        QListWidgetItem *___qlistwidgetitem = listWidget->item(0);
+        ___qlistwidgetitem->setText(QApplication::translate("Widget", "Server 1", 0, QApplication::UnicodeUTF8));
+        QListWidgetItem *___qlistwidgetitem1 = listWidget->item(1);
+        ___qlistwidgetitem1->setText(QApplication::translate("Widget", "Server 2", 0, QApplication::UnicodeUTF8));
+        listWidget->setSortingEnabled(__sortingEnabled);
+
         pushButton_2->setText(QApplication::translate("Widget", "Toggle Full Screen", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("Widget", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
