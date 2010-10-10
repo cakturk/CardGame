@@ -19,7 +19,7 @@ Widget::Widget(QWidget *parent) :
 
     mapper = new QSignalMapper(this);
     // connect(mapper, SIGNAL(mapped(QObject *)), this, SLOT(cardClicked(QObject *)));
-    connect(mapper, SIGNAL(mapped(QObject *)), this, SLOT(n_cardClicked(QObject*)));
+    connect(mapper, SIGNAL(mapped(QObject *)), this, SLOT(SCardClicked(QObject*)));
 
     this->setWindowTitle("Card Game");
     centerMyWindow();
@@ -1006,6 +1006,8 @@ void Widget::networkStart()
         // north
     	currentPlayer = game->tNextPlayer();
         QList<Card *> &m = currentPlayer->getHand();
+
+        args << currentPlayer->getPosition();
         foreach (Card *card, m) {
             args << card->cardType << card->cardNumber;
         }
@@ -1023,32 +1025,36 @@ void Widget::networkStart()
 
 void Widget::SNetworkStart()
 {
-	currentPlayer = game->toSouth();
+    if (hostMachine == true) {
+        currentPlayer = game->toSouth();
+        game->createCards();
 
-	for (int i = 0; i < game->tSize(); ++i) {
-		game->distributeCards( *currentPlayer, 4 );
+        for (int i = 0; i < game->tSize(); ++i) {
+            game->distributeCards( *currentPlayer, 4 );
 
-		if (currentPlayer->myself()) {
-			for (int i = 0; i < currentPlayer->getNumberOfCards(); i++) {
-				QList<Card *> l = currentPlayer->getHand();
-				connect(static_cast<QToolButton *>(l.at(i)->buttonPtr), SIGNAL(clicked()),
-						mapper, SLOT(map()));
-				mapper->setMapping(static_cast<QObject *>(l.at(i)->buttonPtr),
-						static_cast<QObject *>(l.at(i)));
-				ui->southHand->layout()->addWidget(static_cast<QWidget *>(l.at(i)->buttonPtr));
-			}
-		} else {
-			QList<Card *> &m = currentPlayer->getHand();
-			QList<int> args;
+            if (currentPlayer->myself()) {
+                for (int i = 0; i < currentPlayer->getNumberOfCards(); i++) {
+                    QList<Card *> l = currentPlayer->getHand();
+                    connect(static_cast<QToolButton *>(l.at(i)->buttonPtr), SIGNAL(clicked()),
+                            mapper, SLOT(map()));
+                    mapper->setMapping(static_cast<QObject *>(l.at(i)->buttonPtr),
+                                       static_cast<QObject *>(l.at(i)));
+                    ui->southHand->layout()->addWidget(static_cast<QWidget *>(l.at(i)->buttonPtr));
+                }
+            } else {
+                QList<Card *> &m = currentPlayer->getHand();
+                QList<int> args;
 
-			foreach (Card *card, m) {
-				args << currentPlayer->getPosition() << card->cardType << card->cardNumber;
-			}
-			network->sendMessage(socket, GameNet::SET_HAND, args);
-		}
+                args << currentPlayer->getPosition();
+                foreach (Card *card, m) {
+                    args << card->cardType << card->cardNumber;
+                }
+                network->sendMessage(currentPlayer->getSocket(), GameNet::SET_HAND, args);
+            }
 
-		currentPlayer = game->tNextPlayer();
-	}
+            currentPlayer = game->tNextPlayer();
+        }
+    }
 
     ui->stackedWidget->setCurrentIndex(1);
 }
@@ -1172,7 +1178,7 @@ void Widget::SCardClicked(QObject *obj)
         currentPlayer->getHand().removeAt(del);
         ui->southHand->layout()->removeWidget(static_cast<QWidget *>(card->buttonPtr));
 
-        args << cardIndex;
+        args << currentPlayer->getPosition() << cardIndex;
         network->sendMessage(socket, GameNet::PLAY, args);
 
         cardPos = (currentPlayer->getPosition() + posRelative) % 4;
@@ -1255,6 +1261,8 @@ void Widget::n_set_hand()
     if (args.isEmpty())
         return;
 
+    int pos = args.takeFirst();
+
     QList<Card *> list;
     QListIterator<int> it(args);
 
@@ -1265,12 +1273,6 @@ void Widget::n_set_hand()
         Card *card = new Card(type, num);
         list.append(card);
     }
-
-    socket = network->getClientSoc();
-    currentPlayer = me = new Person;
-    currentPlayer->setPosition(2);
-    currentPlayer->setPlayerName(QString("Rakip"));
-    posRelative = 2;
 
     currentPlayer->setHand(list);
 
@@ -1421,7 +1423,7 @@ void Widget::n_not_current_player()
 void Widget::n_play()
 {
     QList<int> args = network->arguments();
-    currentPlayer = game->tNextPlayer();
+//    currentPlayer = game->tNextPlayer();
 
     if (args.isEmpty())
         return;
@@ -1447,6 +1449,7 @@ void Widget::n_play()
         currentPlayer->collectCards(m);
     }
 
+    currentPlayer = game->tNextPlayer();
     ui->southHand->setEnabled(true);
 }
 
@@ -1483,7 +1486,7 @@ void Widget::on_styletoolMulti_clicked()
         connect(network, SIGNAL(messageReceived(QTcpSocket*)), this, SLOT(processMessage(QTcpSocket*)));
         n_preNetwork_start(false);
     }
-    connect(network, SIGNAL(messageReceived(QTcpSocket*)), this, SLOT(processMessage(QTcpSocket*)));
+    // connect(network, SIGNAL(messageReceived(QTcpSocket*)), this, SLOT(processMessage(QTcpSocket*)));
 }
 
 void Widget::preNetStart(bool server)
@@ -1507,7 +1510,7 @@ void Widget::n_preNetwork_start(bool b)
     	socket = network->getClientSoc();
         connect(socket, SIGNAL(connected()), this, SLOT(prepareNetworkUI()));
     } else {
-        connect(game, SIGNAL(ready()), this, SLOT(networkStart()));
+        connect(game, SIGNAL(ready()), this, SLOT(SNetworkStart()));
         prepareNetworkUI();
     }
 }
@@ -1549,9 +1552,15 @@ void Widget::slotPrepareNetworkUI(int n)
         newPlayer->setPlayerName(QString("Host player"));
         newPlayer->setMyself(true);
         game->tAdd(newPlayer, n);
-        network->broadcast(GameNet::SET_PLAYER_POS, args);
+        posRelative = 0;
+        //network->broadcast(GameNet::SET_PLAYER_POS, args);
     } else {
+        currentPlayer = newPlayer = new Person();
+        newPlayer->setPlayerName(QString("Remote player"));
+        newPlayer->setMyself(true);
         network->sendMessage(socket, GameNet::SET_PLAYER_POS, args);
+        posRelative = 2;
+        delay(150);
     }
 
     pushSouth->hide();

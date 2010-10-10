@@ -481,3 +481,19 @@ int GameEngine::tSize()
 
 	return count;
 }
+
+Person* GameEngine::at(int index)
+{
+    switch (index) {
+    case 0:
+        return tPlayers[0];
+    case 1:
+        return tPlayers[1];
+    case 2:
+        return tPlayers[2];
+    case 3:
+        return tPlayers[3];
+    default:
+        return NULL;
+    }
+}

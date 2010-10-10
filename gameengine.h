@@ -52,6 +52,7 @@ public:
     Person* myself();
     Person* getlastWinner() const;
     const Person* me() const;
+    Person* at(int index);
 
     Card* lastPlayedCard();
 
