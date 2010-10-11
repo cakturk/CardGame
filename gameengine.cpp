@@ -4,23 +4,23 @@ GameEngine::GameEngine(QObject *parent) :
     QObject(parent)
 {
     size = 0;
-    numberOfOnlinePlayer = 2;
+    numberOfPlayer = 2;
     vector.resize(4);
 }
 
 GameEngine::GameEngine(int playerNumber, QObject *parent) :
-        QObject(parent), numberOfOnlinePlayer(playerNumber)
+        QObject(parent), numberOfPlayer(playerNumber)
 {
     vector.resize(4);
     /* dagitanin sagindaki oyuncu ilk karti atar */
-    if (numberOfOnlinePlayer == 1) {
+    if (numberOfPlayer == 1) {
         sPlayer = new Person(QString("So Client"));
         gamePlayers << sPlayer;
         currentPlayer = sPlayer;
         current_index = 0;
     }
 
-    if (numberOfOnlinePlayer == 2) {
+    if (numberOfPlayer == 2) {
         increment = 2;
         sPlayer = new Person(QString("Gokay"));
         nPlayer = new Person(QString("Selin"));
@@ -29,8 +29,8 @@ GameEngine::GameEngine(int playerNumber, QObject *parent) :
         current_index = 2;
     }
 
-    if (numberOfOnlinePlayer > 2) {
-        numberOfOnlinePlayer = 4;
+    if (numberOfPlayer > 2) {
+        numberOfPlayer = 4;
         increment = 1;
 
         sPlayer = new Person(QString("Gokay"));
@@ -48,16 +48,18 @@ GameEngine::GameEngine(int playerNumber, QObject *parent) :
 }
 
 GameEngine::GameEngine(bool deneme, int num, QObject *parent) :
-        QObject(parent), numberOfOnlinePlayer(num)
+        QObject(parent), numberOfPlayer(num)
 {
     size = 0;
     tIndex = 0;
     for (int i = 0; i < 4; ++i)
         tPlayers[i] = NULL;
 
-    if (numberOfOnlinePlayer == 4)
+    if (numberOfPlayer == 4)
         tInc = 1;
-    tInc = 2;
+    else
+    	tInc = 2;
+    createCards();
 }
 
 /* Create cards and map them to card graphics */
@@ -69,11 +71,6 @@ void GameEngine::createCards()
         for (int j = 1; j <= 13; j++) {
            newCard = new Card(i, j);
            cards.append(newCard);
-#if 0
-           QString pngName = ":/graph_items/graphics/" + (newCard->cardName).toLower();
-           pngName.append(".png");
-           pngMapping.insert(newCard, pngName);
-#endif
         }
 
     Card::shuffleList(cards);
@@ -296,35 +293,6 @@ void GameEngine::startGameSession()
 
 }
 
-#if 0
-// TODO: define a method that returns image name
-QString GameEngine::getButtonPngName(QToolButton *b)
-{
-    QString retVal;
-
-    return retVal;
-}
-#endif
-
-QToolButton* GameEngine::createButton(Card *c)
-{
-#if 0
-    QString str;
-    if (pngMapping.contains(c))
-        str = pngMapping[c];
-#endif
-
-    QString str = c->cardImageName;
-
-    QToolButton *tb = new QToolButton();
-    tb->setMinimumSize(QSize(50, 50));
-    tb->setStyleSheet(QString("border-image: url(%1)").arg(str));
-
-    buttonMapping.insert(c, tb);
-
-    return tb;
-}
-
 QList<Card *> & GameEngine::getCards()
 {
     return cards;
@@ -332,7 +300,7 @@ QList<Card *> & GameEngine::getCards()
 
 int GameEngine::getNumberOfOnlinePlayer() const
 {
-    return numberOfOnlinePlayer;
+    return numberOfPlayer;
 }
 
 Person* GameEngine::getPlayers()
@@ -407,16 +375,6 @@ int GameEngine::playerIndex()
 
 Person* GameEngine::myself()
 {
-#if 0
-    if (! gamePlayers.isEmpty()) {
-        currentPlayer->setTurn(false);
-        current_index = 0;
-        currentPlayer = gamePlayers.at(current_index);
-        currentPlayer->setTurn(true);
-        return currentPlayer;
-    }
-#endif
-
     if (! gamePlayers.isEmpty()) {
         currentPlayer->setTurn(false);
         current_index = 0;
@@ -440,7 +398,7 @@ void GameEngine::add(Person *player, int pos)
     if (pos == -1)
         pos = player->getPosition();
     vector[pos] = player;
-    if (count == numberOfOnlinePlayer) {
+    if (count == numberOfPlayer) {
         gamePlayers = vector.toList();
         // vector.clear();
     }
@@ -457,7 +415,7 @@ void GameEngine::tAdd(Person *player, int pos)
     tPlayers[pos] = player;
     size++;
 
-    if (size == numberOfOnlinePlayer)
+    if (size == numberOfPlayer)
     	emit ready();
 }
 
@@ -475,11 +433,7 @@ Person* GameEngine::tNextPlayer()
 
 int GameEngine::tSize()
 {
-	int count = 0;
-	for (int i = 0; i < 4; i++)
-		count += (tPlayers[i] != NULL) ? 1 : 0;
-
-	return count;
+	return size;
 }
 
 Person* GameEngine::at(int index)

@@ -39,9 +39,6 @@ public:
     bool pisti(Person *p);
     bool tGetMyself() {return t_Myself;}
 
-    QToolButton* createButton(Card *);
-    QString getButtonPngName(QToolButton *);
-
     QList<Card *> & getCards();
     QList<Card *> & getPlayedCards();
 
@@ -63,10 +60,8 @@ private:
     QVector<Person *> vector;
     QListIterator<Person *> *it;
 
-    QMap<Card *, QToolButton *> buttonMapping;
-
     // TODO: o an bagli olan oyuncu sayisini tutsun
-    int numberOfOnlinePlayer;
+    int numberOfPlayer;
     int size;
     int current_index;
     int increment;

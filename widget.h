@@ -34,14 +34,14 @@ private:
     GameEngine *game;
     GameNet *network;
     Person *players;
-    Person *currentPlayer;
+    Person *currentPlayer, *nextPlayer;
     Person *me;
 
     int currentPlayerIndex; // unused
     int posRelative; /* TODO: locate player's pos */
     int maxpoint;
 
-    bool hostMachine;
+    bool host;
 
     QSignalMapper *mapper;
     QTcpSocket *socket;
@@ -57,10 +57,8 @@ private:
     QPushButton *pushNorth;
     QPushButton *pushWest;
 
-    void start();
     void modifiedstart();
     void preNetStart(bool);
-    void createUi();
     void centerMyWindow();
     void showCardOnTable(Card *c, int playerindex);
     void showCardOnFrame(Card *c, int playerindex);
@@ -69,6 +67,8 @@ private:
     void showPlayerHand(int index, int size = 4);
     void statistics();
     inline void delay(int count, int sleep = 10000);
+    int computeRelativePosition(int position);
+
     void n_simulateOthers();
     void n_set_hand();
     void n_set_player_name();
@@ -93,7 +93,6 @@ private slots:
     void on_pushButton_clicked();
     void cardClicked(QObject *obj);
     void n_cardClicked(QObject *obj);
-    void networkStart();
     void processMessage(QTcpSocket*);
     void slotPrepareNetworkUI(int n);
     void prepareNetworkUI();

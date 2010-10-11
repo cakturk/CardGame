@@ -5,6 +5,7 @@ Person::Person(int r_pos, QObject *parent) :
 {
     turn = _myself = false;
     pistiCount = score = 0;
+    sock = 0;
 }
 
 Person::Person(QString name, int r_pos, QObject *parent) :
@@ -12,6 +13,7 @@ Person::Person(QString name, int r_pos, QObject *parent) :
 {
     turn = _myself = false;
     pistiCount = score = 0;
+    sock = 0;
 }
 
 void Person::setHand(QList<Card *> &h)

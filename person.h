@@ -36,6 +36,7 @@ public:
     inline void setSocket(QTcpSocket* s) { sock = s; }
     inline bool myself() const { return _myself; }
     inline void setMyself(bool b) { _myself = b; }
+    inline bool isMyTurn() const { return turn; }
 
     int pistiCount;
     int score;
@@ -55,7 +56,6 @@ private:
     bool _myself;
 
     virtual bool isAcceptable(Card *c);
-    inline bool isMyTurn() const { return turn; }
 };
 
 #endif // PERSON_H

@@ -46,7 +46,6 @@ Widget::Widget(QWidget *parent) :
     vbox->setAlignment(Qt::AlignCenter);
     ui->westHand->setLayout(vbox);
 
-    //prepareNetworkUI();
 
     // modifiedstart();
 }
@@ -89,229 +88,6 @@ void Widget::centerMyWindow() {
 
     // move window to desired coordinates
     move ( x, y );
-}
-
-/* create card game UI */
-#if 0
-void Widget::createUi()
-{
-    // QLayout *frameLayout = ui->southHand->layout();
-    Person *players = game->getPlayers();
-    QList<Card *> playersHand;
-
-    QHBoxLayout *hb = new QHBoxLayout;
-    ui->northHand->setLayout(hb);
-    hb->setContentsMargins(100, 0, 100, 0);
-
-    for (int i = 0; i < game->getNumberOfOnlinePlayer(); i++) {
-        playersHand = players[i].getHand();
-        for (int j = 0; j < players[i].getHand().size(); j++) {
-            QToolButton *but = game->createButton(playersHand.at(j));
-
-            switch (i) {
-            case 0:
-                ui->southHand->layout()->addWidget(but);
-                break;
-            case 1:
-                ui->northHand->layout()->addWidget(but);
-                break;
-            case 2:
-                ui->westHand->layout()->addWidget(but);
-                break;
-            case 3:
-                ui->eastHand->layout()->addWidget(but);
-                break;
-            }
-        }
-    }
-}
-#endif
-
-void Widget::start()
-{
-    // test value
-    maxpoint = 101;
-
-    QFrame *frame;
-    QLayout *currentLayout;
-    QHBoxLayout *hbox;
-    QVBoxLayout *vbox;
-    QList<Card *> playersHand;
-    QString pos;
-    bool myself = false;
-    Person *currentPlayer;
-
-    game->createCards();
-    players = game->getPlayers();
-
-    for (int i = 0; i < 4; i++) {
-        Card *c = game->getCards().takeFirst();
-        game->appendToPlayedCards(c);
-    }
-
-    for (int i = 0; i < 4; i++) {
-        game->distributeCards(players[i], 4);
-    }
-
-    for (int i = 0; i < 4; i++) {
-        currentPlayer = &players[i];
-        playersHand = currentPlayer->getHand();
-
-        switch (i) {
-        case 0:
-            frame = ui->southHand;
-            hbox = new QHBoxLayout;
-            currentLayout = hbox;
-            hbox->setContentsMargins(200, 0, 200, 0);
-            frame->setLayout(hbox);
-            myself = true;
-            break;
-        case 1:
-            frame = ui->eastHand;
-            vbox = new QVBoxLayout;
-            vbox->setAlignment(Qt::AlignCenter);
-            currentLayout = vbox;
-            frame->setLayout(vbox);
-            myself = false;
-            pos = 'v';
-            break;
-        case 2:
-            frame = ui->northHand;
-            hbox = new QHBoxLayout;
-            hbox->setAlignment(Qt::AlignCenter);
-            currentLayout = hbox;
-            frame->setLayout(hbox);
-            hbox->setContentsMargins(11, 0, 11, 0);
-            myself = false;
-            pos = 'h';
-            break;
-        case 3:
-            frame = ui->westHand;
-            vbox = new QVBoxLayout;
-            vbox->setAlignment(Qt::AlignCenter);
-            currentLayout = vbox;
-            frame->setLayout(vbox);
-            myself = false;
-            pos = 'v';
-            break;
-        }
-
-        for (int j = 0; j < currentPlayer->getHand().size(); j++) {
-            if (myself) {
-                // playersHand.at(j)->getButton() olmayacak
-                // but = (QWidget *) playersHand.at(j)->buttonPtr;
-                //playersHand.at(j)->getButton();
-                // QWidget *voidButt = (QWidget *) playersHand.at(j)->buttonPtr;
-                // qDebug() << voidButt->styleSheet() << voidButt->geometry() << voidButt;
-                // but->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
-                // ui->southHand->layout()->addWidget(voidButt);
-                // voidButt->show();
-
-                // players[0].getHand().at(0)->getButton();
-                showCardOnTable(players[0].getHand().at(0), 1);
-
-            } else {
-#if 0
-                but = new QToolButton;
-                but->setStyleSheet(QString("border-image: url(./graphics/back/4%1.png);").arg(pos));
-                but->setMinimumSize(75, 75);
-                but->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
-                currentLayout->addWidget(but);
-#endif
-                QList<Card *> bar = players[2].getHand();
-                // currentLayout->addWidget(static_cast<QWidget *>(bar.at(3)->buttonPtr));
-                qDebug() << bar.at(0)->buttonPtr << (QWidget *) bar.at(0)->buttonPtr;
-                // bar.at(0)->getButton();
-                qDebug() << bar.at(0)->buttonPtr << (QWidget *) bar.at(0)->buttonPtr;
-                qDebug() << bar.at(0)->buttonPtr << (QWidget *) bar.at(0)->buttonPtr;
-                // QWidget *debugvatGet = bar.at(0)->getButton();
-                //debugvar->setParent(ui->table);
-                grid->addWidget(bar.at(0)->getButton(), 1, 2);
-                break;
-            }
-        }
-    }
-
- /*
-    Card *cd = players[0].getHand().at(3);
-    QWidget *test = ui->southHand->layout()->itemAt(2)->widget();
-    ui->southHand->layout()->removeWidget(test);
-    test->hide();
-*/
-
-    currentPlayer = &players[0];
-
-    int playerIndex = 0;
-    bool play = true;
-
-    int counter = 0;
-    while (play) {
-        /* El bittiyse kart dagit */ 
-        if (currentPlayer->getNumberOfCards() == 0) {
-            for (int i = 0; i < 4; i++) {
-                playerIndex = (playerIndex + 1) % 4; // Next player
-                currentPlayer = &players[playerIndex];
-                game->distributeCards(*currentPlayer, 4);
-            }
-        }
-
-        if (playerIndex == 0)
-            currentLayout = ui->southHand->layout();
-
-        Card *lastcard = game->lastPlayedCard();
-        Card *c = currentPlayer->play(lastcard);
-        game->appendToPlayedCards(c);
-        showCardOnTable(c, playerIndex);
-
-/*
-        if (currentPlayer == &players[0]) {
-            QWidget *w = (QWidget *) c->buttonPtr;
-            QLayout *lay = ui->southHand->layout();
-            int index = lay->indexOf(w);
-            lay->removeWidget(w);
-            w->hide();
-        }
-*/
-
-        if (game->pisti(currentPlayer)) {
-            QList<Card *> &l = game->getPlayedCards();
-
-            for (int i = 0; i < l.size(); i++) {
-                QWidget *widget = (QWidget *) l.at(i)->buttonPtr;
-                grid->removeWidget(widget);
-                widget->hide();
-            }
-            
-            currentPlayer->collectCards(l);
-        }
-
-        playerIndex = (playerIndex + 1) % 4;
-        currentPlayer = &players[playerIndex];
-
-        if (game->getCards().size() == 0 && currentPlayer->getNumberOfCards() == 0)
-            play = false;
-
-        counter++;
-        if(counter == 42)
-            qDebug() <<  "42 ";
-    }
-
-    QList<Card *> &cardsOnTable = game->getPlayedCards();
-    for (int i = 0; i < cardsOnTable.size(); i++) {
-        QWidget *widget = (QWidget *) cardsOnTable.at(i)->buttonPtr;
-        grid->removeWidget(widget);
-        widget->hide();
-    }
-    game->getlastWinner()->collectCards(cardsOnTable);
-
-#ifdef TEST
-    // test begin
-    QWidget *tmpwidget = ui->southHand->layout()->itemAt(0)->widget();
-    ui->southHand->layout()->removeWidget(tmpwidget);
-    tmpwidget->hide();
-    // test end
-#endif
-
 }
 
 void Widget::showCardOnTable(Card *c, int position)
@@ -379,6 +155,155 @@ void Widget::showCardOnFrame(Card *c, int playerindex)
     if (playerindex == 0) {
         ui->southHand->layout()->addWidget((QWidget *) c->buttonPtr);
     }
+}
+
+void Widget::showPlayerHand(int index, int size)
+{
+    QLayout *layout;
+    QString alignment;
+
+    if (size < 1) return;
+
+    switch (index) {
+    case 0:
+        layout = ui->southHand->layout();
+        alignment = "h";
+        break;
+    case 1:
+        layout = ui->eastHand->layout();
+        alignment = "v";
+        break;
+    case 2:
+        layout = ui->northHand->layout();
+        alignment = "h";
+        break;
+    case 3:
+        layout = ui->westHand->layout();
+        alignment = "v";
+    }
+
+    QString style;
+    QToolButton *but = new QToolButton;
+    style = QString("border-image: url(./graphics/back/%1%2.png)").arg(size).arg(alignment);
+    but->setMinimumSize(QSize(60, 60));
+    but->setStyleSheet(style);
+    layout->addWidget(but);
+}
+
+void Widget::clearPanel(QWidget *widget, bool dealloc)
+{
+    QList<QWidget *> widgets = widget->findChildren<QWidget *>();
+    QWidget *child;
+    while (widgets.size() > 0) {
+        child = widgets.takeFirst();
+        child->hide();
+        if (dealloc == true)
+            delete child;
+    }
+}
+
+inline void Widget::delay(int count, int sleep)
+{
+    count = 30;
+    while (count--) {
+        usleep(sleep);
+        QApplication::processEvents();
+    }
+}
+
+QFrame* Widget::getCurrentPlayerFrame() const
+{
+    QFrame *currentPlayerFrame;
+    switch (game->playerIndex()) {
+    case 0:
+        currentPlayerFrame = ui->southHand;
+        break;
+    case 1:
+        currentPlayerFrame = ui->eastHand;
+        break;
+    case 2:
+        currentPlayerFrame = ui->northHand;
+        break;
+    case 3:
+        currentPlayerFrame = ui->westHand;
+        break;
+    }
+
+    return currentPlayerFrame;
+}
+
+QFrame* Widget::getPlayerFrame(int pos) const
+{
+	QFrame *currentPlayerFrame;
+	switch (pos) {
+	case 0:
+		currentPlayerFrame = ui->southHand;
+		break;
+	case 1:
+		currentPlayerFrame = ui->eastHand;
+		break;
+	case 2:
+		currentPlayerFrame = ui->northHand;
+		break;
+	case 3:
+		currentPlayerFrame = ui->westHand;
+		break;
+	}
+
+	return currentPlayerFrame;
+}
+
+void Widget::statistics()
+{
+    QString resultStr;
+    const int SIZE = game->getNumberOfOnlinePlayer();
+    int scores[SIZE], pisti[SIZE], pistiA = 0, pistiB = 0, scoreA = 0, scoreB = 0;
+
+    currentPlayer = game->myself();
+    for (int i = 0; i < game->getNumberOfOnlinePlayer(); i++) {
+        currentPlayer->computePlayerScore();
+        scores[i] = currentPlayer->score;
+        pisti[i] = currentPlayer->pistiCount;
+        currentPlayer = game->nextPlayer();
+    }
+
+    if (SIZE > 2) {
+        pistiA = pisti[0] + pisti[2];
+        scoreA = scores[0] + scores[2];
+        pistiB = pisti[1] + pisti[3];
+        scoreB = scores[1] + scores[3];
+    } else {
+        pistiA = pisti[0];
+        scoreA = scores[0];
+        pistiB = pisti[1];
+        scoreA = scores[1];
+    }
+
+    resultStr.append('\t');
+    resultStr.append("First Team");
+    resultStr.append('\t');
+    resultStr.append('\t');
+    resultStr.append("Second Team");
+    resultStr.append('\n');
+
+    resultStr.append("Pisti:");
+    resultStr.append('\t');
+    resultStr.append(QString::number(pistiA));
+    resultStr.append('\t');
+    resultStr.append('\t');
+    resultStr.append(QString::number(pistiB));
+    resultStr.append('\n');
+
+    resultStr.append("Result:");
+    resultStr.append('\t');
+    resultStr.append(QString::number(scoreA));
+    resultStr.append('\t');
+    resultStr.append('\t');
+    resultStr.append(QString::number(scoreB));
+    resultStr.append('\n');
+
+    ui->resultlabel->setText(resultStr);
+    ui->stackedWidget->setCurrentIndex(2);
 }
 
 void Widget::modifiedstart()
@@ -704,113 +629,6 @@ void Widget::on_pushButton_clicked()
     modifiedstart();
 }
 
-inline void Widget::delay(int count, int sleep)
-{
-    count = 30;
-    while (count--) {
-        usleep(sleep);
-        QApplication::processEvents();
-    }
-}
-
-void Widget::clearPanel(QWidget *widget, bool dealloc)
-{
-    QList<QWidget *> widgets = widget->findChildren<QWidget *>();
-    QWidget *child;
-    while (widgets.size() > 0) {
-        child = widgets.takeFirst();
-        child->hide();
-        if (dealloc == true)
-            delete child;
-    }
-}
-
-void Widget::showPlayerHand(int index, int size)
-{
-    QLayout *layout;
-    QString alignment;
-
-    if (size < 1) return;
-
-    switch (index) {
-    case 0:
-        layout = ui->southHand->layout();
-        alignment = "h";
-        break;
-    case 1:
-        layout = ui->eastHand->layout();
-        alignment = "v";
-        break;
-    case 2:
-        layout = ui->northHand->layout();
-        alignment = "h";
-        break;
-    case 3:
-        layout = ui->westHand->layout();
-        alignment = "v";
-    }
-
-    QString style;
-    QToolButton *but = new QToolButton;
-    style = QString("border-image: url(./graphics/back/%1%2.png)").arg(size).arg(alignment);
-    but->setMinimumSize(QSize(60, 60));
-    but->setStyleSheet(style);
-    layout->addWidget(but);
-}
-
-void Widget::statistics()
-{
-    QString resultStr;
-    const int SIZE = game->getNumberOfOnlinePlayer();
-    int scores[SIZE], pisti[SIZE], pistiA = 0, pistiB = 0, scoreA = 0, scoreB = 0;
-
-    currentPlayer = game->myself();
-    for (int i = 0; i < game->getNumberOfOnlinePlayer(); i++) {
-        currentPlayer->computePlayerScore();
-        scores[i] = currentPlayer->score;
-        pisti[i] = currentPlayer->pistiCount;
-        currentPlayer = game->nextPlayer();
-    }
-
-    if (SIZE > 2) {
-        pistiA = pisti[0] + pisti[2];
-        scoreA = scores[0] + scores[2];
-        pistiB = pisti[1] + pisti[3];
-        scoreB = scores[1] + scores[3];
-    } else {
-        pistiA = pisti[0];
-        scoreA = scores[0];
-        pistiB = pisti[1];
-        scoreA = scores[1];
-    }
-
-    resultStr.append('\t');
-    resultStr.append("First Team");
-    resultStr.append('\t');
-    resultStr.append('\t');
-    resultStr.append("Second Team");
-    resultStr.append('\n');
-
-    resultStr.append("Pisti:");
-    resultStr.append('\t');
-    resultStr.append(QString::number(pistiA));
-    resultStr.append('\t');
-    resultStr.append('\t');
-    resultStr.append(QString::number(pistiB));
-    resultStr.append('\n');
-
-    resultStr.append("Result:");
-    resultStr.append('\t');
-    resultStr.append(QString::number(scoreA));
-    resultStr.append('\t');
-    resultStr.append('\t');
-    resultStr.append(QString::number(scoreB));
-    resultStr.append('\n');
-
-    ui->resultlabel->setText(resultStr);
-    ui->stackedWidget->setCurrentIndex(2);
-}
-
 void Widget::on_styletoolSingle_clicked()
 {
     if (ui->stylecombo->currentIndex() == 0) {
@@ -829,362 +647,6 @@ void Widget::on_pushButton_2_toggled(bool checked)
         this->showFullScreen();
     else
         this->showNormal();
-}
-
-QFrame* Widget::getCurrentPlayerFrame() const
-{
-    QFrame *currentPlayerFrame;
-    switch (game->playerIndex()) {
-    case 0:
-        currentPlayerFrame = ui->southHand;
-        break;
-    case 1:
-        currentPlayerFrame = ui->eastHand;
-        break;
-    case 2:
-        currentPlayerFrame = ui->northHand;
-        break;
-    case 3:
-        currentPlayerFrame = ui->westHand;
-        break;
-    }
-
-    return currentPlayerFrame;
-}
-
-QFrame* Widget::getPlayerFrame(int pos) const
-{
-	QFrame *currentPlayerFrame;
-	switch (pos) {
-	case 0:
-		currentPlayerFrame = ui->southHand;
-		break;
-	case 1:
-		currentPlayerFrame = ui->eastHand;
-		break;
-	case 2:
-		currentPlayerFrame = ui->northHand;
-		break;
-	case 3:
-		currentPlayerFrame = ui->westHand;
-		break;
-	}
-
-	return currentPlayerFrame;
-}
-
-void Widget::networkStart()
-{
-#if 0
-    QList<int> args;
-    QList<Card *> m;
-
-    qDebug() << "network start";
-    if (hostMachine) {
-        game = new GameEngine(2);
-        peers = network->getPeers();
-        game->createCards();
-
-        for (int i = 0 ; i < game->getNumberOfOnlinePlayer(); i++) {
-            currentPlayer = game->nextPlayer();
-            game->distributeCards( *currentPlayer, 4 );
-
-            m = currentPlayer->getHand();
-            foreach (Card *c, m) {
-                args << c->cardType << c->cardNumber;
-            }
-            // network->sendMessage(peers[i], GameNet::SET_HAND, args);
-        }
-
-        posInterval = 4 - game->playerIndex();
-
-        network->broadcast(GameNet::SET_HAND, args);
-
-        for (int i = 1 ; i < game->getNumberOfOnlinePlayer(); i++) {
-            showPlayerHand(i);
-        }
-
-        currentPlayer = game->myself();
-        for (int i = 0; i < currentPlayer->getNumberOfCards(); i++) {
-            QList<Card *> l = currentPlayer->getHand();
-            connect(static_cast<QToolButton *>(l.at(i)->buttonPtr), SIGNAL(clicked()),
-                    mapper, SLOT(map()));
-            mapper->setMapping(static_cast<QObject *>(l.at(i)->buttonPtr),
-                               static_cast<QObject *>(l.at(i)));
-            ui->southHand->layout()->addWidget(static_cast<QWidget *>(l.at(i)->buttonPtr));
-        }
-
-    } else {
-        socket = network->getClientSoc();
-        currentPlayer = me = new Person();
-    }
-
-    ui->stackedWidget->setCurrentIndex(1);
-#endif
-
-#if PROB
-    if(hostMachine == true) {
-        peers = network->getPeers();
-        game = new GameEngine;
-        game->createCards();
-
-        Person *pl_a = new Person(0);
-        Person *pl_b = new Person(2);
-        me = currentPlayer = pl_a;
-
-        game->add(pl_a, 0);
-        game->add(pl_b, 2);
-
-        game->distributeCards(*pl_a, 4);
-        game->distributeCards(*pl_b, 4);
-        posRelative = 4 - pl_a->getPosition();
-
-        currentPlayer = pl_a;
-        for (int i = 0; i < pl_a->getNumberOfCards(); i++) {
-            QList<Card *> l = pl_a->getHand();
-            connect(static_cast<QToolButton *>(l.at(i)->buttonPtr), SIGNAL(clicked()),
-                    mapper, SLOT(map()));
-            mapper->setMapping(static_cast<QObject *>(l.at(i)->buttonPtr),
-                               static_cast<QObject *>(l.at(i)));
-            ui->southHand->layout()->addWidget(static_cast<QWidget *>(l.at(i)->buttonPtr));
-        }
-
-        QList<int> args;
-        QList<Card *> &m = pl_b->getHand();
-        foreach (Card *card, m) {
-            args << card->cardType << card->cardNumber;
-        }
-        network->broadcast(GameNet::SET_HAND, args);
-        showPlayerHand(2);
-
-    } else {
-        socket = network->getClientSoc();
-        currentPlayer = me = new Person(0);
-    }
-#endif
-
-    if (hostMachine == true) {
-    	QList<int> args;
-
-    	peers = network->getPeers();
-    	game = new GameEngine(true, 2);
-    	game->createCards();
-
-    	game->tAdd(0);
-    	game->tAdd(2);
-
-    	game->toSouth()->setMyself(true);
-        game->toSouth()->setPlayerName(QString("Cihangir"));
-        game->toSouth()->setPosition(0);
-
-    	me = game->toSouth();
-    	posRelative = 0;
-
-    	if (! peers.isEmpty())
-    		game->toNorth()->setSocket(peers.at(0));
-
-    	currentPlayer = game->toSouth();
-    	game->distributeCards(*currentPlayer, 4);
-
-    	// north
-    	currentPlayer = game->tNextPlayer();
-    	game->distributeCards(*currentPlayer, 4);
-
-        qDebug() << "game->tSize()" << game->tSize();
-
-        // south
-    	currentPlayer = game->toSouth();
-        for (int i = 0; i < currentPlayer->getNumberOfCards(); i++) {
-            QList<Card *> l = currentPlayer->getHand();
-            connect(static_cast<QToolButton *>(l.at(i)->buttonPtr), SIGNAL(clicked()),
-                    mapper, SLOT(map()));
-            mapper->setMapping(static_cast<QObject *>(l.at(i)->buttonPtr),
-                               static_cast<QObject *>(l.at(i)));
-            ui->southHand->layout()->addWidget(static_cast<QWidget *>(l.at(i)->buttonPtr));
-        }
-
-        // north
-    	currentPlayer = game->tNextPlayer();
-        QList<Card *> &m = currentPlayer->getHand();
-
-        args << currentPlayer->getPosition();
-        foreach (Card *card, m) {
-            args << card->cardType << card->cardNumber;
-        }
-
-        network->broadcast(GameNet::SET_HAND, args);
-
-    	qDebug() << "peers size " <<  peers.size();
-    } else {
-        // We don't need a GameEngine
-        game = NULL;
-    }
-
-    ui->stackedWidget->setCurrentIndex(1);
-}
-
-void Widget::SNetworkStart()
-{
-    if (hostMachine == true) {
-        currentPlayer = game->toSouth();
-        game->createCards();
-
-        for (int i = 0; i < game->tSize(); ++i) {
-            game->distributeCards( *currentPlayer, 4 );
-
-            if (currentPlayer->myself()) {
-                for (int i = 0; i < currentPlayer->getNumberOfCards(); i++) {
-                    QList<Card *> l = currentPlayer->getHand();
-                    connect(static_cast<QToolButton *>(l.at(i)->buttonPtr), SIGNAL(clicked()),
-                            mapper, SLOT(map()));
-                    mapper->setMapping(static_cast<QObject *>(l.at(i)->buttonPtr),
-                                       static_cast<QObject *>(l.at(i)));
-                    ui->southHand->layout()->addWidget(static_cast<QWidget *>(l.at(i)->buttonPtr));
-                }
-            } else {
-                QList<Card *> &m = currentPlayer->getHand();
-                QList<int> args;
-
-                args << currentPlayer->getPosition();
-                foreach (Card *card, m) {
-                    args << card->cardType << card->cardNumber;
-                }
-                network->sendMessage(currentPlayer->getSocket(), GameNet::SET_HAND, args);
-            }
-
-            currentPlayer = game->tNextPlayer();
-        }
-    }
-
-    ui->stackedWidget->setCurrentIndex(1);
-}
-
-void Widget::n_cardClicked(QObject *obj)
-{
-    ui->southHand->setEnabled(false);
-
-    if (hostMachine == true)
-        currentPlayer = game->toSouth();
-
-    QList<int> args;
-
-    Card *card = static_cast<Card *>(obj);
-
-    int cardIndex = 0;
-    QList<Card *> &l_hand = currentPlayer->getHand();
-    for (int i = 0; i < currentPlayer->getNumberOfCards(); ++i)
-        if (card == l_hand.at(i))
-            cardIndex = i;
-
-    int del = currentPlayer->getHand().indexOf(card);
-    currentPlayer->getHand().removeAt(del);
-    ui->southHand->layout()->removeWidget(static_cast<QWidget *>(card->buttonPtr));
-
-    if (hostMachine == true)
-        game->appendToPlayedCards(card);
-
-    //QList<int> args;
-
-    if (hostMachine) {
-        args << currentPlayer->getPosition() << card->cardType << card->cardNumber;
-        network->broadcast(GameNet::SHOW_CARD_ONTABLE, args);
-    } else {
-        args << cardIndex;
-        network->sendMessage(socket, GameNet::PLAY, args);
-    }
-
-    // showCardOnTable(card, game->playerIndex());
-    int cardPos = (currentPlayer->getPosition() + posRelative) % 4;
-    showCardOnTable(card, cardPos);
-
-    delay(150);
-
-    if (hostMachine == true) {
-        if (game->pisti(currentPlayer)) {
-            QList<Card *> &m = game->getPlayedCards();
-
-            // TODO: appropriate way of clearing args list
-            args.clear();
-
-            clearPanel(ui->tableCenter);
-            clearPanel(ui->tableEast);
-            clearPanel(ui->tableNorth);
-            clearPanel(ui->tableWest);
-            clearPanel(ui->tableSouth);
-            currentPlayer->collectCards(m);
-
-            network->broadcast(GameNet::CLEAR_TABLE);
-
-            // currentPlayer = game->tNextPlayer();
-        }
-        delay(150);
-        network->broadcast(GameNet::CURRENT_PLAYER);
-    }
-}
-
-void Widget::SCardClicked(QObject *obj)
-{
-    ui->southHand->setEnabled(false);
-
-    QList<int> args;
-    Card *card = static_cast<Card *>(obj);
-    int cardPos = 0, del = 0, cardIndex = 0;
-
-    if (hostMachine == true) {
-        QList<Card *> &l_hand = currentPlayer->getHand();
-
-        for (int i = 0; i < currentPlayer->getNumberOfCards(); ++i)
-            if (card == l_hand.at(i))
-                cardIndex = i;
-
-        del = currentPlayer->getHand().indexOf(card);
-        currentPlayer->getHand().removeAt(del);
-        ui->southHand->layout()->removeWidget(static_cast<QWidget *>(card->buttonPtr));
-
-        game->appendToPlayedCards(card);
-
-        args << currentPlayer->getPosition() << card->cardType << card->cardNumber;
-        network->broadcast(GameNet::SHOW_CARD_ONTABLE, args);
-        delay(150);
-
-        if (game->pisti(currentPlayer)) {
-            QList<Card *> &m = game->getPlayedCards();
-            args.clear();
-
-            clearPanel(ui->tableCenter);
-            clearPanel(ui->tableEast);
-            clearPanel(ui->tableNorth);
-            clearPanel(ui->tableWest);
-            clearPanel(ui->tableSouth);
-            currentPlayer->collectCards(m);
-
-            network->broadcast(GameNet::CLEAR_TABLE);
-            delay(150);
-        }
-
-        currentPlayer = game->tNextPlayer();
-        socket = currentPlayer->getSocket();
-        network->sendMessage(socket, GameNet::CURRENT_PLAYER);
-        delay(150);
-
-    } else {
-        QList<Card *> &l_hand = currentPlayer->getHand();
-
-        for (int i = 0; i < currentPlayer->getNumberOfCards(); ++i)
-            if (card == l_hand.at(i))
-                cardIndex = i;
-
-        del = currentPlayer->getHand().indexOf(card);
-        currentPlayer->getHand().removeAt(del);
-        ui->southHand->layout()->removeWidget(static_cast<QWidget *>(card->buttonPtr));
-
-        args << currentPlayer->getPosition() << cardIndex;
-        network->sendMessage(socket, GameNet::PLAY, args);
-
-        cardPos = (currentPlayer->getPosition() + posRelative) % 4;
-        showCardOnTable(card, cardPos);
-        delay(150);
-    }
 }
 
 void Widget::n_simulateOthers()
@@ -1331,7 +793,7 @@ void Widget::n_set_player_pos(QTcpSocket *sc)
         break;
     }
 
-    if (hostMachine == true) {
+    if (host == true) {
         Person *newPlayer = new Person;
         newPlayer->setPosition(position);
         newPlayer->setPlayerName(QString("Player %1").arg(QString::number(position)));
@@ -1394,7 +856,9 @@ void Widget::n_show_card_ontable()
         return;
 
     int cardPos = args.takeFirst();
-    cardPos += posRelative;
+    if (cardPos == currentPlayer->getPosition())
+        return;
+    cardPos = (cardPos + posRelative) % 4;
 
     int type, num;
     type = args.takeFirst();
@@ -1423,16 +887,25 @@ void Widget::n_not_current_player()
 void Widget::n_play()
 {
     QList<int> args = network->arguments();
-//    currentPlayer = game->tNextPlayer();
+    int cardIndex, cardPos;
 
     if (args.isEmpty())
         return;
 
-    int cardIndex = args.first();
-    Card *card = currentPlayer->play(cardIndex);
+    cardPos = args.takeFirst();
+    cardIndex = args.takeFirst();
+    // Card *card = currentPlayer->play(cardIndex);
+    Card *card = game->at(cardPos)->play(cardIndex);
     game->appendToPlayedCards(card);
+
+    /* inform others about played cards */
+    args.clear();
+    args << cardPos << card->cardType << card->cardNumber;
+    network->broadcast(GameNet::SHOW_CARD_ONTABLE, args);
+    delay(150);
     
-    int cardPos = (currentPlayer->getPosition() + posRelative) % 4;
+    // int cardPos = (currentPlayer->getPosition() + posRelative) % 4;
+    cardPos = (cardPos + posRelative) % 4;
     showCardOnTable(card, cardPos);
 
     if (game->pisti(currentPlayer)) {
@@ -1450,6 +923,11 @@ void Widget::n_play()
     }
 
     currentPlayer = game->tNextPlayer();
+    if (! currentPlayer->myself()) {
+        network->sendMessage(currentPlayer->getSocket(), GameNet::CURRENT_PLAYER);
+        delay(150);
+        return;
+    }
     ui->southHand->setEnabled(true);
 }
 
@@ -1486,12 +964,11 @@ void Widget::on_styletoolMulti_clicked()
         connect(network, SIGNAL(messageReceived(QTcpSocket*)), this, SLOT(processMessage(QTcpSocket*)));
         n_preNetwork_start(false);
     }
-    // connect(network, SIGNAL(messageReceived(QTcpSocket*)), this, SLOT(processMessage(QTcpSocket*)));
 }
 
 void Widget::preNetStart(bool server)
 {
-    hostMachine = server;
+    host = server;
     network = new GameNet(this, server);
     connect(network, SIGNAL(messageReceived(QTcpSocket*)), this, SLOT(processMessage(QTcpSocket*)));
 
@@ -1502,17 +979,122 @@ void Widget::preNetStart(bool server)
     	connect(network, SIGNAL(serverReady()), this, SLOT(networkStart()));
 }
 
+void Widget::n_cardClicked(QObject *obj)
+{
+    ui->southHand->setEnabled(false);
+
+    if (host == true)
+        currentPlayer = game->toSouth();
+
+    QList<int> args;
+
+    Card *card = static_cast<Card *>(obj);
+
+    int cardIndex = 0;
+    QList<Card *> &l_hand = currentPlayer->getHand();
+    for (int i = 0; i < currentPlayer->getNumberOfCards(); ++i)
+        if (card == l_hand.at(i))
+            cardIndex = i;
+
+    int del = currentPlayer->getHand().indexOf(card);
+    currentPlayer->getHand().removeAt(del);
+    ui->southHand->layout()->removeWidget(static_cast<QWidget *>(card->buttonPtr));
+
+    if (host == true)
+        game->appendToPlayedCards(card);
+
+    //QList<int> args;
+
+    if (host) {
+        args << currentPlayer->getPosition() << card->cardType << card->cardNumber;
+        network->broadcast(GameNet::SHOW_CARD_ONTABLE, args);
+    } else {
+        args << cardIndex;
+        network->sendMessage(socket, GameNet::PLAY, args);
+    }
+
+    // showCardOnTable(card, game->playerIndex());
+    int cardPos = (currentPlayer->getPosition() + posRelative) % 4;
+    showCardOnTable(card, cardPos);
+
+    delay(150);
+
+    if (host == true) {
+        if (game->pisti(currentPlayer)) {
+            QList<Card *> &m = game->getPlayedCards();
+
+            // TODO: appropriate way of clearing args list
+            args.clear();
+
+            clearPanel(ui->tableCenter);
+            clearPanel(ui->tableEast);
+            clearPanel(ui->tableNorth);
+            clearPanel(ui->tableWest);
+            clearPanel(ui->tableSouth);
+            currentPlayer->collectCards(m);
+
+            network->broadcast(GameNet::CLEAR_TABLE);
+
+            // currentPlayer = game->tNextPlayer();
+        }
+        delay(150);
+        network->broadcast(GameNet::CURRENT_PLAYER);
+    }
+}
+
 void Widget::n_preNetwork_start(bool b)
 {
-    hostMachine = b;
+    host = b;
 
-    if (hostMachine == false) {
+    if (host == false) {
     	socket = network->getClientSoc();
+        Person *newPlayer;
+        currentPlayer = newPlayer = new Person;
+        newPlayer->setPlayerName(QString("Remote player"));
+        newPlayer->setMyself(true);
         connect(socket, SIGNAL(connected()), this, SLOT(prepareNetworkUI()));
     } else {
         connect(game, SIGNAL(ready()), this, SLOT(SNetworkStart()));
         prepareNetworkUI();
     }
+}
+
+void Widget::SNetworkStart()
+{
+    if (host == true) {
+        currentPlayer = game->toSouth();
+
+        for (int i = 0; i < game->tSize(); ++i) {
+            game->distributeCards( *currentPlayer, 4 );
+
+            if (currentPlayer->myself()) {
+                for (int i = 0; i < currentPlayer->getNumberOfCards(); i++) {
+                    QList<Card *> l = currentPlayer->getHand();
+                    connect(static_cast<QToolButton *>(l.at(i)->buttonPtr), SIGNAL(clicked()),
+                            mapper, SLOT(map()));
+                    mapper->setMapping(static_cast<QObject *>(l.at(i)->buttonPtr),
+                                       static_cast<QObject *>(l.at(i)));
+                    ui->southHand->layout()->addWidget(static_cast<QWidget *>(l.at(i)->buttonPtr));
+                }
+            } else {
+                QList<Card *> &m = currentPlayer->getHand();
+                QList<int> args;
+
+                args << currentPlayer->getPosition();
+                foreach (Card *card, m) {
+                    args << card->cardType << card->cardNumber;
+                }
+                if (currentPlayer->getSocket() != 0)
+                    network->sendMessage(currentPlayer->getSocket(), GameNet::SET_HAND, args);
+                else
+                    qDebug() << "socket error";
+            }
+
+            currentPlayer = game->tNextPlayer();
+        }
+    }
+
+    ui->stackedWidget->setCurrentIndex(1);
 }
 
 void Widget::prepareNetworkUI()
@@ -1547,22 +1129,24 @@ void Widget::slotPrepareNetworkUI(int n)
     QList<int> args;
     args << n;
 
-    if (hostMachine == true) {
-        newPlayer = new Person();
+    if (host == true) {
+        currentPlayer = newPlayer = new Person();
         newPlayer->setPlayerName(QString("Host player"));
         newPlayer->setMyself(true);
+        newPlayer->setTurn(true);
         game->tAdd(newPlayer, n);
-        posRelative = 0;
-        //network->broadcast(GameNet::SET_PLAYER_POS, args);
+        posRelative = computeRelativePosition(n);
+        network->broadcast(GameNet::SET_PLAYER_POS, args);
+        delay(150);
     } else {
-        currentPlayer = newPlayer = new Person();
-        newPlayer->setPlayerName(QString("Remote player"));
-        newPlayer->setMyself(true);
         network->sendMessage(socket, GameNet::SET_PLAYER_POS, args);
-        posRelative = 2;
+        currentPlayer->setPosition(n);
+        currentPlayer->setTurn(false);
+        posRelative = computeRelativePosition(n);
         delay(150);
     }
 
+    ui->southHand->setEnabled(currentPlayer->isMyTurn());
     pushSouth->hide();
     pushEast->hide();
     pushNorth->hide();
@@ -1570,3 +1154,135 @@ void Widget::slotPrepareNetworkUI(int n)
     delay(150);
 }
 
+void Widget::SCardClicked(QObject *obj)
+{
+    ui->southHand->setEnabled(false);
+
+    if (host == true)
+        currentPlayer = game->toSouth();
+
+    QList<int> args;
+
+    Card *card = static_cast<Card *>(obj);
+
+    int cardIndex = 0;
+    QList<Card *> &l_hand = currentPlayer->getHand();
+    for (int i = 0; i < currentPlayer->getNumberOfCards(); ++i)
+        if (card == l_hand.at(i))
+            cardIndex = i;
+
+    int del = currentPlayer->getHand().indexOf(card);
+    currentPlayer->getHand().removeAt(del);
+    ui->southHand->layout()->removeWidget(static_cast<QWidget *>(card->buttonPtr));
+
+    if (host == true)
+        game->appendToPlayedCards(card);
+
+    int location = currentPlayer->getPosition();
+
+    if (host) {
+        args << location << card->cardType << card->cardNumber;
+        network->broadcast(GameNet::SHOW_CARD_ONTABLE, args);
+    } else {
+        args << location << cardIndex;
+        network->sendMessage(socket, GameNet::PLAY, args);
+    }
+
+    location = (location + posRelative) % 4;
+    showCardOnTable(card, location);
+
+    delay(150);
+
+    if (host == true) {
+        if (game->pisti(currentPlayer)) {
+            QList<Card *> &m = game->getPlayedCards();
+
+            // TODO: appropriate way of clearing args list
+            args.clear();
+
+            clearPanel(ui->tableCenter);
+            clearPanel(ui->tableEast);
+            clearPanel(ui->tableNorth);
+            clearPanel(ui->tableWest);
+            clearPanel(ui->tableSouth);
+            currentPlayer->collectCards(m);
+
+            network->broadcast(GameNet::CLEAR_TABLE);
+        }
+        delay(150);
+        // network->broadcast(GameNet::CURRENT_PLAYER);
+        currentPlayer = game->tNextPlayer();
+        network->sendMessage(currentPlayer->getSocket(), GameNet::CURRENT_PLAYER);
+    }
+
+
+#if 0
+    QList<int> args;
+    Card *card = static_cast<Card *>(obj);
+    int cardPos = 0, del = 0, cardIndex = 0;
+
+    if (host == true) {
+        QList<Card *> &l_hand = currentPlayer->getHand();
+
+        for (int i = 0; i < currentPlayer->getNumberOfCards(); ++i)
+            if (card == l_hand.at(i))
+                cardIndex = i;
+
+        del = currentPlayer->getHand().indexOf(card);
+        currentPlayer->getHand().removeAt(del);
+        ui->southHand->layout()->removeWidget(static_cast<QWidget *>(card->buttonPtr));
+
+        game->appendToPlayedCards(card);
+
+        args << currentPlayer->getPosition() << card->cardType << card->cardNumber;
+        network->broadcast(GameNet::SHOW_CARD_ONTABLE, args);
+        delay(150);
+
+        if (game->pisti(currentPlayer)) {
+            QList<Card *> &m = game->getPlayedCards();
+            args.clear();
+
+            clearPanel(ui->tableCenter);
+            clearPanel(ui->tableEast);
+            clearPanel(ui->tableNorth);
+            clearPanel(ui->tableWest);
+            clearPanel(ui->tableSouth);
+            currentPlayer->collectCards(m);
+
+            network->broadcast(GameNet::CLEAR_TABLE);
+            delay(150);
+        }
+
+        currentPlayer = game->tNextPlayer();
+        socket = currentPlayer->getSocket();
+        network->sendMessage(socket, GameNet::CURRENT_PLAYER);
+        delay(150);
+
+    } else {
+        QList<Card *> &l_hand = currentPlayer->getHand();
+
+        for (int i = 0; i < currentPlayer->getNumberOfCards(); ++i)
+            if (card == l_hand.at(i))
+                cardIndex = i;
+
+        del = currentPlayer->getHand().indexOf(card);
+        currentPlayer->getHand().removeAt(del);
+        ui->southHand->layout()->removeWidget(static_cast<QWidget *>(card->buttonPtr));
+
+        args << currentPlayer->getPosition() << cardIndex;
+        network->sendMessage(socket, GameNet::PLAY, args);
+
+        cardPos = (currentPlayer->getPosition() + posRelative) % 4;
+        showCardOnTable(card, cardPos);
+        delay(150);
+    }
+#endif
+}
+
+int Widget::computeRelativePosition(int position)
+{
+    if (position == 0)
+        return 0;
+
+    return (4 - position);
+}
