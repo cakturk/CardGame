@@ -873,13 +873,13 @@ void Widget::n_show_card_ontable()
 
 void Widget::n_current_player()
 {
-    me->setTurn(true);
+    currentPlayer->setTurn(true);
     ui->southHand->setEnabled(true);
 }
 
 void Widget::n_not_current_player()
 {
-    me->setTurn(false);
+    currentPlayer->setTurn(false);
     ui->southHand->setEnabled(false);
 }
 
