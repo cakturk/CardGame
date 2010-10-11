@@ -631,9 +631,9 @@ void Widget::on_pushButton_clicked()
 
 void Widget::on_styletoolSingle_clicked()
 {
-    if (ui->stylecombo->currentIndex() == 0) {
+    if (ui->comboSinglePlayer->currentIndex() == 0) {
         game = new GameEngine(4);
-    } else if (ui->stylecombo->currentIndex() == 1) {
+    } else if (ui->comboSinglePlayer->currentIndex() == 1) {
         game = new GameEngine(2);
     }
 
@@ -641,14 +641,13 @@ void Widget::on_styletoolSingle_clicked()
     ui->stackedWidget->setCurrentIndex(1);
 }
 
-void Widget::on_pushButton_2_toggled(bool checked)
+void Widget::on_buttonToggle_toggled(bool checked)
 {
     if (checked)
         this->showFullScreen();
     else
         this->showNormal();
 }
-
 void Widget::n_simulateOthers()
 {
     QWidget *currentPlayerFrame;
@@ -952,18 +951,38 @@ void Widget::n_update_gui()
 void Widget::on_styletoolMulti_clicked()
 {
     int numOfPlayer = 0;
-    numOfPlayer = (ui->stylecombo->currentIndex() == 0) ? 4 : 2;
+    numOfPlayer = (ui->comboSinglePlayer->currentIndex() == 0) ? 4 : 2;
 
-    if (ui->checkBox->isChecked() == true) {
-        game = new GameEngine(true, numOfPlayer);
-        network = new GameNet(this, true, numOfPlayer);
-        connect(network, SIGNAL(messageReceived(QTcpSocket*)), this, SLOT(processMessage(QTcpSocket*)));
-        n_preNetwork_start(true);
-    } else {
-        network = new GameNet(this, false, numOfPlayer);
-        connect(network, SIGNAL(messageReceived(QTcpSocket*)), this, SLOT(processMessage(QTcpSocket*)));
-        n_preNetwork_start(false);
+//    if (ui->checkBox->isChecked() == true) {
+//        game = new GameEngine(true, numOfPlayer);
+//        network = new GameNet(this, true, numOfPlayer);
+//        connect(network, SIGNAL(messageReceived(QTcpSocket*)), this, SLOT(processMessage(QTcpSocket*)));
+//        n_preNetwork_start(true);
+//    } else {
+//        network = new GameNet(this, false, numOfPlayer);
+//        connect(network, SIGNAL(messageReceived(QTcpSocket*)), this, SLOT(processMessage(QTcpSocket*)));
+//        n_preNetwork_start(false);
+//    }
+}
+
+void Widget::on_buttonCreateServer_clicked()
+{
+    int buttonId = ui->buttonGroup->checkedId();
+    if (buttonId == -1)
+        return;
+
+    if (ui->lineEditServerName->text().isEmpty()) {
+        QMessageBox message;
+        message.setText("Please, enter server name");
+        message.setIcon(QMessageBox::Information);
+        message.exec();
+        return;
     }
+
+    game = new GameEngine(true, buttonId, this);
+    network = new GameNet(this, true, buttonId);
+    connect(network, SIGNAL(messageReceived()), this, SLOT(processMessage()));
+    n_preNetwork_start(true);
 }
 
 void Widget::preNetStart(bool server)
@@ -1285,4 +1304,16 @@ int Widget::computeRelativePosition(int position)
         return 0;
 
     return (4 - position);
+}
+
+void Widget::on_buttonMultiplayer_clicked()
+{
+    ui->buttonGroup->setId(ui->radioButton_0, 2);
+    ui->buttonGroup->setId(ui->radioButton_1, 4);
+    ui->radioButton_0->setChecked(true);
+    ui->stackedWidget->setCurrentIndex(3);
+}
+
+void Widget::on_buttonConnect_clicked()
+{
 }

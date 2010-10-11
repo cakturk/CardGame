@@ -10,6 +10,7 @@
 #include <QTime>
 #include <QDebug>
 #include <QSignalMapper>
+#include <QMessageBox>
 #include "card.h"
 #include "gameengine.h"
 #include "gamenet.h"
@@ -87,8 +88,11 @@ private:
     QFrame *getPlayerFrame(int pos) const;
 
 private slots:
+    void on_buttonConnect_clicked();
+    void on_buttonCreateServer_clicked();
+    void on_buttonToggle_toggled(bool checked);
+    void on_buttonMultiplayer_clicked();
     void on_styletoolMulti_clicked();
-    void on_pushButton_2_toggled(bool checked);
     void on_styletoolSingle_clicked();
     void on_pushButton_clicked();
     void cardClicked(QObject *obj);
