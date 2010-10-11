@@ -422,7 +422,13 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item>
-          <widget class="QListWidget" name="listWidgetServerList">
+          <widget class="QListWidget" name="listWidget">
+           <property name="font">
+            <font>
+             <family>DejaVu Serif</family>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
            <property name="styleSheet">
             <string notr="true">background-color: rgb(246, 255, 183);</string>
            </property>

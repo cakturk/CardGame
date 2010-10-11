@@ -8,7 +8,7 @@
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::Widget)
+    ui(new Ui::Widget), browser(0), resolver(0), registrar(0)
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
@@ -45,7 +45,6 @@ Widget::Widget(QWidget *parent) :
     vbox = new QVBoxLayout(ui->westHand);
     vbox->setAlignment(Qt::AlignCenter);
     ui->westHand->setLayout(vbox);
-
 
     // modifiedstart();
 }
@@ -982,6 +981,15 @@ void Widget::on_buttonCreateServer_clicked()
     game = new GameEngine(true, buttonId, this);
     network = new GameNet(this, true, buttonId);
     connect(network, SIGNAL(messageReceived()), this, SLOT(processMessage()));
+
+    QString serverName = ui->lineEditServerName->text();
+    serverName = serverName.isEmpty() ?
+                         " Game server " + QHostInfo::localHostName() :
+                         serverName+ " " + QHostInfo::localHostName();
+
+    registrar = new AvahiRegistrar(this);
+    //registrar->registerService(AvahiRecord());
+
     n_preNetwork_start(true);
 }
 
@@ -1311,9 +1319,41 @@ void Widget::on_buttonMultiplayer_clicked()
     ui->buttonGroup->setId(ui->radioButton_0, 2);
     ui->buttonGroup->setId(ui->radioButton_1, 4);
     ui->radioButton_0->setChecked(true);
+
+    browser = new AvahiBrowser(this);
+    connect(browser, SIGNAL(currentAvahiRecordsChanged(QList<AvahiRecord>)),
+            this, SLOT(updateRecords(QList<AvahiRecord>)));
+    browser->browseForService("_bilkon._tcp");
     ui->stackedWidget->setCurrentIndex(3);
 }
 
 void Widget::on_buttonConnect_clicked()
 {
+    QList<QListWidgetItem *> items = ui->listWidget->selectedItems();
+
+    if (! items.isEmpty()) {
+        if (resolver == 0) {
+            resolver = new AvahiResolver(this);
+            connect(resolver, SIGNAL(avahiRecordResolved(QHostInfo&,quint16)), this, SLOT(deleteLater()));
+        }
+    }
+
+    QListWidgetItem *item = items.first();
+    QVariant variant = item->data(Qt::UserRole);
+    resolver->resolveAvahiRecord(variant.value<AvahiRecord>());
+}
+
+void Widget::updateRecords(const QList<AvahiRecord> &list)
+{
+    ui->listWidget->clear();
+
+    foreach (AvahiRecord record, list) {
+        QVariant variant;
+        variant.setValue(record);
+        QListWidgetItem *item = new QListWidgetItem(record.servName + " " + record.replyDomain, ui->listWidget);
+        item->setData(Qt::UserRole, variant);
+    }
+
+    if (! list.isEmpty())
+        ui->listWidget->setCurrentRow(0);
 }

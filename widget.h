@@ -14,6 +14,9 @@
 #include "card.h"
 #include "gameengine.h"
 #include "gamenet.h"
+#include "avahibrowser.h"
+#include "avahiresolver.h"
+#include "avahiregistrar.h"
 
 namespace Ui {
     class Widget;
@@ -58,6 +61,10 @@ private:
     QPushButton *pushNorth;
     QPushButton *pushWest;
 
+    AvahiBrowser *browser;
+    AvahiResolver *resolver;
+    AvahiRegistrar *registrar;
+
     void modifiedstart();
     void preNetStart(bool);
     void centerMyWindow();
@@ -88,6 +95,7 @@ private:
     QFrame *getPlayerFrame(int pos) const;
 
 private slots:
+    void updateRecords(const QList<AvahiRecord> &);
     void on_buttonConnect_clicked();
     void on_buttonCreateServer_clicked();
     void on_buttonToggle_toggled(bool checked);
@@ -103,7 +111,6 @@ private slots:
 
     void SCardClicked(QObject *obj);
     void SNetworkStart();
-
 };
 
 #endif // WIDGET_H

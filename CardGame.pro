@@ -9,6 +9,17 @@ DEPENDPATH += .
 INCLUDEPATH += .
 
 # Input
-HEADERS += card.h gameengine.h gamenet.h person.h widget.h
+HEADERS += card.h gameengine.h gamenet.h person.h widget.h \
+    avahiresolver.h \
+    avahiregistrar.h \
+    AvahiRecord.h \
+    avahibrowser.h
 FORMS += widget.ui
-SOURCES += card.cpp gameengine.cpp gamenet.cpp main.cpp person.cpp widget.cpp
+SOURCES += card.cpp gameengine.cpp gamenet.cpp main.cpp person.cpp widget.cpp \
+    avahiresolver.cpp \
+    avahiregistrar.cpp \
+    avahibrowser.cpp
+
+LIBS += -ldns_sd \
+    -lavahi-core \
+    -lavahi-client \
