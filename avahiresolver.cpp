@@ -30,6 +30,7 @@ void AvahiResolver::resolveAvahiRecord(const AvahiRecord &record)
                                                 record.servType.toUtf8().constData(),
                                                 record.replyDomain.toUtf8().constData(),
                                                 (DNSServiceResolveReply)avahiResolveReply, this);
+    qDebug() << "reply domain " << record.replyDomain;
     if(err != kDNSServiceErr_NoError) {
         emit error(err);
     } else {
@@ -67,11 +68,16 @@ void AvahiResolver::avahiResolveReply(DNSServiceRef, DNSServiceFlags,
 #endif
 
     resolver->avahiPort = port;
-    QHostInfo::lookupHost(QString::fromUtf8(hosttarget),
-                          resolver, SLOT(finishConnect(QHostInfo&)));
+
+    // TODO: desktop.local.
+    qDebug() << hosttarget;
+    QString hostName(hosttarget);
+    hostName = hostName.remove(hostName.size() - 1, 1);
+
+    QHostInfo::lookupHost(hostName, resolver,SLOT(finishConnect(const QHostInfo&)));
 }
 
-void AvahiResolver::finishConnect(QHostInfo &hostinfo)
+void AvahiResolver::finishConnect(const QHostInfo &hostinfo)
 {
     emit avahiRecordResolved(hostinfo, avahiPort);
     QMetaObject::invokeMethod(this, "cleanupResolve", Qt::QueuedConnection);

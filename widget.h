@@ -17,6 +17,7 @@
 #include "avahibrowser.h"
 #include "avahiresolver.h"
 #include "avahiregistrar.h"
+#include "assert.h"
 
 namespace Ui {
     class Widget;
@@ -89,7 +90,7 @@ private:
     void n_not_current_player();
     void n_play();
     void n_update_gui();
-    void n_preNetwork_start(bool b);
+    void n_preNetwork_start(bool server);
 
     QFrame *getCurrentPlayerFrame() const;
     QFrame *getPlayerFrame(int pos) const;
@@ -111,6 +112,7 @@ private slots:
 
     void SCardClicked(QObject *obj);
     void SNetworkStart();
+    void connectToServer(const QHostInfo &hostinfo, quint16 port);
 };
 
 #endif // WIDGET_H

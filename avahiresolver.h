@@ -17,13 +17,13 @@ public:
     void resolveAvahiRecord(const AvahiRecord &record);
 
 signals:
-    void avahiRecordResolved(QHostInfo &hostInfo, quint16 port);
+    void avahiRecordResolved(const QHostInfo &hostInfo, quint16 port);
     void error(DNSServiceErrorType err);
 
 private slots:
     void socketReadyRead();
     void cleanupResolve();
-    void finishConnect(QHostInfo &hostinfo);
+    void finishConnect(const QHostInfo&);
 
 private:
     static void avahiResolveReply(DNSServiceRef sdRef, DNSServiceFlags flags,

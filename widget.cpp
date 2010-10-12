@@ -8,7 +8,7 @@
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::Widget), browser(0), resolver(0), registrar(0)
+    ui(new Ui::Widget),game(0), network(0), browser(0), resolver(0), registrar(0)
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
@@ -871,6 +871,7 @@ void Widget::n_show_card_ontable()
 
 void Widget::n_current_player()
 {
+    qDebug() << "set current player";
     currentPlayer->setTurn(true);
     ui->southHand->setEnabled(true);
 }
@@ -980,7 +981,7 @@ void Widget::on_buttonCreateServer_clicked()
 
     game = new GameEngine(true, buttonId, this);
     network = new GameNet(this, true, buttonId);
-    connect(network, SIGNAL(messageReceived()), this, SLOT(processMessage()));
+    connect(network, SIGNAL(messageReceived(QTcpSocket*)), this, SLOT(processMessage(QTcpSocket*)));
 
     QString serverName = ui->lineEditServerName->text();
     serverName = serverName.isEmpty() ?
@@ -988,7 +989,8 @@ void Widget::on_buttonCreateServer_clicked()
                          serverName+ " " + QHostInfo::localHostName();
 
     registrar = new AvahiRegistrar(this);
-    //registrar->registerService(AvahiRecord());
+    AvahiRecord record(serverName, QString("_bilkon._tcp"), QLatin1String(""));
+    registrar->registerService(record, 33333);
 
     n_preNetwork_start(true);
 }
@@ -1239,6 +1241,7 @@ void Widget::SCardClicked(QObject *obj)
         delay(150);
         // network->broadcast(GameNet::CURRENT_PLAYER);
         currentPlayer = game->tNextPlayer();
+        assert(currentPlayer != 0);
         network->sendMessage(currentPlayer->getSocket(), GameNet::CURRENT_PLAYER);
     }
 
@@ -1332,15 +1335,31 @@ void Widget::on_buttonConnect_clicked()
     QList<QListWidgetItem *> items = ui->listWidget->selectedItems();
 
     if (! items.isEmpty()) {
+        //network = new GameNet(true, this);
         if (resolver == 0) {
             resolver = new AvahiResolver(this);
-            connect(resolver, SIGNAL(avahiRecordResolved(QHostInfo&,quint16)), this, SLOT(deleteLater()));
+            connect(resolver, SIGNAL(avahiRecordResolved(QHostInfo,quint16)),
+                    this, SLOT(connectToServer(QHostInfo,quint16)));
         }
-    }
 
-    QListWidgetItem *item = items.first();
-    QVariant variant = item->data(Qt::UserRole);
-    resolver->resolveAvahiRecord(variant.value<AvahiRecord>());
+        QListWidgetItem *item = items.first();
+        QVariant variant = item->data(Qt::UserRole);
+        resolver->resolveAvahiRecord(variant.value<AvahiRecord>());
+        // n_preNetwork_start(false);
+    }
+}
+
+void Widget::connectToServer(const QHostInfo &hostinfo, quint16 port)
+{
+    QList<QHostAddress> addresses = hostinfo.addresses();
+    if (addresses.isEmpty())
+        return;
+
+    QHostAddress addr = addresses.first();
+    network = new GameNet(this, addr, port);
+    connect(network, SIGNAL(messageReceived(QTcpSocket*)), this, SLOT(processMessage(QTcpSocket*)));
+
+    n_preNetwork_start(false);
 }
 
 void Widget::updateRecords(const QList<AvahiRecord> &list)

@@ -1,11 +1,8 @@
 #include "gamenet.h"
 
 GameNet::GameNet(QObject *parent, bool server, int conn_number) :
-        QTcpServer(parent), conn_num(conn_number)
+        QTcpServer(parent),blocksize(0), conn_num(conn_number)
 {
-    //clientSoc = NULL;
-    blocksize = 0;
-
     if (server) {
         startServer();
     } else {
@@ -13,24 +10,23 @@ GameNet::GameNet(QObject *parent, bool server, int conn_number) :
     }
 }
 
-GameNet::GameNet(QObject *parent, QHostAddress address, quint16 port) :
-        QTcpServer(parent), clientSoc(0)
+/* TODO: change constructor signature */
+GameNet::GameNet(QObject *parent, QHostAddress &address, quint16 port) :
+        QTcpServer(parent), clientSoc(0), blocksize(0)
 {
-    clientSoc = new QTcpSocket(this);
-    clientSoc->connectToHost(address, port);
-    connect(clientSoc, SIGNAL(readyRead()), this, SLOT(readMessage()));
-    connect(clientSoc, SIGNAL(disconnected()), this, SLOT(foo()));
+    connectToServer(address, port);
 }
 
 GameNet::~GameNet() { qDebug() << "see you in another life brotha!"; }
 
+// TODO: port numarasi secilebilmeli
 bool GameNet::startServer(QHostAddress addr)
 {
     bool retval = listen(addr, (quint16) 33333);
     if (retval) {
         connect(this, SIGNAL(newConnection()), this, SLOT(addPlayer()));
         /* ? */
-        // connect(this, SIGNAL(serverReady()), this, SLOT(setupServer()));
+        connect(this, SIGNAL(serverReady()), this, SLOT(setupServer()));
         qDebug() << "Server started";
     }
 
@@ -183,17 +179,15 @@ void GameNet::startClient()
     clientSoc = new QTcpSocket(this);
     clientSoc->connectToHost("192.168.2.10", 33333);
     connect(clientSoc, SIGNAL(readyRead()), this, SLOT(readMessage()));
-    connect(clientSoc, SIGNAL(disconnected()), this, SLOT(foo()));
+    connect(clientSoc, SIGNAL(disconnected()), this, SLOT(clientDisconnected()));
 }
 
-void GameNet::connectToServer(const QHostInfo &hostinfo, quint16 port)
+void GameNet::connectToServer(const QHostAddress &address, quint16 port)
 {
-    QList<QHostAddress> addresses = hostinfo.addresses();
-    if (! addresses.isEmpty()) {
-        QHostAddress address = hostinfo.addresses().first();
-        clientSoc->connectToHost(address, port);
-        connect(clientSoc, SIGNAL(readyRead()), this, SLOT(readMessage()));
-    }
+    clientSoc = new QTcpSocket(this);
+    clientSoc->connectToHost(address, port);
+    connect(clientSoc, SIGNAL(readyRead()), this, SLOT(readMessage()));
+    connect(clientSoc, SIGNAL(disconnected()), this, SLOT(clientDisconnected()));
 }
 
 void GameNet::setupServer()
@@ -236,11 +230,7 @@ void GameNet::readMessage()
     emit messageReceived(soc);
 }
 
-void GameNet::messageHandler()
-{
-}
-
-void GameNet::foo()
+void GameNet::clientDisconnected()
 {
     qDebug() << "socket disconnected";
 }

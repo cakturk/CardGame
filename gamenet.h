@@ -13,7 +13,7 @@ class GameNet : public QTcpServer
 
 public:
     GameNet(QObject *parent = 0, bool server = false, int conn_number = 1);
-    GameNet(QObject *parent, QHostAddress address, quint16 port);
+    GameNet(QObject *parent, QHostAddress &address, quint16 port);
     ~GameNet();
 
     enum commands {
@@ -61,7 +61,6 @@ private:
 
     void getReply(QTcpSocket *sock);
     void processCommand();
-    void messageHandler();
 
 private slots:
     bool startServer(QHostAddress addr = QHostAddress::Any);
@@ -70,9 +69,8 @@ private slots:
     void addPlayer();
     void startClient();
     void setupServer();
-    void connectToServer(const QHostInfo &hostinfo, quint16 port);
-
-    void foo();
+    void connectToServer(const QHostAddress &address, quint16 port);
+    void clientDisconnected();
 
 public slots:
     void readMessage();
