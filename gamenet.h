@@ -32,15 +32,17 @@ public:
         GAME_OVER,
         CURRENT_PLAYER,
         NOT_CURRENT_PLAYER,
-        UPDATE_GUI,         // | realPos : int | numberOfCards : int |
-        PLAY                // | index|
+        INITIAL_GUI_STATE,         // | realPos : int | numberOfCards : int |
+        PLAY,                // | index|
+        PREPARE_NETWORK_UI,
+        SHOW_PLAYER_HAND
     };
 
     void sendMessage(QTcpSocket *sock, commands com, QList<int> operand);
     void sendMessage(QTcpSocket *sock, commands com);
     void sendMessage(QTcpSocket *sock, QList<QString> operand);
-    void broadcast(commands com, QList<int>);
-    void broadcast(commands com);
+    void broadcast(commands com, QList<int>, QTcpSocket *exclude = 0);
+    void broadcast(commands com, QTcpSocket *exclude = 0);
     inline int getReceivedCommand() const { return receivedCommand; }
     inline QList<int> arguments() const { return argument_list; }
     inline QList<QTcpSocket *> getPeers() const { return sockets; }

@@ -25,6 +25,7 @@ public:
     void tAdd(int);
 
     inline void tSetMyself(bool b) { t_Myself = b;}
+    inline Person** getTPlayers() { return tPlayers; }
     inline Person* toSouth() { tIndex = 0; return tPlayers[0]; }
     inline Person* toEast() { tIndex = 1; return tPlayers[1]; }
     inline Person* toNorth() { tIndex = 2; return tPlayers[2]; }

@@ -15,6 +15,7 @@ class Person : public QObject
 public:
     explicit Person(int r_pos = 0, QObject *parent = 0);
     explicit Person(QString name, int pos = 0, QObject *parent = 0);
+    ~Person();
 
     void setHand(QList<Card *> &h);
     void collectCards(QList<Card *> &c);

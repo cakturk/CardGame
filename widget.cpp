@@ -675,7 +675,7 @@ void Widget::n_simulateOthers()
 
 void Widget::processMessage(QTcpSocket *sc)
 {
-	qDebug() << "processMessage :" << network->getReceivedCommand();
+    qDebug() << "processMessage :" << network->getReceivedCommand();
     switch (network->getReceivedCommand()) {
     case GameNet::SET_HAND: // server to client
         n_set_hand();
@@ -699,7 +699,7 @@ void Widget::processMessage(QTcpSocket *sc)
         // TODO: n_show_scoreboard()
         break;
     case GameNet::SHOW_CARD_ONTABLE: // server to client
-        n_show_card_ontable();
+        n_show_card_ontable(sc);
         break;
     case GameNet::CURRENT_PLAYER: // server to client
         n_current_player();
@@ -710,8 +710,8 @@ void Widget::processMessage(QTcpSocket *sc)
     case GameNet::PLAY: // client to server
         n_play();
         break;
-    case GameNet::UPDATE_GUI:
-        n_update_gui();
+    case GameNet::PREPARE_NETWORK_UI:
+        n_prepare_network_ui();
         break;
     }
 }
@@ -769,13 +769,13 @@ void Widget::n_set_player_name()
  */
 void Widget::n_set_player_pos(QTcpSocket *sc)
 {
-	qDebug() << "n_set_player_pos";
+    qDebug() << "n_set_player_pos";
     QList<int> args = network->arguments();
 
     if (args.isEmpty())
         return;
 
-    int position = args.takeFirst();
+    int position = args.first();
 
     switch (position) {
     case 0:
@@ -802,6 +802,8 @@ void Widget::n_set_player_pos(QTcpSocket *sc)
 
         game->tAdd(newPlayer, position);
     }
+
+    network->broadcast(GameNet::SET_PLAYER_POS, args, sc);
 }
 
 void Widget::n_get_player_pos()
@@ -849,14 +851,15 @@ void Widget::n_clear_frame()
     }
 }
 
-void Widget::n_show_card_ontable()
+void Widget::n_show_card_ontable(QTcpSocket *sock)
 {
     QList<int> args = network->arguments();
 
     if (args.isEmpty())
         return;
 
-    int cardPos = args.takeFirst();
+    int cardPos, outgoingPos;
+    outgoingPos = cardPos = args.takeFirst();
     if (cardPos == currentPlayer->getPosition())
         return;
     cardPos = (cardPos + posRelative) % 4;
@@ -867,6 +870,10 @@ void Widget::n_show_card_ontable()
 
     Card *card = new Card(type, num);
     showCardOnTable(card, cardPos);
+
+    args.clear();
+    args << outgoingPos << type << num;
+    // network->broadcast(GameNet::SHOW_CARD_ONTABLE, sock);
 
     if (cardPos < 0 || cardPos > 3)
         qDebug() << "Breakpoint " << cardPos;
@@ -933,22 +940,23 @@ void Widget::n_play()
     ui->southHand->setEnabled(true);
 }
 
-void Widget::n_update_gui()
+void Widget::n_prepare_network_ui()
+{
+    prepareNetworkUI();
+}
+
+void Widget::n_show_player_hand(QTcpSocket *sock)
 {
     QList<int> args = network->arguments();
 
     if (args.isEmpty())
         return;
 
-    int realPos = args.takeFirst();
-    int cardNum = args.takeFirst();
-    // if it's me discard message.
-    if (realPos == game->playerIndex())
-        return;
+    int cardPos = args.takeFirst();
+    int size = args.takeFirst();
 
-    QWidget *frame = getCurrentPlayerFrame();
-    clearPanel(frame, true);
-    showPlayerHand(realPos, cardNum);
+    cardPos = (cardPos + posRelative) % 4;
+    showPlayerHand(cardPos, size);
 }
 
 void Widget::on_styletoolMulti_clicked()
@@ -983,8 +991,9 @@ void Widget::on_buttonCreateServer_clicked()
     }
 
     game = new GameEngine(true, buttonId, this);
-    network = new GameNet(this, true, buttonId);
+    network = new GameNet(this, true, buttonId - 1);
     connect(network, SIGNAL(messageReceived(QTcpSocket*)), this, SLOT(processMessage(QTcpSocket*)));
+    connect(network, SIGNAL(serverReady()), SLOT(sendPrepareUi()));
 
     QString serverName = ui->lineEditServerName->text();
     serverName = serverName.isEmpty() ?
@@ -1034,8 +1043,6 @@ void Widget::n_cardClicked(QObject *obj)
 
     if (host == true)
         game->appendToPlayedCards(card);
-
-    //QList<int> args;
 
     if (host) {
         args << currentPlayer->getPosition() << card->cardType << card->cardNumber;
@@ -1087,7 +1094,7 @@ void Widget::n_preNetwork_start(bool b)
         currentPlayer = newPlayer = new Person;
         newPlayer->setPlayerName(QString("Remote player"));
         newPlayer->setMyself(true);
-        connect(socket, SIGNAL(connected()), this, SLOT(prepareNetworkUI()));
+        // connect(socket, SIGNAL(connected()), this, SLOT(prepareNetworkUI()));
     }
 }
 
@@ -1317,4 +1324,21 @@ void Widget::updateRecords(const QList<AvahiRecord> &list)
 
     if (! list.isEmpty())
         ui->listWidget->setCurrentRow(0);
+}
+
+void Widget::clientInit(QTcpSocket *)
+{
+    QList<int> places;
+    Person **p = game->getTPlayers();
+    for (int i = 0; i < game->tSize(); i++) {
+        if (p[i] != 0)
+            places[i] = 1;
+        else
+            places[i] = 0;
+    }
+}
+
+void Widget::sendPrepareUi()
+{
+    network->broadcast(GameNet::PREPARE_NETWORK_UI);
 }

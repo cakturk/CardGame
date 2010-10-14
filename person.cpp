@@ -16,6 +16,9 @@ Person::Person(QString name, int r_pos, QObject *parent) :
     sock = 0;
 }
 
+Person::~Person()
+{}
+
 void Person::setHand(QList<Card *> &h)
 {
     this->hand = h;

@@ -85,11 +85,12 @@ private:
     void n_get_player_pos();
     void n_clear_table();
     void n_clear_frame();
-    void n_show_card_ontable();
+    void n_show_card_ontable(QTcpSocket *sock);
     void n_current_player();
     void n_not_current_player();
     void n_play();
-    void n_update_gui();
+    void n_prepare_network_ui();
+    void n_show_player_hand(QTcpSocket *sock);
     void n_preNetwork_start(bool server);
 
     QFrame *getCurrentPlayerFrame() const;
@@ -113,6 +114,8 @@ private slots:
     void SCardClicked(QObject *obj);
     void SNetworkStart();
     void connectToServer(const QHostInfo &hostinfo, quint16 port);
+    void clientInit(QTcpSocket *sock);
+    void sendPrepareUi();
 };
 
 #endif // WIDGET_H

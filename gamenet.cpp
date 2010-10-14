@@ -109,23 +109,25 @@ void GameNet::sendMessage(QTcpSocket *sock, QList<QString> operand)
     sock->write(block);
 }
 
-void GameNet::broadcast(commands com, QList<int> args)
+void GameNet::broadcast(commands com, QList<int> args, QTcpSocket *exclude)
 {
     if (sockets.isEmpty())
         return;
 
     foreach (QTcpSocket *peer, sockets) {
-        sendMessage(peer, com, args);
+        if (peer != exclude)
+            sendMessage(peer, com, args);
     }
 }
 
-void GameNet::broadcast(commands com)
+void GameNet::broadcast(commands com, QTcpSocket *exclude)
 {
     if (sockets.isEmpty())
         return;
 
     foreach (QTcpSocket *peer, sockets) {
-        sendMessage(peer, com);
+        if (peer != exclude)
+            sendMessage(peer, com);
     }
 }
 
