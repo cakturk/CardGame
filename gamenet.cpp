@@ -59,6 +59,7 @@ void GameNet::addPlayer()
 
 void GameNet::sendMessage(QTcpSocket *sock, commands com, QList<int> operand)
 {
+    qDebug() << "sendMessage operand :" << com;
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_5);
@@ -76,6 +77,7 @@ void GameNet::sendMessage(QTcpSocket *sock, commands com, QList<int> operand)
 
 void GameNet::sendMessage(QTcpSocket *sock, commands com)
 {
+    qDebug() << "sendMessage :" << com;
     QList<int> operand;
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
@@ -92,7 +94,7 @@ void GameNet::sendMessage(QTcpSocket *sock, commands com)
     qDebug() << by << " bytes data written";
 }
 
-void sendMessage(QTcpSocket *sock, QList<QString> operand)
+void GameNet::sendMessage(QTcpSocket *sock, QList<QString> operand)
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
@@ -200,12 +202,16 @@ void GameNet::setupServer()
 
 void GameNet::readMessage()
 {
+/*
+    qDebug() << "*****begin*****";
     qDebug() << "reading message";
-
+*/
     QTcpSocket *soc = static_cast<QTcpSocket *>(QObject::sender());
 
     if (soc == NULL)
         return;
+    again:
+    // qDebug() << "blocksize :" << soc->bytesAvailable() << " byte";
 
     QDataStream in(soc);
     in.setVersion(QDataStream::Qt_4_5);
@@ -217,6 +223,8 @@ void GameNet::readMessage()
         in >> blocksize;
     }
 
+    // qDebug() << "packet size :" << blocksize << " byte";
+
     if (soc->bytesAvailable() < blocksize)
         return;
 
@@ -225,9 +233,15 @@ void GameNet::readMessage()
     argument_list.clear();
     blocksize = 0;
     in >> argument_list;
-
-    qDebug() << "messageReceived signal emitted";
+/*
+    qDebug() << "blocksize :" << soc->bytesAvailable() << " byte";
+    qDebug() << "qlist.size() " << argument_list.size();
+    qDebug() << "info";
+*/
     emit messageReceived(soc);
+    // qDebug() << "****end****";
+    if (soc->bytesAvailable())
+        goto again;
 }
 
 void GameNet::clientDisconnected()

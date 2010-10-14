@@ -17,7 +17,7 @@
 #include "avahibrowser.h"
 #include "avahiresolver.h"
 #include "avahiregistrar.h"
-#include "assert.h"
+#include <assert.h>
 
 namespace Ui {
     class Widget;

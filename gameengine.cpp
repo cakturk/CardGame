@@ -298,7 +298,7 @@ QList<Card *> & GameEngine::getCards()
     return cards;
 }
 
-int GameEngine::getNumberOfOnlinePlayer() const
+int GameEngine::getNumberOfPlayer() const
 {
     return numberOfPlayer;
 }

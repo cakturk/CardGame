@@ -30,7 +30,7 @@ public:
     inline Person* toNorth() { tIndex = 2; return tPlayers[2]; }
     inline Person* toWest() { tIndex = 3; return tPlayers[3]; }
 
-    int getNumberOfOnlinePlayer() const;
+    int getNumberOfPlayer() const;
     int playerIndex();
     int tSize();
 

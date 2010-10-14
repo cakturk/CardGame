@@ -26,7 +26,7 @@ public:
         CLEAR_TABLE,
         CLEAR_FRAME,        // | realPos : int |
         SHOW_SCOREBOARD,
-        SHOW_CARD_ONTABLE,  // | realPos : int | cards (cardType, cardNumber |
+        SHOW_CARD_ONTABLE,  // | realPos : int | cards (cardType, cardNumber | 9
         L_PLAYED_CARD,
         RESTART,
         GAME_OVER,
