@@ -235,6 +235,9 @@ void GameNet::readMessage()
     argument_list.clear();
     blocksize = 0;
     in >> argument_list;
+
+    if (! argument_list.isEmpty() && argument_list.first() == 0)
+        qDebug() << "breakpoint";
 /*
     qDebug() << "blocksize :" << soc->bytesAvailable() << " byte";
     qDebug() << "qlist.size() " << argument_list.size();

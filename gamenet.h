@@ -35,7 +35,7 @@ public:
         INITIAL_GUI_STATE,         // | realPos : int | numberOfCards : int |
         PLAY,                // | index|
         PREPARE_NETWORK_UI,
-        SHOW_PLAYER_HAND
+        SHOW_PLAYER_HAND     // 18
     };
 
     void sendMessage(QTcpSocket *sock, commands com, QList<int> operand);
