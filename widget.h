@@ -92,6 +92,7 @@ private:
     void n_prepare_network_ui();
     void n_show_player_hand(QTcpSocket *sock);
     void n_preNetwork_start(bool server);
+    void renewTurn();
 
     QFrame *getCurrentPlayerFrame() const;
     QFrame *getPlayerFrame(int pos) const;

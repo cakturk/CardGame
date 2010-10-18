@@ -1003,6 +1003,8 @@ void Widget::on_buttonCreateServer_clicked()
         return;
     }
 
+    ui->buttonCreateServer->setEnabled(false);
+    ui->buttonConnect->setEnabled(false);
     game = new GameEngine(true, buttonId, this);
     network = new GameNet(this, true, buttonId - 1);
     connect(network, SIGNAL(messageReceived(QTcpSocket*)), this, SLOT(processMessage(QTcpSocket*)));
@@ -1121,8 +1123,9 @@ void Widget::SNetworkStart()
             game->distributeCards( *currentPlayer, 4 );
 
             if (currentPlayer->myself()) {
-                for (int j = 0; j < currentPlayer->getNumberOfCards(); j++) {
-                    QList<Card *> l = currentPlayer->getHand();
+                QList<Card *> l = currentPlayer->getHand();
+
+                for (int j = 0; j < l.size(); j++) {
                     connect(static_cast<QToolButton *>(l.at(j)->buttonPtr), SIGNAL(clicked()),
                             mapper, SLOT(map()));
                     mapper->setMapping(static_cast<QObject *>(l.at(j)->buttonPtr),
@@ -1182,6 +1185,16 @@ void Widget::prepareNetworkUI()
     pushMapper->setMapping(pushNorth, 2);
     pushMapper->setMapping(pushWest, 3);
 
+    if (host == true) {
+        Person *newPlayer;
+        currentPlayer = newPlayer = new Person();
+        newPlayer->setPlayerName(QString("Host player"));
+        newPlayer->setMyself(true);
+        newPlayer->setTurn(true);
+        game->tAdd(newPlayer, 0);
+        posRelative = computeRelativePosition(0);
+    }
+
     connect(pushMapper, SIGNAL(mapped(int)), this, SLOT(slotPrepareNetworkUI(int)));
     ui->stackedWidget->setCurrentIndex(1);
 }
@@ -1194,7 +1207,7 @@ void Widget::slotPrepareNetworkUI(int n)
     args << n;
 
     if (host == true) {
-
+/*
         currentPlayer = newPlayer = new Person();
         newPlayer->setPlayerName(QString("Host player"));
         newPlayer->setMyself(true);
@@ -1203,6 +1216,7 @@ void Widget::slotPrepareNetworkUI(int n)
         posRelative = computeRelativePosition(n);
         network->broadcast(GameNet::SET_PLAYER_POS, args);
         // delay(150);
+*/
 
     } else {
         network->sendMessage(socket, GameNet::SET_PLAYER_POS, args);
@@ -1213,7 +1227,7 @@ void Widget::slotPrepareNetworkUI(int n)
     }
 
     ui->southHand->setEnabled(currentPlayer->isMyTurn());
-    pushSouth->hide();
+    // pushSouth->hide();
     pushEast->hide();
     pushNorth->hide();
     pushWest->hide();
@@ -1317,6 +1331,8 @@ void Widget::on_buttonConnect_clicked()
 
     if (! items.isEmpty()) {
         //network = new GameNet(true, this);
+        ui->buttonConnect->setEnabled(false);
+        ui->buttonCreateServer->setEnabled(false);
         if (resolver == 0) {
             resolver = new AvahiResolver(this);
             connect(resolver, SIGNAL(avahiRecordResolved(QHostInfo,quint16)),
@@ -1372,4 +1388,44 @@ void Widget::clientInit(QTcpSocket *)
 void Widget::sendPrepareUi()
 {
     network->broadcast(GameNet::PREPARE_NETWORK_UI);
+}
+
+void Widget::renewTurn()
+{
+    for (int i = 0; i < game->tSize(); ++i) {
+        game->distributeCards(*currentPlayer, 4);
+
+        if (currentPlayer->myself()) {
+            QList<Card *> hand = currentPlayer->getHand();
+
+            for (int j = 0; j < hand.size(); ++j) {
+                connect(static_cast<QToolButton *>(hand.at(j)->buttonPtr), SIGNAL(clicked()),
+                        mapper, SLOT(map()));
+                mapper->setMapping(static_cast<QObject *>(hand.at(j)->buttonPtr),
+                                   static_cast<QObject *>(hand.at(j)));
+                ui->southHand->layout()->addWidget(static_cast<QWidget *>(hand.at(j)->buttonPtr));
+            }
+
+            QList<int> list;
+            list << currentPlayer->getPosition() << currentPlayer->getNumberOfCards();
+            network->broadcast(GameNet::SHOW_PLAYER_HAND, list);
+
+        } else {
+            QList<Card *> hand = currentPlayer->getHand();
+            QList<int> list;
+
+            list << currentPlayer->getPosition();
+            foreach (Card *card, hand) {
+                list << card->cardType << card->cardNumber;
+            }
+
+            if (currentPlayer->getSocket() != 0) {
+                network->sendMessage(currentPlayer->getSocket(), GameNet::SET_HAND, list);
+            } else {
+                qDebug() << "socket error";
+            }
+        }
+
+        currentPlayer = game->tNextPlayer();
+    }
 }
