@@ -1176,6 +1176,8 @@ void Widget::n_preNetwork_start(bool b)
         socket = network->getClientSoc();
         Person *newPlayer;
         currentPlayer = newPlayer = new Person;
+        if (name.isEmpty())
+            name = "Remote player";
         newPlayer->setPlayerName(name);
         newPlayer->setMyself(true);
         // connect(socket, SIGNAL(connected()), this, SLOT(prepareNetworkUI()));
@@ -1206,6 +1208,14 @@ void Widget::SNetworkStart()
         card = game->getPlayedCards().last();
         operand << 4 << card->cardType << card->cardNumber;
         network->broadcast(GameNet::SHOW_CARD_ONTABLE, operand);
+
+        QToolButton *button = new QToolButton(ui->tableCenter);
+        button->setStyleSheet(QString("border-image: url(./graphics/back/3h.png)"));
+        button->setMinimumSize(150, 70);
+        button->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
+        button->show();
+        (static_cast<QWidget *>(card->buttonPtr))->setParent(ui->tableCenter);
+        (static_cast<QWidget *>(card->buttonPtr))->show();
 
         currentPlayer = game->toSouth();
         for (int i = 0; i < game->tSize(); ++i) {
@@ -1284,6 +1294,10 @@ void Widget::prepareNetworkUI()
         newPlayer->setTurn(true);
         game->tAdd(newPlayer, 0);
         posRelative = computeRelativePosition(0);
+
+        pushEast->hide();
+        pushNorth->hide();
+        pushWest->hide();
     }
 
     connect(pushMapper, SIGNAL(mapped(int)), this, SLOT(slotPrepareNetworkUI(int)));
@@ -1568,6 +1582,7 @@ void Widget::gameOver()
         pisti_b = pisticount[1];
 
         firstTeam = nameList.takeFirst();
+        firstTeam.append('\t');
         secondTeam = nameList.takeFirst();
 
         if (cardcount[0] > cardcount[1])
@@ -1581,13 +1596,13 @@ void Widget::gameOver()
         pisti_a = pisticount[0] + pisticount[2];
         pisti_b = pisticount[1] + pisticount[3];
 
-        firstTeam = nameList.takeFirst();
+        firstTeam = nameList.at(0);
         firstTeam.append(" & ");
-        firstTeam.append(nameList.takeFirst());
+        firstTeam.append(nameList.at(2));
 
-        secondTeam = nameList.takeFirst();
+        secondTeam = nameList.at(1);
         secondTeam.append(" & ");
-        secondTeam.append(nameList.takeFirst());
+        secondTeam.append(nameList.at(3));
 
         if (cardcount[0] + cardcount[2] > cardcount[1] + cardcount[3])
             score_a += 3;
@@ -1598,12 +1613,9 @@ void Widget::gameOver()
     qDebug() << firstTeam << " " << secondTeam;
 
     resultString.append('\t');
-    // resultString.append("First Team/Player");
     resultString.append(firstTeam);
     resultString.append('\t');
     resultString.append('\t');
-    resultString.append('\t');
-    // resultString.append("Second Team/Player");
     resultString.append(secondTeam);
     resultString.append('\n');
 
