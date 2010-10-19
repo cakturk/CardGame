@@ -30,6 +30,7 @@ public:
     inline Person* toEast() { tIndex = 1; return tPlayers[1]; }
     inline Person* toNorth() { tIndex = 2; return tPlayers[2]; }
     inline Person* toWest() { tIndex = 3; return tPlayers[3]; }
+    inline int numberOfCards() const { return cards.size(); }
 
     int getNumberOfPlayer() const;
     int playerIndex();
@@ -80,7 +81,7 @@ private:
     void startGameSession();
 
 signals:
-	void ready();
+    void ready();
 
 public slots:
 

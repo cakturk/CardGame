@@ -35,16 +35,20 @@ public:
         INITIAL_GUI_STATE,         // | realPos : int | numberOfCards : int |
         PLAY,                // | index|
         PREPARE_NETWORK_UI,
-        SHOW_PLAYER_HAND     // 18
+        SHOW_PLAYER_HAND,     // 18
+        REQUEST_HAND,
+        SHOW_CARD_BACK
     };
 
     void sendMessage(QTcpSocket *sock, commands com, QList<int> operand);
     void sendMessage(QTcpSocket *sock, commands com);
-    void sendMessage(QTcpSocket *sock, QList<QString> operand);
+    void sendMessageString(QTcpSocket *sock, commands com, QList<QString> operand);
     void broadcast(commands com, QList<int>, QTcpSocket *exclude = 0);
     void broadcast(commands com, QTcpSocket *exclude = 0);
+    void broadcastString(commands com, QList<QString> operand);
     inline int getReceivedCommand() const { return receivedCommand; }
     inline QList<int> arguments() const { return argument_list; }
+    inline QList<QString> stringArguments() const { return string_argument_list; }
     inline QList<QTcpSocket *> getPeers() const { return sockets; }
     inline QTcpSocket* getClientSoc() const { return clientSoc; }
 
@@ -55,6 +59,7 @@ signals:
 private:
     QList<QTcpSocket *> sockets;
     QList<int> argument_list;
+    QList<QString> string_argument_list;
     QTcpSocket *clientSoc;
 
     quint16 blocksize;

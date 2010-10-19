@@ -9,7 +9,7 @@ GameEngine::GameEngine(QObject *parent) :
 }
 
 GameEngine::GameEngine(int playerNumber, QObject *parent) :
-        QObject(parent), numberOfPlayer(playerNumber)
+        QObject(parent), numberOfPlayer(playerNumber), lastWinner(0)
 {
     vector.resize(4);
     /* dagitanin sagindaki oyuncu ilk karti atar */
@@ -48,7 +48,7 @@ GameEngine::GameEngine(int playerNumber, QObject *parent) :
 }
 
 GameEngine::GameEngine(bool deneme, int num, QObject *parent) :
-        QObject(parent), numberOfPlayer(num)
+        QObject(parent), numberOfPlayer(num), lastWinner(0)
 {
     size = 0;
     tIndex = 0;

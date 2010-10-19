@@ -21,6 +21,7 @@ Widget::Widget(QWidget *parent) :
     // connect(mapper, SIGNAL(mapped(QObject *)), this, SLOT(cardClicked(QObject *)));
     connect(mapper, SIGNAL(mapped(QObject *)), this, SLOT(SCardClicked(QObject*)));
     connect(ui->lineEditServerName, SIGNAL(returnPressed()), ui->buttonCreateServer, SLOT(click()));
+    connect(ui->lineEditName, SIGNAL(returnPressed()), ui->buttonEnterName, SLOT(click()));
 
     this->setWindowTitle("Card Game");
     centerMyWindow();
@@ -696,7 +697,7 @@ void Widget::processMessage(QTcpSocket *sc)
         n_clear_frame();
         break;
     case GameNet::SHOW_SCOREBOARD: // server to client
-        // TODO: n_show_scoreboard()
+        n_show_scoreboard();
         break;
     case GameNet::SHOW_CARD_ONTABLE: // server to client
         n_show_card_ontable(sc);
@@ -716,6 +717,12 @@ void Widget::processMessage(QTcpSocket *sc)
     case GameNet::SHOW_PLAYER_HAND:
         n_show_player_hand(sc);
         break;
+    case GameNet::REQUEST_HAND:
+        n_request_hand();
+        break;
+    case GameNet::SHOW_CARD_BACK:
+    	n_show_card_back();
+    	break;
     }
 }
 
@@ -762,13 +769,15 @@ void Widget::n_set_hand()
 void Widget::n_set_player_name()
 {
     // TODO: argument list must be QString
-    QList<int> args = network->arguments();
-    QString name;
+    QList<QString> args = network->stringArguments();
 
     if (args.isEmpty())
         return;
 
-    name = args.first();
+    int pos = args.takeFirst().toInt();
+    QString player_name = args.first();
+
+    game->at(pos)->setPlayerName(player_name);
 }
 
 /**
@@ -870,7 +879,9 @@ void Widget::n_show_card_ontable(QTcpSocket *sock)
     outgoingPos = cardPos = args.takeFirst();
     if (cardPos == currentPlayer->getPosition())
         return;
-    cardPos = (cardPos + posRelative) % 4;
+
+    if (cardPos != 4)
+    	cardPos = (cardPos + posRelative) % 4;
 
     int type, num;
     type = args.takeFirst();
@@ -890,6 +901,17 @@ void Widget::n_show_card_ontable(QTcpSocket *sock)
 void Widget::n_current_player()
 {
     qDebug() << "set current player";
+
+//    qDebug() << "num of cards :" << currentPlayer->getNumberOfCards();
+//    if (currentPlayer->getNumberOfCards() == 0) {
+//        if (host == true) {
+//            renewTurn();
+//        } else {
+//            /* player have no cards. */
+//            network->sendMessage(currentPlayer->getSocket(), GameNet::REQUEST_HAND);
+//        }
+//    }
+
     currentPlayer->setTurn(true);
     ui->southHand->setEnabled(true);
 }
@@ -940,6 +962,16 @@ void Widget::n_play()
     }
 
     currentPlayer = game->tNextPlayer();
+    if (currentPlayer->getNumberOfCards() == 0) {
+        if (game->numberOfCards() > 42) {
+            qDebug() << "deck :" << game->numberOfCards();
+            renewTurn();
+        } else {
+            gameOver();
+            return;
+        }
+    }
+
     if (! currentPlayer->myself()) {
         network->sendMessage(currentPlayer->getSocket(), GameNet::CURRENT_PLAYER);
         delay(150);
@@ -970,6 +1002,43 @@ void Widget::n_show_player_hand(QTcpSocket *sock)
 
     if (host == true)
         network->broadcast(GameNet::SHOW_PLAYER_HAND, args, sock);
+}
+
+void Widget::n_request_hand()
+{
+    renewTurn();
+}
+
+void Widget::n_show_card_back()
+{
+    qDebug() << "n_show_card_back";
+    QList<int> args;
+    args = network->arguments();
+
+    if (args.isEmpty())
+        return;
+
+    int number = args.takeFirst();
+
+    QToolButton *button = new QToolButton(ui->tableCenter);
+    button->setStyleSheet(QString("border-image: url(./graphics/back/%1h.png)").arg(QString::number(number)));
+    button->setMinimumSize(150, 70);
+    button->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
+    button->show();
+}
+
+void Widget::n_show_scoreboard()
+{
+    qDebug() << "n_show_scoreboard";
+    QString string;
+    QList<QString> list = network->stringArguments();
+
+    if (list.isEmpty())
+        return;
+
+    string = list.first();
+    ui->resultlabel->setText(string);
+    ui->stackedWidget->setCurrentIndex(2);
 }
 
 void Widget::on_styletoolMulti_clicked()
@@ -1012,8 +1081,8 @@ void Widget::on_buttonCreateServer_clicked()
 
     QString serverName = ui->lineEditServerName->text();
     serverName = serverName.isEmpty() ?
-                         " Game server " + QHostInfo::localHostName() :
-                         serverName+ " " + QHostInfo::localHostName();
+                         " Game server on " + QHostInfo::localHostName() :
+                         serverName+ " on " + QHostInfo::localHostName();
 
     registrar = new AvahiRegistrar(this);
     AvahiRecord record(serverName, QString("_bilkon._tcp"), QLatin1String(""));
@@ -1107,7 +1176,7 @@ void Widget::n_preNetwork_start(bool b)
         socket = network->getClientSoc();
         Person *newPlayer;
         currentPlayer = newPlayer = new Person;
-        newPlayer->setPlayerName(QString("Remote player"));
+        newPlayer->setPlayerName(name);
         newPlayer->setMyself(true);
         // connect(socket, SIGNAL(connected()), this, SLOT(prepareNetworkUI()));
     }
@@ -1117,8 +1186,28 @@ void Widget::SNetworkStart()
 {
     qDebug() << "SNetworkStart";
     if (host == true) {
-        currentPlayer = game->toSouth();
 
+        Card *card;
+        QList<int> operand;
+
+        for (int j = 0; j < 3; ++j) {
+            card = game->getCards().takeFirst();
+            game->appendToPlayedCards(card);
+        }
+        operand << 3;
+        network->broadcast(GameNet::SHOW_CARD_BACK, operand);
+
+        for (int j = 0; j < game->getCards().size(); j++)
+            if (game->getCards().at(j)->cardNumber != 11) {
+            game->appendToPlayedCards(game->getCards().takeAt(j));
+            break;
+        }
+        operand.clear();
+        card = game->getPlayedCards().last();
+        operand << 4 << card->cardType << card->cardNumber;
+        network->broadcast(GameNet::SHOW_CARD_ONTABLE, operand);
+
+        currentPlayer = game->toSouth();
         for (int i = 0; i < game->tSize(); ++i) {
             game->distributeCards( *currentPlayer, 4 );
 
@@ -1188,7 +1277,9 @@ void Widget::prepareNetworkUI()
     if (host == true) {
         Person *newPlayer;
         currentPlayer = newPlayer = new Person();
-        newPlayer->setPlayerName(QString("Host player"));
+        if (name.isEmpty())
+            name = "Host player";
+        newPlayer->setPlayerName(name);
         newPlayer->setMyself(true);
         newPlayer->setTurn(true);
         game->tAdd(newPlayer, 0);
@@ -1204,6 +1295,7 @@ void Widget::slotPrepareNetworkUI(int n)
     qDebug() << "slotPrepareNetworkUI";
     Person *newPlayer = NULL;
     QList<int> args;
+    QList<QString> str_args;
     args << n;
 
     if (host == true) {
@@ -1220,6 +1312,8 @@ void Widget::slotPrepareNetworkUI(int n)
 
     } else {
         network->sendMessage(socket, GameNet::SET_PLAYER_POS, args);
+        str_args << QString::number(n) << name;
+        network->sendMessageString(socket, GameNet::SET_PLAYER_NAME, str_args);
         currentPlayer->setPosition(n);
         currentPlayer->setTurn(false);
         posRelative = computeRelativePosition(n);
@@ -1299,6 +1393,7 @@ void Widget::SCardClicked(QObject *obj)
 
         currentPlayer = game->tNextPlayer();
         assert(currentPlayer != 0);
+
         network->sendMessage(currentPlayer->getSocket(), GameNet::CURRENT_PLAYER);
         delay(150);
     }
@@ -1428,4 +1523,121 @@ void Widget::renewTurn()
 
         currentPlayer = game->tNextPlayer();
     }
+}
+
+void Widget::gameOver()
+{
+    qDebug() << "gameOver()";
+
+    QString resultString, firstTeam, secondTeam;
+    QList<QString> stringList, nameList;
+    Person *player;
+    int PLAYER_NUMBER = game->tSize();
+    int score[PLAYER_NUMBER], pisticount[PLAYER_NUMBER], cardcount[PLAYER_NUMBER];
+    int score_a = 0, score_b, pisti_a = 0, pisti_b = 0;
+
+    clearPanel(ui->tableCenter);
+    clearPanel(ui->tableEast);
+    clearPanel(ui->tableNorth);
+    clearPanel(ui->tableWest);
+    clearPanel(ui->tableSouth);
+
+    Person *lastWinner = game->getlastWinner();
+    if (lastWinner != 0)
+        lastWinner->collectCards(game->getPlayedCards());
+
+    network->broadcast(GameNet::CLEAR_TABLE);
+
+    if ((player = game->toSouth()) == 0)
+        return;
+
+    for (int j = 0; j < PLAYER_NUMBER; ++j) {
+        currentPlayer->computePlayerScore();
+        score[j] = currentPlayer->score;
+        pisticount[j] = currentPlayer->pistiCount;
+        cardcount[j] = currentPlayer->numberOfScoredCards();
+        nameList.append(currentPlayer->getPlayerName());
+
+        currentPlayer = game->tNextPlayer();
+    }
+
+    if (PLAYER_NUMBER == 2) {
+        score_a = score[0];
+        pisti_a = pisticount[0];
+        score_b = score[1];
+        pisti_b = pisticount[1];
+
+        firstTeam = nameList.takeFirst();
+        secondTeam = nameList.takeFirst();
+
+        if (cardcount[0] > cardcount[1])
+            score_a += 3;
+        else
+            score_b += 3;
+
+    } else {
+        score_a = score[0] + score[2];
+        score_b = score[1] + score[3];
+        pisti_a = pisticount[0] + pisticount[2];
+        pisti_b = pisticount[1] + pisticount[3];
+
+        firstTeam = nameList.takeFirst();
+        firstTeam.append(" & ");
+        firstTeam.append(nameList.takeFirst());
+
+        secondTeam = nameList.takeFirst();
+        secondTeam.append(" & ");
+        secondTeam.append(nameList.takeFirst());
+
+        if (cardcount[0] + cardcount[2] > cardcount[1] + cardcount[3])
+            score_a += 3;
+        else
+            score_b += 3;
+    }
+
+    qDebug() << firstTeam << " " << secondTeam;
+
+    resultString.append('\t');
+    // resultString.append("First Team/Player");
+    resultString.append(firstTeam);
+    resultString.append('\t');
+    resultString.append('\t');
+    resultString.append('\t');
+    // resultString.append("Second Team/Player");
+    resultString.append(secondTeam);
+    resultString.append('\n');
+
+    resultString.append("Pisti:");
+    resultString.append('\t');
+    resultString.append(QString::number(pisti_a));
+    resultString.append('\t');
+    resultString.append('\t');
+    resultString.append('\t');
+    resultString.append(QString::number(pisti_b));
+    resultString.append('\n');
+
+    resultString.append("Total:");
+    resultString.append('\t');
+    resultString.append(QString::number(score_a));
+    resultString.append('\t');
+    resultString.append('\t');
+    resultString.append('\t');
+    resultString.append(QString::number(score_b));
+    resultString.append('\n');
+
+    stringList << resultString;
+    network->broadcastString(GameNet::SHOW_SCOREBOARD, stringList);
+
+    ui->resultlabel->setText(resultString);
+    ui->stackedWidget->setCurrentIndex(2);
+
+    qDebug() << resultString;
+}
+
+void Widget::on_buttonEnterName_clicked()
+{
+    name = ui->lineEditName->text();
+    name = name.simplified();
+    ui->buttonEnterName->setEnabled(false);
+    ui->lineEditName->setEnabled(false);
 }

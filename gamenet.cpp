@@ -94,19 +94,33 @@ void GameNet::sendMessage(QTcpSocket *sock, commands com)
     qDebug() << by << " bytes data written";
 }
 
-void GameNet::sendMessage(QTcpSocket *sock, QList<QString> operand)
+void GameNet::sendMessageString(QTcpSocket *sock, commands com, QList<QString> operand)
 {
+    qDebug() << "sendMessageString :" << com << " " << operand.first();
+
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_5);
 
     out << (quint16) 0;
+    out << com;
     out << operand;
 
     out.device()->seek(0);
     out << (quint16) (block.size() - sizeof(quint16));
 
     sock->write(block);
+}
+
+void GameNet::broadcastString(commands com, QList<QString> operand)
+{
+    qDebug() << "sendMessageString";
+    if (sockets.isEmpty())
+        return;
+
+    foreach (QTcpSocket *peer, sockets) {
+        sendMessageString(peer, com, operand);
+    }
 }
 
 void GameNet::broadcast(commands com, QList<int> args, QTcpSocket *exclude)
@@ -204,8 +218,8 @@ void GameNet::setupServer()
 
 void GameNet::readMessage()
 {
-/*
     qDebug() << "*****begin*****";
+/*
     qDebug() << "reading message";
 */
     QTcpSocket *soc = static_cast<QTcpSocket *>(QObject::sender());
@@ -231,10 +245,16 @@ void GameNet::readMessage()
         return;
 
     in >> receivedCommand;
+    qDebug() << "receivedcommand " << receivedCommand;
 
     argument_list.clear();
     blocksize = 0;
-    in >> argument_list;
+
+    if (receivedCommand == GameNet::SHOW_SCOREBOARD
+        || receivedCommand == GameNet::SET_PLAYER_NAME)
+        in >> string_argument_list;
+    else
+        in >> argument_list;
 
     if (! argument_list.isEmpty() && argument_list.first() == 0)
         qDebug() << "breakpoint";

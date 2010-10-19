@@ -48,6 +48,7 @@ private:
 
     bool host;
 
+    QString name;
     QSignalMapper *mapper;
     QTcpSocket *socket;
     QList<QTcpSocket *> peers;
@@ -91,13 +92,18 @@ private:
     void n_play();
     void n_prepare_network_ui();
     void n_show_player_hand(QTcpSocket *sock);
+    void n_request_hand();
+    void n_show_card_back();
+    void n_show_scoreboard();
     void n_preNetwork_start(bool server);
     void renewTurn();
+    void gameOver();
 
     QFrame *getCurrentPlayerFrame() const;
     QFrame *getPlayerFrame(int pos) const;
 
 private slots:
+    void on_buttonEnterName_clicked();
     void updateRecords(const QList<AvahiRecord> &);
     void on_buttonConnect_clicked();
     void on_buttonCreateServer_clicked();

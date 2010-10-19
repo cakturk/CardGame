@@ -29,15 +29,16 @@ public:
     Card* dummyPlay(Card* lastPlayedCard);
     void setTurn(bool b);
 
-    inline void setPlayerName(QString name) { this->playerName = name; }
     inline QString getPlayerName() const { return this->playerName; }
-    inline void setPosition(int pos) { realPosition = pos; }
-    inline int getPosition() const { return realPosition; }
     inline QTcpSocket* getSocket() const { return sock; }
+    inline void setPlayerName(QString name) { this->playerName = name; }
+    inline void setPosition(int pos) { realPosition = pos; }
     inline void setSocket(QTcpSocket* s) { sock = s; }
-    inline bool myself() const { return _myself; }
     inline void setMyself(bool b) { _myself = b; }
+    inline bool myself() const { return _myself; }
     inline bool isMyTurn() const { return turn; }
+    inline int getPosition() const { return realPosition; }
+    inline int numberOfScoredCards() const { return scoredCards.size(); }
 
     int pistiCount;
     int score;
