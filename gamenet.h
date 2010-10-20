@@ -37,7 +37,8 @@ public:
         PREPARE_NETWORK_UI,
         SHOW_PLAYER_HAND,     // 18
         REQUEST_HAND,
-        SHOW_CARD_BACK
+        SHOW_CARD_BACK,
+        CHAT_MESSAGE
     };
 
     void sendMessage(QTcpSocket *sock, commands com, QList<int> operand);
@@ -45,7 +46,7 @@ public:
     void sendMessageString(QTcpSocket *sock, commands com, QList<QString> operand);
     void broadcast(commands com, QList<int>, QTcpSocket *exclude = 0);
     void broadcast(commands com, QTcpSocket *exclude = 0);
-    void broadcastString(commands com, QList<QString> operand);
+    void broadcastString(commands com, QList<QString> operand, QTcpSocket *exclude = 0);
     inline int getReceivedCommand() const { return receivedCommand; }
     inline QList<int> arguments() const { return argument_list; }
     inline QList<QString> stringArguments() const { return string_argument_list; }

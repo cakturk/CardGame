@@ -723,6 +723,9 @@ void Widget::processMessage(QTcpSocket *sc)
     case GameNet::SHOW_CARD_BACK:
     	n_show_card_back();
     	break;
+    case GameNet::CHAT_MESSAGE:
+        n_chat_message(sc);
+        break;
     }
 }
 
@@ -1039,6 +1042,26 @@ void Widget::n_show_scoreboard()
     string = list.first();
     ui->resultlabel->setText(string);
     ui->stackedWidget->setCurrentIndex(2);
+}
+
+void Widget::n_chat_message(QTcpSocket *sock)
+{
+    QList<QString> list = network->stringArguments();
+    QString nick, message;
+
+    if (list.isEmpty())
+        return;
+
+    nick = "<b style=\"color: blue\">" + list.at(0) + ":</b>";
+    message = list.at(1);
+
+    ui->textEditChatMessage->append(nick + " " + message);
+    ui->textEditChatMessage->ensureCursorVisible();
+
+    if (host == true)
+        network->broadcastString(GameNet::CHAT_MESSAGE, list, sock);
+    list.clear();
+    qDebug() << nick << " " << message;
 }
 
 void Widget::on_styletoolMulti_clicked()
@@ -1652,4 +1675,31 @@ void Widget::on_buttonEnterName_clicked()
     name = name.simplified();
     ui->buttonEnterName->setEnabled(false);
     ui->lineEditName->setEnabled(false);
+}
+
+void Widget::on_buttonSend_clicked()
+{
+    qDebug() << "on_buttonSend_clicked";
+    QString chatMessage = ui->lineEditChatMessagee->text();
+    QString nick;
+
+    ui->lineEditChatMessagee->clear();
+    chatMessage = chatMessage.trimmed();
+    qDebug() << "chatmessage :" << chatMessage;
+
+    if (chatMessage.isEmpty())
+        return;
+
+    nick = "<b style=\"color: blue\">" + name + ":</b> ";
+    ui->textEditChatMessage->append(nick + chatMessage);
+    ui->textEditChatMessage->ensureCursorVisible();
+
+    QList<QString> list;
+    list << name;
+    list << chatMessage;
+
+    if (host == true)
+        network->broadcastString(GameNet::CHAT_MESSAGE, list);
+    else
+        network->sendMessageString(socket, GameNet::CHAT_MESSAGE, list);
 }

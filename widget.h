@@ -95,6 +95,7 @@ private:
     void n_request_hand();
     void n_show_card_back();
     void n_show_scoreboard();
+    void n_chat_message(QTcpSocket *sock);
     void n_preNetwork_start(bool server);
     void renewTurn();
     void gameOver();
@@ -103,6 +104,7 @@ private:
     QFrame *getPlayerFrame(int pos) const;
 
 private slots:
+    void on_buttonSend_clicked();
     void on_buttonEnterName_clicked();
     void updateRecords(const QList<AvahiRecord> &);
     void on_buttonConnect_clicked();

@@ -112,14 +112,15 @@ void GameNet::sendMessageString(QTcpSocket *sock, commands com, QList<QString> o
     sock->write(block);
 }
 
-void GameNet::broadcastString(commands com, QList<QString> operand)
+void GameNet::broadcastString(commands com, QList<QString> operand, QTcpSocket *exclude)
 {
     qDebug() << "sendMessageString";
     if (sockets.isEmpty())
         return;
 
     foreach (QTcpSocket *peer, sockets) {
-        sendMessageString(peer, com, operand);
+        if (peer != exclude)
+            sendMessageString(peer, com, operand);
     }
 }
 
@@ -248,10 +249,12 @@ void GameNet::readMessage()
     qDebug() << "receivedcommand " << receivedCommand;
 
     argument_list.clear();
+    string_argument_list.clear();
     blocksize = 0;
 
     if (receivedCommand == GameNet::SHOW_SCOREBOARD
-        || receivedCommand == GameNet::SET_PLAYER_NAME)
+        || receivedCommand == GameNet::SET_PLAYER_NAME
+        || receivedCommand == GameNet::CHAT_MESSAGE)
         in >> string_argument_list;
     else
         in >> argument_list;
