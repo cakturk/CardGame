@@ -32,6 +32,7 @@ public:
 
 protected:
     void changeEvent(QEvent *e);
+    virtual void resizeEvent(QResizeEvent *);
 
 private:
     Ui::Widget *ui;

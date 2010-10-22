@@ -17,7 +17,9 @@
    <bool>false</bool>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(54, 111, 195);</string>
+   <string notr="true">QWidget#Widget {
+	background-color: rgb(54, 111, 195);
+}</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
@@ -190,6 +192,11 @@ font: 75 10pt &quot;DejaVu Sans Mono&quot;;
        </property>
        <item row="0" column="0">
         <widget class="QFrame" name="frame">
+         <property name="styleSheet">
+          <string notr="true">QFrame#frame {
+	background-image: url(:/pre/baize.png); 
+}</string>
+         </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
@@ -208,19 +215,6 @@ font: 75 10pt &quot;DejaVu Sans Mono&quot;;
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <property name="lineWidth">
-             <number>1</number>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="3">
-           <widget class="QFrame" name="northHand">
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
@@ -264,6 +258,9 @@ font: 75 10pt &quot;DejaVu Sans Mono&quot;;
           </item>
           <item row="2" column="2">
            <widget class="QFrame" name="tableCenter">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
@@ -305,6 +302,19 @@ font: 75 10pt &quot;DejaVu Sans Mono&quot;;
             </property>
            </widget>
           </item>
+          <item row="0" column="1" colspan="3">
+           <widget class="QFrame" name="northHand">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <property name="lineWidth">
+             <number>1</number>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -336,6 +346,12 @@ font: 75 10pt &quot;DejaVu Sans Mono&quot;;
               </item>
               <item>
                <widget class="QPushButton" name="buttonSend">
+                <property name="focusPolicy">
+                 <enum>Qt::StrongFocus</enum>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"/>
+                </property>
                 <property name="text">
                  <string>Send</string>
                 </property>
@@ -585,6 +601,22 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>530</x>
      <y>507</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>listWidget</sender>
+   <signal>itemDoubleClicked(QListWidgetItem*)</signal>
+   <receiver>buttonConnect</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>301</x>
+     <y>357</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>301</x>
+     <y>626</y>
     </hint>
    </hints>
   </connection>

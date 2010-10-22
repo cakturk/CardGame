@@ -29,7 +29,7 @@ Card::Card(int ct, int cn) :
     cardImageName.append(".png");
 
     QToolButton *foo = new QToolButton;
-    foo->setMinimumSize(QSize(50, 50));
+    foo->setMinimumSize(QSize(50, 60));
     foo->setStyleSheet(QString("border-image: url(%1)").arg(this->cardImageName));
 
     this->buttonPtr = static_cast<void *>(foo);
@@ -40,7 +40,6 @@ Card::Card(int ct, int cn) :
 /*
 Card::~Card()
 {
-    qDebug() << "object destructed...";
 }
 */
 

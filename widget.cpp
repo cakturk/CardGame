@@ -132,13 +132,14 @@ void Widget::showCardOnTable(Card *c, int position)
     QSize buttonSize;
 
     parentWidth = parentWidgetSize.width();
-    parentHeight = parentWidgetSize.width();
+    parentHeight = parentWidgetSize.height() * 0.80;
 
     button = static_cast<QWidget *>(c->buttonPtr);
     button->setParent(frame);
 
     // TODO: must be dynamically resized
-    button->resize(60, 70);
+    // button->resize(60, 70);
+    button->resize(QSize(parentHeight * 0.75, parentHeight));
     buttonSize = button->size();
 
     width = buttonSize.width();
@@ -1679,13 +1680,11 @@ void Widget::on_buttonEnterName_clicked()
 
 void Widget::on_buttonSend_clicked()
 {
-    qDebug() << "on_buttonSend_clicked";
     QString chatMessage = ui->lineEditChatMessagee->text();
     QString nick;
 
     ui->lineEditChatMessagee->clear();
     chatMessage = chatMessage.trimmed();
-    qDebug() << "chatmessage :" << chatMessage;
 
     if (chatMessage.isEmpty())
         return;
@@ -1695,11 +1694,35 @@ void Widget::on_buttonSend_clicked()
     ui->textEditChatMessage->ensureCursorVisible();
 
     QList<QString> list;
-    list << name;
-    list << chatMessage;
+    list << name << chatMessage;
 
     if (host == true)
         network->broadcastString(GameNet::CHAT_MESSAGE, list);
     else
         network->sendMessageString(socket, GameNet::CHAT_MESSAGE, list);
+}
+
+void Widget::resizeEvent(QResizeEvent *)
+{
+    int x, y;
+    QWidget *child;
+    QSize parentWidgetSize, childSize;
+    QList<QFrame *> frames;
+    QList<QWidget *> widgets;
+
+    frames << ui->tableSouth << ui->tableEast << ui->tableNorth << ui->tableWest << ui->tableCenter;
+    foreach (QFrame *container, frames) {
+        widgets = container->findChildren<QWidget *>();
+
+        while (widgets.size() > 0) {
+            parentWidgetSize = container->size();
+            child = widgets.takeFirst();
+            child->resize(QSize(parentWidgetSize.height() * 0.60, parentWidgetSize.height() * 0.80));
+            childSize = child->size();
+            x = (parentWidgetSize.width() - childSize.width()) / 2;
+            y = (parentWidgetSize.height() - childSize.height()) / 2;
+            y -= y / 2;
+            child->move(QPoint(x, y));
+        }
+    }
 }

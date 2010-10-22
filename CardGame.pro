@@ -23,3 +23,6 @@ SOURCES += card.cpp gameengine.cpp gamenet.cpp main.cpp person.cpp widget.cpp \
 LIBS += -ldns_sd \
     -lavahi-core \
     -lavahi-client \
+
+RESOURCES += \
+    graphics/texture.qrc
