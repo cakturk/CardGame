@@ -13,6 +13,7 @@ public:
     explicit GameEngine(QObject *parent = 0);
     explicit GameEngine(int playerNumber, QObject *parent = 0);
     explicit GameEngine(bool deneme, int num, QObject *parent = 0);
+    ~GameEngine();
 
     void createCards();
     void distributeCards(int number);

@@ -62,6 +62,32 @@ GameEngine::GameEngine(bool, int num, QObject *parent) :
     createCards();
 }
 
+GameEngine::~GameEngine()
+{
+    Person *p = 0;
+    Card *card = 0;
+
+    if (tSize() > 0) {
+        for (int i = 0; i < tSize(); ++i) {
+            p = tPlayers[i];
+            if (p != 0)
+                delete p;
+        }
+    }
+
+    if (cards.size() > 0) {
+        foreach (card, cards) {
+            delete card ;
+        }
+    }
+
+    if (playedCards.size() > 0) {
+        foreach (card, playedCards) {
+            delete card;
+        }
+    }
+}
+
 /* Create cards and map them to card graphics */
 void GameEngine::createCards()
 {

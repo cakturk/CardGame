@@ -54,6 +54,7 @@ Widget::~Widget()
 {
     delete ui;
     delete mapper;
+    delete game;
 }
 
 void Widget::changeEvent(QEvent *e)

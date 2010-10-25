@@ -17,7 +17,19 @@ Person::Person(QString name, int r_pos, QObject *parent) :
 }
 
 Person::~Person()
-{}
+{
+    if (scoredCards.size()) {
+        foreach (Card *card, scoredCards) {
+            delete card;
+        }
+    }
+
+    if (hand.size()) {
+        foreach (Card *card, hand) {
+            delete card;
+        }
+    }
+}
 
 void Person::setHand(QList<Card *> &h)
 {
