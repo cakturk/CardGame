@@ -25,7 +25,21 @@ Card::Card(int ct, int cn) :
     }
 
     cardName = this->toString();
-    cardImageName = ":/graph_items/graphics/" + cardName.toLower();
+    cardImageName = "./graphics/" + cardName.toLower();
+    cardImageName.append(".png");
+
+    QToolButton *foo = new QToolButton;
+    foo->setMinimumSize(QSize(50, 60));
+    foo->setStyleSheet(QString("border-image: url(%1)").arg(this->cardImageName));
+
+    this->buttonPtr = static_cast<void *>(foo);
+
+    //buttonPtr = (void *) getButton();
+}
+
+Card::~Card()
+{
+    delete static_cast<QToolButton *>(buttonPtr);
 }
 
 QString Card::toString()
@@ -90,4 +104,21 @@ bool Card::operator ==(const Card &other) const {
 bool Card::equals(Card *c)
 {
     return (this->cardNumber == c->cardNumber);
+}
+
+QWidget* Card::getButton()
+{
+    toolButton = new QToolButton;
+    toolButton->setMinimumSize(QSize(50, 50));
+    toolButton->setStyleSheet(QString("border-image: url(%1)").arg(this->cardImageName));
+
+    /* refresh button */
+    // delete (QToolButton *) buttonPtr;
+
+    QToolButton *old = (QToolButton *) buttonPtr;
+    buttonPtr = static_cast<void *>(toolButton);
+
+    qDebug() << "getButton()";
+
+    return old;
 }

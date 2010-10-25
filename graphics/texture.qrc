@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/pre">
+        <file>baize.png</file>
+    </qresource>
+</RCC>

@@ -8,13 +8,16 @@
 
 class Card : public QObject
 {
+
 public:
     Card(int cardType, int cardNumber);
+    ~Card();
 
     QString toString();
     static void shuffleList(QList<Card *> &p);
     bool operator ==(const Card &other) const;
     bool equals(Card *c);
+    QWidget* getButton();
 
     enum card_type {
         KUPA,
@@ -29,9 +32,14 @@ public:
     int cardNumber;
     QString cardName;
     QString cardImageName;
-    void *handle;
+    void *buttonPtr;
+
+    QWidget *toolButton;
 
 private:
+
+private slots:
+
 };
 
 #endif // CARD_H

@@ -1,29 +1,65 @@
 #include "gameengine.h"
 
 GameEngine::GameEngine(QObject *parent) :
-    QObject(parent)
+    QObject(parent), lastWinner(0)
 {
-    numberOfOnlinePlayer = 2;
-//    startGameSession();
+    size = 0;
+    numberOfPlayer = 2;
+    vector.resize(4);
+}
 
-#if 0
-    createCards();
-    Card *c = cards.first();
-    QToolButton *tb = createButton(c);
-
-    createCards();
-    distributeCards(4);
-
-    Card *c;
-    int j = 4;
-    while (j--) {
-        c = players[j].play(2);
-        playedCards.append(c);
+GameEngine::GameEngine(int playerNumber, QObject *parent) :
+        QObject(parent), numberOfPlayer(playerNumber), lastWinner(0)
+{
+    vector.resize(4);
+    /* dagitanin sagindaki oyuncu ilk karti atar */
+    if (numberOfPlayer == 1) {
+        sPlayer = new Person(QString("So Client"));
+        gamePlayers << sPlayer;
+        currentPlayer = sPlayer;
+        current_index = 0;
     }
 
-    players[1].collectCards(playedCards);
-    computePlayerScore(&players[1]);
-#endif
+    if (numberOfPlayer == 2) {
+        increment = 2;
+        sPlayer = new Person(QString("Gokay"));
+        nPlayer = new Person(QString("Selin"));
+        gamePlayers << sPlayer << nPlayer;
+        currentPlayer = nPlayer;
+        current_index = 2;
+    }
+
+    if (numberOfPlayer > 2) {
+        numberOfPlayer = 4;
+        increment = 1;
+
+        sPlayer = new Person(QString("Gokay"));
+        ePlayer = new Person(QString("Mert"));
+        nPlayer = new Person(QString("Selin"));
+        wPlayer = new Person(QString("Mr. Pink"));
+
+        gamePlayers << sPlayer << ePlayer << nPlayer << wPlayer;
+        currentPlayer = ePlayer;
+        current_index = 1;
+    }
+
+    it = new QListIterator<Person *>(gamePlayers);
+    it->next(); it->next();
+}
+
+GameEngine::GameEngine(bool, int num, QObject *parent) :
+        QObject(parent), numberOfPlayer(num), lastWinner(0)
+{
+    size = 0;
+    tIndex = 0;
+    for (int i = 0; i < 4; ++i)
+        tPlayers[i] = NULL;
+
+    if (numberOfPlayer == 4)
+        tInc = 1;
+    else
+    	tInc = 2;
+    createCards();
 }
 
 /* Create cards and map them to card graphics */
@@ -35,12 +71,6 @@ void GameEngine::createCards()
         for (int j = 1; j <= 13; j++) {
            newCard = new Card(i, j);
            cards.append(newCard);
-
-#if 0
-           QString pngName = ":/graph_items/graphics/" + (newCard->cardName).toLower();
-           pngName.append(".png");
-           pngMapping.insert(newCard, pngName);
-#endif
         }
 
     Card::shuffleList(cards);
@@ -72,21 +102,23 @@ void GameEngine::distributeCards(Person &p, int number)
     p.setHand(tmp);
 }
 
-void GameEngine::pisti()
+bool GameEngine::pisti()
 {
     // TODO currentPlayer son karti atan oyuncu olmali
 
     if (playedCards.size() < 2)
-        return;
+        return false;
 
     Card *currentCard = playedCards.at(playedCards.size() - 1);
     Card *lastPlayedCard =
             playedCards.at(playedCards.size() - 2);
 
+    bool retVal = false;
     if (currentCard->equals(lastPlayedCard)) {
         /* Pisti */
         if (playedCards.size() == 2) {
             currentPlayer->pistiCount++;
+            retVal = true;
         }
 
         /* Yerdeki kartlari topla  */
@@ -97,7 +129,71 @@ void GameEngine::pisti()
     } else if (currentCard->cardNumber == 11) {
         currentPlayer->collectCards(playedCards);
         lastWinner = currentPlayer;
+        retVal = true;
     }
+
+    return retVal;
+}
+
+bool GameEngine::pisti(bool)
+{
+    // TODO currentPlayer son karti atan oyuncu olmali
+
+    if (playedCards.size() < 2)
+        return false;
+
+    Card *currentCard = playedCards.at(playedCards.size() - 1);
+    Card *lastPlayedCard =
+            playedCards.at(playedCards.size() - 2);
+
+    bool retVal = false;
+    if (currentCard->equals(lastPlayedCard)) {
+        /* Pisti */
+        if (playedCards.size() == 2) {
+            currentPlayer->pistiCount++;
+            retVal = true;
+        }
+
+        lastWinner = currentPlayer;
+
+        // Vale
+    } else if (currentCard->cardNumber == 11) {
+        lastWinner = currentPlayer;
+        retVal = true;
+    }
+
+    return retVal;
+}
+
+bool GameEngine::pisti(Person *p)
+{
+    currentPlayer = p;
+
+    if (playedCards.size() < 2)
+        return false;
+
+    Card *currentCard = playedCards.at(playedCards.size() - 1);
+    Card *lastPlayedCard =
+            playedCards.at(playedCards.size() - 2);
+
+    bool retVal = false;
+    if (currentCard->equals(lastPlayedCard)) {
+        /* Pisti */
+        if (playedCards.size() == 2) {
+            currentPlayer->pistiCount++;
+            qDebug() << "pisti";
+        }
+
+        lastWinner = currentPlayer;
+        retVal = true;
+
+        // Vale
+    } else if (currentCard->cardNumber == 11) {
+        lastWinner = currentPlayer;
+        retVal = true;
+    }
+
+    return retVal;
 }
 
 #if 0
@@ -110,7 +206,7 @@ bool GameEngine::cardsEquals(Card *first, Card *sec)
 }
 #endif
 
-void GameEngine::computePlayerScore(Person *player)
+void GameEngine::computePlayerScore(Person *player) const
 {
     int pCount = player->pistiCount;
     while (pCount--)
@@ -197,41 +293,14 @@ void GameEngine::startGameSession()
 
 }
 
-// TODO: define a method that returns image name
-QString GameEngine::getButtonPngName(QToolButton *b)
-{
-    QString retVal;
-
-    return retVal;
-}
-
-QToolButton* GameEngine::createButton(Card *c)
-{
-#if 0
-    QString str;
-    if (pngMapping.contains(c))
-        str = pngMapping[c];
-#endif
-
-    QString str = c->cardImageName;
-
-    QToolButton *tb = new QToolButton();
-    tb->setMinimumSize(QSize(50, 50));
-    tb->setStyleSheet(QString("border-image: url(%1);").arg(str));
-
-    buttonMapping.insert(tb, c);
-
-    return tb;
-}
-
-const QList<Card *> & GameEngine::getCards()
+QList<Card *> & GameEngine::getCards()
 {
     return cards;
 }
 
-int GameEngine::getNumberOfOnlinePlayer() const
+int GameEngine::getNumberOfPlayer() const
 {
-    return numberOfOnlinePlayer;
+    return numberOfPlayer;
 }
 
 Person* GameEngine::getPlayers()
@@ -246,4 +315,139 @@ void GameEngine::dummyStart()
     createCards();
     distributeCards(players[0], 4);
     distributeCards(players[1], 4);
+}
+
+void GameEngine::start()
+{
+    for (int i = 0; i < 4; i++) {
+        distributeCards(players[i], 4);
+    }
+
+    for (int i = 0; i < 4; i++) {
+
+    }
+}
+
+void GameEngine::appendToPlayedCards(Card *c)
+{
+    playedCards.append(c);
+}
+
+Card* GameEngine::lastPlayedCard()
+{
+    if (playedCards.isEmpty())
+    return NULL;
+
+    // return cards.last();
+    return playedCards.last();
+}
+
+QList<Card *> & GameEngine::getPlayedCards()
+{
+    return playedCards;
+}
+
+Person* GameEngine::getlastWinner() const
+{
+    return lastWinner;
+}
+
+Person* GameEngine::nextPlayer()
+{
+    currentPlayer->setTurn(false);
+    if (it->hasNext()) {
+        currentPlayer = it->next();
+        current_index = (current_index + increment) % 4;
+    } else {
+        it->toFront();
+        currentPlayer = it->next();
+        current_index = (current_index + increment) % 4;
+    }
+    currentPlayer->setTurn(true);
+
+    return currentPlayer;
+}
+
+int GameEngine::playerIndex()
+{
+    return current_index;
+}
+
+Person* GameEngine::myself()
+{
+    if (! gamePlayers.isEmpty()) {
+        currentPlayer->setTurn(false);
+        current_index = 0;
+        it->toFront();
+        currentPlayer = it->next();
+        currentPlayer->setTurn(true);
+        return currentPlayer;
+    }
+    return NULL;
+}
+
+const Person* GameEngine::me() const
+{
+    return sPlayer;
+}
+
+void GameEngine::add(Person *player, int pos)
+{
+    static int count = 0;
+    vector.resize(4);
+    if (pos == -1)
+        pos = player->getPosition();
+    vector[pos] = player;
+    if (count == numberOfPlayer) {
+        gamePlayers = vector.toList();
+        // vector.clear();
+    }
+}
+
+void GameEngine::tAdd(Person *player, int pos)
+{
+    if (pos < 0 && pos > 3) {
+        qDebug() << "tAdd error";
+        return;
+    }
+
+    player->setPosition(pos);
+    tPlayers[pos] = player;
+    size++;
+
+    if (size == numberOfPlayer)
+    	emit ready();
+}
+
+void GameEngine::tAdd(int pos)
+{
+        Person *p = new Person;
+	tAdd(p, pos);
+}
+
+Person* GameEngine::tNextPlayer()
+{
+    tIndex = (tIndex + tInc) % 4;
+    return tPlayers[tIndex];
+}
+
+int GameEngine::tSize()
+{
+	return size;
+}
+
+Person* GameEngine::at(int index)
+{
+    switch (index) {
+    case 0:
+        return tPlayers[0];
+    case 1:
+        return tPlayers[1];
+    case 2:
+        return tPlayers[2];
+    case 3:
+        return tPlayers[3];
+    default:
+        return NULL;
+    }
 }
