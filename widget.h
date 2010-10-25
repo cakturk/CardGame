@@ -99,12 +99,13 @@ private:
     void n_chat_message(QTcpSocket *sock);
     void n_preNetwork_start(bool server);
     void renewTurn();
-    void gameOver();
+    void gameOver(bool multiplayer = true);
 
     QFrame *getCurrentPlayerFrame() const;
     QFrame *getPlayerFrame(int pos) const;
 
 private slots:
+    void on_buttonSinglePlayer_clicked();
     void on_buttonSend_clicked();
     void on_buttonEnterName_clicked();
     void updateRecords(const QList<AvahiRecord> &);

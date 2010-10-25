@@ -11,7 +11,7 @@ class Card : public QObject
 
 public:
     Card(int cardType, int cardNumber);
-    // ~Card();
+    ~Card();
 
     QString toString();
     static void shuffleList(QList<Card *> &p);

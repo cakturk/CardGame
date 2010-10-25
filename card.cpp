@@ -37,11 +37,10 @@ Card::Card(int ct, int cn) :
     //buttonPtr = (void *) getButton();
 }
 
-/*
 Card::~Card()
 {
+    delete static_cast<QToolButton *>(buttonPtr);
 }
-*/
 
 QString Card::toString()
 {

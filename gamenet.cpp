@@ -33,7 +33,7 @@ bool GameNet::startServer(QHostAddress addr)
     return retval;
 }
 
-bool GameNet::startServerFor(int playernum, QHostAddress addr)
+bool GameNet::startServerFor(int, QHostAddress)
 {
     return true;
 }

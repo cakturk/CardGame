@@ -14,12 +14,11 @@ Widget::Widget(QWidget *parent) :
     ui->stackedWidget->setCurrentIndex(0);
     ui->gridLayout->setSpacing(0);
 
+    currentPlayer = NULL;
     game = NULL;
     currentPlayerIndex = 0;
 
     mapper = new QSignalMapper(this);
-    // connect(mapper, SIGNAL(mapped(QObject *)), this, SLOT(cardClicked(QObject *)));
-    connect(mapper, SIGNAL(mapped(QObject *)), this, SLOT(SCardClicked(QObject*)));
     connect(ui->lineEditServerName, SIGNAL(returnPressed()), ui->buttonCreateServer, SLOT(click()));
     connect(ui->lineEditName, SIGNAL(returnPressed()), ui->buttonEnterName, SLOT(click()));
 
@@ -310,11 +309,7 @@ void Widget::statistics()
 
 void Widget::modifiedstart()
 {
-    // which player to play
-    // int currentPlayerIndex = 0;
-
-    players = game->getPlayers();
-    game->createCards();
+    currentPlayer = game->toSouth();
 
     /* Yere ucu kapali dort kart at */
     for (int i = 0; i < 3; i++) {
@@ -332,25 +327,24 @@ void Widget::modifiedstart()
     but->setStyleSheet(QString("border-image: url(./graphics/back/3h.png)"));
     but->setMinimumSize(75, 55);
     but->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
+    but->show();
 
     Card *card = game->getPlayedCards().last();
-    // TODO: getButton()
-    // card->getButton();
     (static_cast<QWidget *>(card->buttonPtr))->setParent(ui->tableCenter);
+    (static_cast<QWidget *>(card->buttonPtr))->show();
 
-    // TODO: i < numbeerOfPlayers
     for (int i = 0 ; i < game->getNumberOfPlayer(); i++) {
-        //-- currentPlayer = &players[i];
-        currentPlayer = game->nextPlayer();
+        currentPlayer = game->tNextPlayer();
         game->distributeCards( *currentPlayer, 4 );
     }
 
-    for (int i = 1 ; i <= 3; i++) {
-        showPlayerHand(i);
-    }
+    if (game->tSize() == 2)
+        showPlayerHand(2);
+    else
+        for (int i = 1 ; i <= 3; i++)
+            showPlayerHand(i);
     
-    //-- currentPlayer = &players[0];
-    currentPlayer = game->myself();
+    currentPlayer = game->toSouth();
     // connect button signals to slots
     for (int i = 0; i < currentPlayer->getNumberOfCards(); i++) {
         QList<Card *> l = currentPlayer->getHand();
@@ -372,7 +366,7 @@ void Widget::cardClicked(QObject *obj)
     currentPlayer->getHand().removeAt(del);
     ui->southHand->layout()->removeWidget(static_cast<QWidget *>(c->buttonPtr));
     game->appendToPlayedCards(c);
-    showCardOnTable(c, game->playerIndex());
+    showCardOnTable(c, currentPlayer->getPosition());
 
     if (game->pisti(currentPlayer)) {
         QList<Card *> &l = game->getPlayedCards();
@@ -399,12 +393,16 @@ void Widget::cardClicked(QObject *obj)
 
 void Widget::simulateOthers()
 {
-    QWidget *currentPlayerFrame;
+    QWidget *currentPlayerFrame = NULL;
+    static int count = 0;
 
-    while ((currentPlayer = game->nextPlayer()) != game->me()) {
+    while ((currentPlayer = game->tNextPlayer()) != game->at(0))
+    {
+        ++count;
+
         /* bu kosul nedeniyle oyuncu son kartini oynamadan oyun bitiyor */
         if ((game->getCards().size() == 0 || currentPlayer->getNumberOfCards() == 0 )
-            && game->me()->getNumberOfCards() == 0) {
+            && game->at(0)->getNumberOfCards() == 0) {
             clearPanel(ui->tableCenter);
             clearPanel(ui->tableEast);
             clearPanel(ui->tableNorth);
@@ -412,11 +410,12 @@ void Widget::simulateOthers()
             clearPanel(ui->tableSouth);
 
             game->getlastWinner()->collectCards(game->getPlayedCards());
-            statistics();
+            // statistics();
+            gameOver(false);
             return;
         }
 
-        switch (game->playerIndex()) {
+        switch (currentPlayer->getPosition()) {
         case 1:
             currentPlayerFrame = ui->eastHand;
             break;
@@ -434,8 +433,8 @@ void Widget::simulateOthers()
         game->appendToPlayedCards(recentCard);
 
         clearPanel(currentPlayerFrame, true);
-        showPlayerHand(game->playerIndex(), currentPlayer->getNumberOfCards());
-        showCardOnTable(recentCard, game->playerIndex());
+        showPlayerHand(currentPlayer->getPosition(), currentPlayer->getNumberOfCards());
+        showCardOnTable(recentCard, currentPlayer->getPosition());
         delay(150);
 
         if (game->pisti(currentPlayer)) {
@@ -453,11 +452,11 @@ void Widget::simulateOthers()
     }
 
     if (currentPlayer->getNumberOfCards() == 0 && game->getCards().size() != 0) {
-        for (int i = 0; i < game->getNumberOfPlayer(); i++) {
+        for (int i = 0; i < game->tSize(); i++) {
             game->distributeCards( *currentPlayer, 4);
 
-            if (currentPlayer != game->me()) {
-                showPlayerHand(game->playerIndex(), currentPlayer->getNumberOfCards());
+            if (currentPlayer != game->at(0)) {
+                showPlayerHand(currentPlayer->getPosition(), currentPlayer->getNumberOfCards());
             } else {
                 for (int j = 0; j < currentPlayer->getNumberOfCards(); j++) {
                     QList<Card *> m = currentPlayer->getHand();
@@ -466,7 +465,7 @@ void Widget::simulateOthers()
                     ui->southHand->layout()->addWidget(static_cast<QWidget *>(m.at(j)->buttonPtr));
                 }
             }
-            currentPlayer = game->nextPlayer();
+            currentPlayer = game->tNextPlayer();
         }
     }
 
@@ -871,7 +870,7 @@ void Widget::n_clear_frame()
     }
 }
 
-void Widget::n_show_card_ontable(QTcpSocket *sock)
+void Widget::n_show_card_ontable(QTcpSocket *)
 {
     qDebug() << "show card on the table";
     QList<int> args = network->arguments();
@@ -1192,6 +1191,7 @@ void Widget::n_cardClicked(QObject *obj)
 void Widget::n_preNetwork_start(bool b)
 {
     host = b;
+    connect(mapper, SIGNAL(mapped(QObject *)), this, SLOT(SCardClicked(QObject*)));
 
     if (host == true) {
         connect(game, SIGNAL(ready()), this, SLOT(SNetworkStart()));
@@ -1331,7 +1331,6 @@ void Widget::prepareNetworkUI()
 void Widget::slotPrepareNetworkUI(int n)
 {
     qDebug() << "slotPrepareNetworkUI";
-    Person *newPlayer = NULL;
     QList<int> args;
     QList<QString> str_args;
     args << n;
@@ -1563,7 +1562,7 @@ void Widget::renewTurn()
     }
 }
 
-void Widget::gameOver()
+void Widget::gameOver(bool multiplayer)
 {
     qDebug() << "gameOver()";
 
@@ -1584,10 +1583,12 @@ void Widget::gameOver()
     if (lastWinner != 0)
         lastWinner->collectCards(game->getPlayedCards());
 
-    network->broadcast(GameNet::CLEAR_TABLE);
+    if (multiplayer == true)
+        network->broadcast(GameNet::CLEAR_TABLE);
 
     if ((player = game->toSouth()) == 0)
         return;
+    currentPlayer = game->toSouth();
 
     for (int j = 0; j < PLAYER_NUMBER; ++j) {
         currentPlayer->computePlayerScore();
@@ -1661,8 +1662,10 @@ void Widget::gameOver()
     resultString.append(QString::number(score_b));
     resultString.append('\n');
 
-    stringList << resultString;
-    network->broadcastString(GameNet::SHOW_SCOREBOARD, stringList);
+    if (multiplayer == true) {
+        stringList << resultString;
+        network->broadcastString(GameNet::SHOW_SCOREBOARD, stringList);
+    }
 
     ui->resultlabel->setText(resultString);
     ui->stackedWidget->setCurrentIndex(2);
@@ -1725,4 +1728,31 @@ void Widget::resizeEvent(QResizeEvent *)
             child->move(QPoint(x, y));
         }
     }
+}
+
+void Widget::on_buttonSinglePlayer_clicked()
+{
+    Person *newPlayer = 0;
+
+    if (ui->comboSinglePlayer->currentIndex() == 0) {
+        game = new GameEngine(true, 4, this);
+        for (int i = 0; i < 4; ++i) {
+            newPlayer = new Person(QString("Player %1").arg(QString::number(i)), i, game);
+            game->tAdd(newPlayer, i);
+            qDebug() << "i = " << i;
+        }
+    } else {
+        game = new GameEngine(true, 2, this);
+        newPlayer = new Person(QString::fromUtf8("Güney"), 0, game);
+        game->tAdd(newPlayer, 0);
+        newPlayer = new Person(QString::fromUtf8("Kuzey"), 2, game);
+        game->tAdd(newPlayer, 2);
+    }
+
+    game->at(0)->setMyself(true);
+
+    ui->frame_2->setVisible(false);
+    ui->stackedWidget->setCurrentIndex(1);
+    modifiedstart();
+    connect(mapper, SIGNAL(mapped(QObject *)), this, SLOT(cardClicked(QObject *)));
 }

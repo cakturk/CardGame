@@ -98,7 +98,7 @@ void Person::reset()
     score = 0;
 }
 
-bool Person::isAcceptable(Card *c)
+bool Person::isAcceptable(Card *)
 {
     // TODO atilan kart uygun mu
     return true;

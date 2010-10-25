@@ -1,7 +1,7 @@
 #include "gameengine.h"
 
 GameEngine::GameEngine(QObject *parent) :
-    QObject(parent)
+    QObject(parent), lastWinner(0)
 {
     size = 0;
     numberOfPlayer = 2;
@@ -47,7 +47,7 @@ GameEngine::GameEngine(int playerNumber, QObject *parent) :
     it->next(); it->next();
 }
 
-GameEngine::GameEngine(bool deneme, int num, QObject *parent) :
+GameEngine::GameEngine(bool, int num, QObject *parent) :
         QObject(parent), numberOfPlayer(num), lastWinner(0)
 {
     size = 0;
@@ -135,7 +135,7 @@ bool GameEngine::pisti()
     return retVal;
 }
 
-bool GameEngine::pisti(bool b)
+bool GameEngine::pisti(bool)
 {
     // TODO currentPlayer son karti atan oyuncu olmali
 
@@ -421,7 +421,7 @@ void GameEngine::tAdd(Person *player, int pos)
 
 void GameEngine::tAdd(int pos)
 {
-	Person *p = new Person;
+        Person *p = new Person;
 	tAdd(p, pos);
 }
 
