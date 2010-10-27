@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "card.h"
-#include "person.h"
+#include "pistiplayer.h"
 
 class GameEngine : public QObject
 {
@@ -17,20 +17,18 @@ public:
 
     void createCards();
     void distributeCards(int number);
-    void distributeCards(Person &p, int number);
-    void dummyStart();
-    void start();
+    void distributeCards(Player &p, int number);
     void appendToPlayedCards(Card *);
-    void add(Person *player, int pos = -1);
-    void tAdd(Person *player, int pos = -1);
+    void add(Player *player, int pos = -1);
+    void tAdd(Player *player, int pos = -1);
     void tAdd(int);
 
     inline void tSetMyself(bool b) { t_Myself = b;}
-    inline Person** getTPlayers() { return tPlayers; }
-    inline Person* toSouth() { tIndex = 0; return tPlayers[0]; }
-    inline Person* toEast() { tIndex = 1; return tPlayers[1]; }
-    inline Person* toNorth() { tIndex = 2; return tPlayers[2]; }
-    inline Person* toWest() { tIndex = 3; return tPlayers[3]; }
+    inline Player** getTPlayers() { return tPlayers; }
+    inline Player* toSouth() { tIndex = 0; return tPlayers[0]; }
+    inline Player* toEast() { tIndex = 1; return tPlayers[1]; }
+    inline Player* toNorth() { tIndex = 2; return tPlayers[2]; }
+    inline Player* toWest() { tIndex = 3; return tPlayers[3]; }
     inline int numberOfCards() const { return cards.size(); }
 
     int getNumberOfPlayer() const;
@@ -39,29 +37,29 @@ public:
 
     bool pisti();
     bool pisti(bool);
-    bool pisti(Person *p);
+    bool pisti(Player *p);
     bool tGetMyself() {return t_Myself;}
 
     QList<Card *> & getCards();
-    QList<Card *> & getPlayedCards();
+    QList<Card *> & cardsOnTable();
+    const QList<Card *> & playedCards() const;
 
-
-    Person* getPlayers();
-    Person* nextPlayer();
-    Person* tNextPlayer();
-    Person* myself();
-    Person* getlastWinner() const;
-    const Person* me() const;
-    Person* at(int index);
-
+    Player* getPlayers();
+    Player* nextPlayer();
+    Player* tNextPlayer();
+    Player* myself();
+    Player* getlastWinner() const;
+    const Player* me() const;
+    Player* at(int index);
     Card* lastPlayedCard();
 
 private:
-    QList<Card *> playedCards;
+    QList<Card *> cards_on_table;
+    QList<Card *> played_cards;
     QList<Card *> cards;
-    QList<Person *> gamePlayers;
-    QVector<Person *> vector;
-    QListIterator<Person *> *it;
+    QList<Player *> gamePlayers;
+    QVector<Player *> vector;
+    QListIterator<Player *> *it;
 
     // TODO: o an bagli olan oyuncu sayisini tutsun
     int numberOfPlayer;
@@ -72,20 +70,17 @@ private:
     int tInc;
     bool t_Myself;
 
-    Person players[4];
-    Person *tPlayers[4];
-    Person *currentPlayer, *lastWinner;
-    Person *sPlayer, *nPlayer, *ePlayer, *wPlayer;
+    // Player players[4];
+    Player *tPlayers[4];
+    Player *currentPlayer, *lastWinner;
+    Player *sPlayer, *nPlayer, *ePlayer, *wPlayer;
 
     bool cardsEquals(Card *first, Card *sec);
-    void computePlayerScore(Person *player) const;
+    void computePlayerScore(Player *player) const;
     void startGameSession();
 
 signals:
     void ready();
-
-public slots:
-
 };
 
 #endif // GAMEENGINE_H

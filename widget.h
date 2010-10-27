@@ -11,12 +11,14 @@
 #include <QDebug>
 #include <QSignalMapper>
 #include <QMessageBox>
-#include "card.h"
-#include "gameengine.h"
-#include "gamenet.h"
-#include "avahibrowser.h"
-#include "avahiresolver.h"
-#include "avahiregistrar.h"
+#include "core/card.h"
+#include "core/gameengine.h"
+#include "core/gamenet.h"
+#include "avahi/avahibrowser.h"
+#include "avahi/avahiresolver.h"
+#include "avahi/avahiregistrar.h"
+#include "core/player.h"
+#include "pistiplayer.h"
 #include <assert.h>
 
 namespace Ui {
@@ -39,9 +41,9 @@ private:
 
     GameEngine *game;
     GameNet *network;
-    Person *players;
-    Person *currentPlayer, *nextPlayer;
-    Person *me;
+    Player *players;
+    Player *currentPlayer, *nextPlayer;
+    Player *me;
 
     int currentPlayerIndex; // unused
     int posRelative; /* TODO: locate player's pos */

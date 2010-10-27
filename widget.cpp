@@ -330,7 +330,7 @@ void Widget::modifiedstart()
     but->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
     but->show();
 
-    Card *card = game->getPlayedCards().last();
+    Card *card = game->cardsOnTable().last();
     (static_cast<QWidget *>(card->buttonPtr))->setParent(ui->tableCenter);
     (static_cast<QWidget *>(card->buttonPtr))->show();
 
@@ -370,7 +370,7 @@ void Widget::cardClicked(QObject *obj)
     showCardOnTable(c, currentPlayer->getPosition());
 
     if (game->pisti(currentPlayer)) {
-        QList<Card *> &l = game->getPlayedCards();
+        QList<Card *> &l = game->cardsOnTable();
 
         delay(150);
 
@@ -410,7 +410,7 @@ void Widget::simulateOthers()
             clearPanel(ui->tableWest);
             clearPanel(ui->tableSouth);
 
-            game->getlastWinner()->collectCards(game->getPlayedCards());
+            game->getlastWinner()->collectCards(game->cardsOnTable());
             // statistics();
             gameOver(false);
             return;
@@ -430,7 +430,7 @@ void Widget::simulateOthers()
         delay(150);
 
         Card *lastCard = game->lastPlayedCard();
-        Card *recentCard = currentPlayer->dummyPlay(lastCard);
+        Card *recentCard = currentPlayer->dummyPlay();
         game->appendToPlayedCards(recentCard);
 
         clearPanel(currentPlayerFrame, true);
@@ -439,7 +439,7 @@ void Widget::simulateOthers()
         delay(150);
 
         if (game->pisti(currentPlayer)) {
-            QList<Card *> &l = game->getPlayedCards();
+            QList<Card *> &l = game->cardsOnTable();
 
             clearPanel(ui->tableCenter);
             clearPanel(ui->tableEast);
@@ -520,7 +520,7 @@ void Widget::simulateOthers()
         delay(150);
 
         if (game->pisti(currentPlayer)) {
-            QList<Card *> &l = game->getPlayedCards();
+            QList<Card *> &l = game->cardsOnTable();
 
             // clearPanel(grid);
             clearPanel(ui->tableCenter);
@@ -544,7 +544,7 @@ void Widget::simulateOthers()
         /* Game over */
         if (game->getCards().size() == 0 && currentPlayer->getNumberOfCards() == 0) {
             /* yerdeki son kartlari al */
-            game->getlastWinner()->collectCards(game->getPlayedCards());
+            game->getlastWinner()->collectCards(game->cardsOnTable());
             statistics();
             return;
         }
@@ -580,7 +580,7 @@ void Widget::simulateOthers()
         showCardOnTable(c, game->playerIndex());
 
         if (game->pisti(currentPlayer)) {
-            QList<Card *> &l = game->getPlayedCards();
+            QList<Card *> &l = game->cardsOnTable();
 
             // clearPanel(grid);
             clearPanel(ui->tableCenter);
@@ -816,7 +816,7 @@ void Widget::n_set_player_pos(QTcpSocket *sc)
     }
 
     if (host == true) {
-        Person *newPlayer = new Person;
+        Player *newPlayer = new PistiPlayer;
         newPlayer->setPosition(position);
         newPlayer->setPlayerName(QString("Player %1").arg(QString::number(position)));
         newPlayer->setSocket(sc);
@@ -954,7 +954,7 @@ void Widget::n_play()
     if (game->pisti(currentPlayer)) {
         network->broadcast(GameNet::CLEAR_TABLE);
 
-        QList<Card *> &m = game->getPlayedCards();
+        QList<Card *> &m = game->cardsOnTable();
         delay(150);
 
         clearPanel(ui->tableCenter);
@@ -1168,7 +1168,7 @@ void Widget::n_cardClicked(QObject *obj)
 
     if (host == true) {
         if (game->pisti(currentPlayer)) {
-            QList<Card *> &m = game->getPlayedCards();
+            QList<Card *> &m = game->cardsOnTable();
 
             // TODO: appropriate way of clearing args list
             args.clear();
@@ -1199,8 +1199,8 @@ void Widget::n_preNetwork_start(bool b)
         prepareNetworkUI();
     } else {
         socket = network->getClientSoc();
-        Person *newPlayer;
-        currentPlayer = newPlayer = new Person;
+        Player *newPlayer;
+        currentPlayer = newPlayer = new PistiPlayer;
         if (name.isEmpty())
             name = "Remote player";
         newPlayer->setPlayerName(name);
@@ -1230,7 +1230,7 @@ void Widget::SNetworkStart()
             break;
         }
         operand.clear();
-        card = game->getPlayedCards().last();
+        card = game->cardsOnTable().last();
         operand << 4 << card->cardType << card->cardNumber;
         network->broadcast(GameNet::SHOW_CARD_ONTABLE, operand);
 
@@ -1310,8 +1310,8 @@ void Widget::prepareNetworkUI()
     pushMapper->setMapping(pushWest, 3);
 
     if (host == true) {
-        Person *newPlayer;
-        currentPlayer = newPlayer = new Person();
+        Player *newPlayer;
+        currentPlayer = newPlayer = new PistiPlayer();
         if (name.isEmpty())
             name = "Host player";
         newPlayer->setPlayerName(name);
@@ -1338,7 +1338,7 @@ void Widget::slotPrepareNetworkUI(int n)
 
     if (host == true) {
 /*
-        currentPlayer = newPlayer = new Person();
+        currentPlayer = newPlayer = new PistiPlayer();
         newPlayer->setPlayerName(QString("Host player"));
         newPlayer->setMyself(true);
         newPlayer->setTurn(true);
@@ -1413,7 +1413,7 @@ void Widget::SCardClicked(QObject *obj)
 
     if (host == true) {
         if (game->pisti(currentPlayer)) {
-            QList<Card *> &m = game->getPlayedCards();
+            QList<Card *> &m = game->cardsOnTable();
 
             // TODO: appropriate way of clearing args list
             args.clear();
@@ -1509,7 +1509,7 @@ void Widget::updateRecords(const QList<AvahiRecord> &list)
 void Widget::clientInit(QTcpSocket *)
 {
     QList<int> places;
-    Person **p = game->getTPlayers();
+    Player **p = game->getTPlayers();
     for (int i = 0; i < game->tSize(); i++) {
         if (p[i] != 0)
             places[i] = 1;
@@ -1569,7 +1569,7 @@ void Widget::gameOver(bool multiplayer)
 
     QString resultString, firstTeam, secondTeam;
     QList<QString> stringList, nameList;
-    Person *player;
+    Player *player;
     int PLAYER_NUMBER = game->tSize();
     int score[PLAYER_NUMBER], pisticount[PLAYER_NUMBER], cardcount[PLAYER_NUMBER];
     int score_a = 0, score_b, pisti_a = 0, pisti_b = 0;
@@ -1580,9 +1580,9 @@ void Widget::gameOver(bool multiplayer)
     clearPanel(ui->tableWest);
     clearPanel(ui->tableSouth);
 
-    Person *lastWinner = game->getlastWinner();
+    Player *lastWinner = game->getlastWinner();
     if (lastWinner != 0)
-        lastWinner->collectCards(game->getPlayedCards());
+        lastWinner->collectCards(game->cardsOnTable());
 
     if (multiplayer == true)
         network->broadcast(GameNet::CLEAR_TABLE);
@@ -1733,20 +1733,20 @@ void Widget::resizeEvent(QResizeEvent *)
 
 void Widget::on_buttonSinglePlayer_clicked()
 {
-    Person *newPlayer = 0;
+    Player *newPlayer = 0;
 
     if (ui->comboSinglePlayer->currentIndex() == 0) {
         game = new GameEngine(true, 4, this);
         for (int i = 0; i < 4; ++i) {
-            newPlayer = new Person(QString("Player %1").arg(QString::number(i)), i, game);
+            newPlayer = new PistiPlayer(QString("Player %1").arg(QString::number(i)), i, game);
             game->tAdd(newPlayer, i);
             qDebug() << "i = " << i;
         }
     } else {
         game = new GameEngine(true, 2, this);
-        newPlayer = new Person(QString::fromUtf8("Güney"), 0, game);
+        newPlayer = new PistiPlayer(QString::fromUtf8("Güney"), 0, game);
         game->tAdd(newPlayer, 0);
-        newPlayer = new Person(QString::fromUtf8("Kuzey"), 2, game);
+        newPlayer = new PistiPlayer(QString::fromUtf8("Kuzey"), 2, game);
         game->tAdd(newPlayer, 2);
     }
 

@@ -14,7 +14,7 @@ GameEngine::GameEngine(int playerNumber, QObject *parent) :
     vector.resize(4);
     /* dagitanin sagindaki oyuncu ilk karti atar */
     if (numberOfPlayer == 1) {
-        sPlayer = new Person(QString("So Client"));
+        sPlayer = new PistiPlayer(QString("So Client"));
         gamePlayers << sPlayer;
         currentPlayer = sPlayer;
         current_index = 0;
@@ -22,8 +22,8 @@ GameEngine::GameEngine(int playerNumber, QObject *parent) :
 
     if (numberOfPlayer == 2) {
         increment = 2;
-        sPlayer = new Person(QString("Gokay"));
-        nPlayer = new Person(QString("Selin"));
+        sPlayer = new PistiPlayer(QString("Gokay"));
+        nPlayer = new PistiPlayer(QString("Selin"));
         gamePlayers << sPlayer << nPlayer;
         currentPlayer = nPlayer;
         current_index = 2;
@@ -33,17 +33,17 @@ GameEngine::GameEngine(int playerNumber, QObject *parent) :
         numberOfPlayer = 4;
         increment = 1;
 
-        sPlayer = new Person(QString("Gokay"));
-        ePlayer = new Person(QString("Mert"));
-        nPlayer = new Person(QString("Selin"));
-        wPlayer = new Person(QString("Mr. Pink"));
+        sPlayer = new PistiPlayer(QString("Gokay"));
+        ePlayer = new PistiPlayer(QString("Mert"));
+        nPlayer = new PistiPlayer(QString("Selin"));
+        wPlayer = new PistiPlayer(QString("Mr. Pink"));
 
         gamePlayers << sPlayer << ePlayer << nPlayer << wPlayer;
         currentPlayer = ePlayer;
         current_index = 1;
     }
 
-    it = new QListIterator<Person *>(gamePlayers);
+    it = new QListIterator<Player *>(gamePlayers);
     it->next(); it->next();
 }
 
@@ -64,7 +64,7 @@ GameEngine::GameEngine(bool, int num, QObject *parent) :
 
 GameEngine::~GameEngine()
 {
-    Person *p = 0;
+    Player *p = 0;
     Card *card = 0;
 
     if (tSize() > 0) {
@@ -81,8 +81,8 @@ GameEngine::~GameEngine()
         }
     }
 
-    if (playedCards.size() > 0) {
-        foreach (card, playedCards) {
+    if (cards_on_table.size() > 0) {
+        foreach (card, cards_on_table) {
             delete card;
         }
     }
@@ -102,22 +102,22 @@ void GameEngine::createCards()
     Card::shuffleList(cards);
 }
 
-void GameEngine::distributeCards(int number)
-{
-    QList<Card *> tmp;
+//void GameEngine::distributeCards(int number)
+//{
+//    QList<Card *> tmp;
 
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < number; j++) {
-            tmp.append(cards.takeFirst());
-        }
+//    for (int i = 0; i < 4; i++) {
+//        for (int j = 0; j < number; j++) {
+//            tmp.append(cards.takeFirst());
+//        }
 
-        players[i].setHand(tmp);
-        tmp.clear();
-    }
-}
+//        players[i].setHand(tmp);
+//        tmp.clear();
+//    }
+//}
 
 /* overloaded distrubuteCards() */
-void GameEngine::distributeCards(Person &p, int number)
+void GameEngine::distributeCards(Player &p, int number)
 {
     QList<Card *> tmp;
 
@@ -132,28 +132,28 @@ bool GameEngine::pisti()
 {
     // TODO currentPlayer son karti atan oyuncu olmali
 
-    if (playedCards.size() < 2)
+    if (cards_on_table.size() < 2)
         return false;
 
-    Card *currentCard = playedCards.at(playedCards.size() - 1);
+    Card *currentCard = cards_on_table.at(cards_on_table.size() - 1);
     Card *lastPlayedCard =
-            playedCards.at(playedCards.size() - 2);
+            cards_on_table.at(cards_on_table.size() - 2);
 
     bool retVal = false;
     if (currentCard->equals(lastPlayedCard)) {
         /* Pisti */
-        if (playedCards.size() == 2) {
+        if (cards_on_table.size() == 2) {
             currentPlayer->pistiCount++;
             retVal = true;
         }
 
         /* Yerdeki kartlari topla  */
-        currentPlayer->collectCards(playedCards);
+        currentPlayer->collectCards(cards_on_table);
         lastWinner = currentPlayer;
 
     // Vale
     } else if (currentCard->cardNumber == 11) {
-        currentPlayer->collectCards(playedCards);
+        currentPlayer->collectCards(cards_on_table);
         lastWinner = currentPlayer;
         retVal = true;
     }
@@ -165,17 +165,17 @@ bool GameEngine::pisti(bool)
 {
     // TODO currentPlayer son karti atan oyuncu olmali
 
-    if (playedCards.size() < 2)
+    if (cards_on_table.size() < 2)
         return false;
 
-    Card *currentCard = playedCards.at(playedCards.size() - 1);
+    Card *currentCard = cards_on_table.at(cards_on_table.size() - 1);
     Card *lastPlayedCard =
-            playedCards.at(playedCards.size() - 2);
+            cards_on_table.at(cards_on_table.size() - 2);
 
     bool retVal = false;
     if (currentCard->equals(lastPlayedCard)) {
         /* Pisti */
-        if (playedCards.size() == 2) {
+        if (cards_on_table.size() == 2) {
             currentPlayer->pistiCount++;
             retVal = true;
         }
@@ -191,21 +191,21 @@ bool GameEngine::pisti(bool)
     return retVal;
 }
 
-bool GameEngine::pisti(Person *p)
+bool GameEngine::pisti(Player *p)
 {
     currentPlayer = p;
 
-    if (playedCards.size() < 2)
+    if (cards_on_table.size() < 2)
         return false;
 
-    Card *currentCard = playedCards.at(playedCards.size() - 1);
+    Card *currentCard = cards_on_table.at(cards_on_table.size() - 1);
     Card *lastPlayedCard =
-            playedCards.at(playedCards.size() - 2);
+            cards_on_table.at(cards_on_table.size() - 2);
 
     bool retVal = false;
     if (currentCard->equals(lastPlayedCard)) {
         /* Pisti */
-        if (playedCards.size() == 2) {
+        if (cards_on_table.size() == 2) {
             currentPlayer->pistiCount++;
             qDebug() << "pisti";
         }
@@ -232,7 +232,7 @@ bool GameEngine::cardsEquals(Card *first, Card *sec)
 }
 #endif
 
-void GameEngine::computePlayerScore(Person *player) const
+void GameEngine::computePlayerScore(Player *player) const
 {
     int pCount = player->pistiCount;
     while (pCount--)
@@ -256,6 +256,7 @@ void GameEngine::computePlayerScore(Person *player) const
     }
 }
 
+#if 0
 void GameEngine::startGameSession()
 {
     players[0].setPlayerName("Xaero");
@@ -268,7 +269,7 @@ void GameEngine::startGameSession()
 
     for (int i = 0; i < 4; i++) {
         Card *c = cards.takeFirst();
-        playedCards.append(c);
+        cards_on_table.append(c);
     }
 
     bool play = true;
@@ -283,14 +284,14 @@ void GameEngine::startGameSession()
         random = qrand() % currentPlayer->getNumberOfCards();
         c = currentPlayer->play(random);
         qDebug() << "Xaero" << c->toString() << "atti.";
-        playedCards.append(c);
+        cards_on_table.append(c);
         pisti();
 
         currentPlayer = &players[1];
         random = qrand() % currentPlayer->getNumberOfCards();
         c = currentPlayer->play(random);
         qDebug() << "Major" << c->toString() << "atti.";
-        playedCards.append(c);
+        cards_on_table.append(c);
         pisti();
 
         play = (cards.size() == 0 && currentPlayer->getNumberOfCards() == 0)
@@ -298,7 +299,7 @@ void GameEngine::startGameSession()
     }
 
     // Yerde son kalan kartlar
-    lastWinner->collectCards(playedCards);
+    lastWinner->collectCards(cards_on_table);
 
     // TODO: computePlayerScore()
     if (players[0].getScoredCards().size() >
@@ -318,6 +319,7 @@ void GameEngine::startGameSession()
             << players[1].pistiCount << "pisti yapti" << players[1].score;
 
 }
+#endif
 
 QList<Card *> & GameEngine::getCards()
 {
@@ -329,56 +331,39 @@ int GameEngine::getNumberOfPlayer() const
     return numberOfPlayer;
 }
 
-Person* GameEngine::getPlayers()
+#if 0
+Player* GameEngine::getPlayers()
 {
     return players;
 }
-
-void GameEngine::dummyStart()
-{
-    players[0].setPlayerName("Xaero");
-    players[1].setPlayerName("Major");
-    createCards();
-    distributeCards(players[0], 4);
-    distributeCards(players[1], 4);
-}
-
-void GameEngine::start()
-{
-    for (int i = 0; i < 4; i++) {
-        distributeCards(players[i], 4);
-    }
-
-    for (int i = 0; i < 4; i++) {
-
-    }
-}
+#endif
 
 void GameEngine::appendToPlayedCards(Card *c)
 {
-    playedCards.append(c);
+    cards_on_table.append(c);
+    played_cards.append(c);
 }
 
 Card* GameEngine::lastPlayedCard()
 {
-    if (playedCards.isEmpty())
+    if (cards_on_table.isEmpty())
     return NULL;
 
     // return cards.last();
-    return playedCards.last();
+    return cards_on_table.last();
 }
 
-QList<Card *> & GameEngine::getPlayedCards()
+QList<Card *> & GameEngine::cardsOnTable()
 {
-    return playedCards;
+    return cards_on_table;
 }
 
-Person* GameEngine::getlastWinner() const
+Player* GameEngine::getlastWinner() const
 {
     return lastWinner;
 }
 
-Person* GameEngine::nextPlayer()
+Player* GameEngine::nextPlayer()
 {
     currentPlayer->setTurn(false);
     if (it->hasNext()) {
@@ -399,7 +384,7 @@ int GameEngine::playerIndex()
     return current_index;
 }
 
-Person* GameEngine::myself()
+Player* GameEngine::myself()
 {
     if (! gamePlayers.isEmpty()) {
         currentPlayer->setTurn(false);
@@ -412,12 +397,12 @@ Person* GameEngine::myself()
     return NULL;
 }
 
-const Person* GameEngine::me() const
+const Player* GameEngine::me() const
 {
     return sPlayer;
 }
 
-void GameEngine::add(Person *player, int pos)
+void GameEngine::add(Player *player, int pos)
 {
     static int count = 0;
     vector.resize(4);
@@ -430,7 +415,7 @@ void GameEngine::add(Person *player, int pos)
     }
 }
 
-void GameEngine::tAdd(Person *player, int pos)
+void GameEngine::tAdd(Player *player, int pos)
 {
     if (pos < 0 && pos > 3) {
         qDebug() << "tAdd error";
@@ -447,11 +432,11 @@ void GameEngine::tAdd(Person *player, int pos)
 
 void GameEngine::tAdd(int pos)
 {
-        Person *p = new Person;
+        Player *p = new PistiPlayer;
 	tAdd(p, pos);
 }
 
-Person* GameEngine::tNextPlayer()
+Player* GameEngine::tNextPlayer()
 {
     tIndex = (tIndex + tInc) % 4;
     return tPlayers[tIndex];
@@ -462,7 +447,7 @@ int GameEngine::tSize()
 	return size;
 }
 
-Person* GameEngine::at(int index)
+Player* GameEngine::at(int index)
 {
     switch (index) {
     case 0:
@@ -476,4 +461,9 @@ Person* GameEngine::at(int index)
     default:
         return NULL;
     }
+}
+
+const QList<Card *> & GameEngine::playedCards() const
+{
+    return played_cards;
 }

@@ -1,5 +1,5 @@
-#ifndef PERSON_H
-#define PERSON_H
+#ifndef PLAYER_H
+#define PLAYER_H
 
 #include <QObject>
 #include <QDebug>
@@ -8,25 +8,29 @@
 #include <QTcpSocket>
 #include "card.h"
 
-class Person : public QObject
+class Player : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit Person(int r_pos = 0, QObject *parent = 0);
-    explicit Person(QString name, int pos = 0, QObject *parent = 0);
-    ~Person();
+    explicit Player(int r_pos = 0, QObject *parent = 0);
+    explicit Player(QString name, int pos = 0, QObject *parent = 0);
+    ~Player();
 
+    int getNumberOfCards() const;
     void setHand(QList<Card *> &h);
     void collectCards(QList<Card *> &c);
     void reset();
-    void computePlayerScore();
-    int getNumberOfCards() const;
+
+    virtual void computePlayerScore() = 0;
+    virtual Card* play(int index);
+    virtual Card* dummyPlay() = 0;
+    virtual Card* dummyPlay(Card* lastPlayedCard);
+    virtual Card* play(QObject *) = 0;
+    Card* play(Card* lastPlayedCard);
+
     const QList<Card *> &getScoredCards();
     QList<Card *> & getHand();
-    Card* play(int index);
-    Card* play(Card* lastPlayedCard);
-    Card* dummyPlay(Card* lastPlayedCard);
     void setTurn(bool b);
 
     inline QString getPlayerName() const { return this->playerName; }
@@ -39,16 +43,18 @@ public:
     inline bool isMyTurn() const { return turn; }
     inline int getPosition() const { return realPosition; }
     inline int numberOfScoredCards() const { return scoredCards.size(); }
+    inline void appendToPlayedCards(Card *card) { playedCards_.append(card); }
+    inline const QList<Card *> playedCards() const { return playedCards_; }
 
     int pistiCount;
     int score;
 
-signals:
-
-public slots:
+protected:
+    QList<Card *> hand;
+    QList<Card *> playedCards_;
+    QList<Card *> cardsOnTable;
 
 private:
-    QList<Card *> hand;
     QList<Card *> scoredCards;
     QString playerName;
     QTcpSocket *sock;
@@ -60,4 +66,4 @@ private:
     virtual bool isAcceptable(Card *c);
 };
 
-#endif // PERSON_H
+#endif // PLAYER_H
