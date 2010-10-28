@@ -66,6 +66,21 @@ Card* Player::play(Card *lastPlayedCard)
     return hand.takeFirst();
 }
 
+Card* Player::play(QObject *obj)
+{
+    Card *clickedCard = static_cast<Card *>(obj);
+
+    int index = 0;
+    for (int j = 0; j < hand.size(); ++j) {
+        if (clickedCard == hand.at(j)) {
+            index = j;
+            break;
+        }
+    }
+
+    return (this->play(index));
+}
+
 Card* Player::dummyPlay(Card* lastPlayedCard)
 {
     if (lastPlayedCard != NULL) {

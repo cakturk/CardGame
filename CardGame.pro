@@ -18,7 +18,8 @@ HEADERS += core/card.h \
     avahi/AvahiRecord.h \
     avahi/avahibrowser.h \
     pistiplayer.h \
-    batakplayer.h
+    batakplayer.h \
+    core/pistiengine.h
 FORMS += widget.ui
 SOURCES += core/player.cpp \
     core/card.cpp \
@@ -30,7 +31,8 @@ SOURCES += core/player.cpp \
     avahi/avahiregistrar.cpp \
     avahi/avahibrowser.cpp \
     pistiplayer.cpp \
-    batakplayer.cpp
+    batakplayer.cpp \
+    core/pistiengine.cpp
 LIBS += -ldns_sd \
     -lavahi-core \
     -lavahi-client

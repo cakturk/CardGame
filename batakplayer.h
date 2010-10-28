@@ -10,13 +10,20 @@ public:
     BatakPlayer(QString name, int pos = 0, QObject *parent = 0);
 
     Card* play(int index);
-    Card* play(QObject *cardObj);
     Card* dummyPlay();
+
+    void computeScore();
+
+    inline void betFor(int number) { bet_ = number; }
+    inline int bet() const { return bet_; }
     inline void kozPlayed() { seenKozSoFar = true; }
+    inline void resetBet() { bet_ = 0; }
 
 private:
+    int estimateBet();
+
     bool seenKozSoFar;
-    quint16 bet;
+    int bet_, scoredBet;
 };
 
 #endif // BATAKPLAYER_H

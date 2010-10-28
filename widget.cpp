@@ -263,7 +263,7 @@ void Widget::statistics()
 
     currentPlayer = game->myself();
     for (int i = 0; i < game->getNumberOfPlayer(); i++) {
-        currentPlayer->computePlayerScore();
+        currentPlayer->computeScore();
         scores[i] = currentPlayer->score;
         pisti[i] = currentPlayer->pistiCount;
         currentPlayer = game->nextPlayer();
@@ -650,6 +650,7 @@ void Widget::on_buttonToggle_toggled(bool checked)
     else
         this->showNormal();
 }
+
 void Widget::n_simulateOthers()
 {
     QWidget *currentPlayerFrame;
@@ -1592,7 +1593,7 @@ void Widget::gameOver(bool multiplayer)
     currentPlayer = game->toSouth();
 
     for (int j = 0; j < PLAYER_NUMBER; ++j) {
-        currentPlayer->computePlayerScore();
+        currentPlayer->computeScore();
         score[j] = currentPlayer->score;
         pisticount[j] = currentPlayer->pistiCount;
         cardcount[j] = currentPlayer->numberOfScoredCards();

@@ -467,3 +467,8 @@ const QList<Card *> & GameEngine::playedCards() const
 {
     return played_cards;
 }
+
+bool GameEngine::checkRound(Player *)
+{
+    return false;
+}

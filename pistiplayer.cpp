@@ -8,28 +8,6 @@ PistiPlayer::PistiPlayer(QString name, int pos, QObject *parent) :
         Player(name, pos, parent)
 { }
 
-void PistiPlayer::computePlayerScore()
-{
-    int pCount = pistiCount;
-    while (pCount--)
-        score += 10;
-
-    pCount = 0;
-
-    for (int i = 0; i < getScoredCards().size(); i++) {
-        Card *card = getScoredCards().at(i);
-
-        if (card->cardNumber == 1)
-            score++;
-        if (card->cardNumber == 11)
-            score++;
-        if (card->type == Card::SINEK && card->cardNumber == 2)
-            score += 2;
-        if (card->type == Card::KARO && card->cardNumber == 10)
-            score += 3;
-    }
-}
-
 Card* PistiPlayer::dummyPlay()
 {
     Card *lastPlayedCard = NULL;
@@ -67,7 +45,24 @@ Card* PistiPlayer::dummyPlay()
     return hand.takeFirst();
 }
 
-Card* PistiPlayer::play(QObject *)
+void PistiPlayer::computeScore()
 {
+    int pCount = pistiCount;
+    while (pCount--)
+        score += 10;
 
+    pCount = 0;
+
+    for (int i = 0; i < getScoredCards().size(); i++) {
+        Card *card = getScoredCards().at(i);
+
+        if (card->cardNumber == 1)
+            score++;
+        if (card->cardNumber == 11)
+            score++;
+        if (card->type == Card::SINEK && card->cardNumber == 2)
+            score += 2;
+        if (card->type == Card::KARO && card->cardNumber == 10)
+            score += 3;
+    }
 }

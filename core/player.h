@@ -22,11 +22,11 @@ public:
     void collectCards(QList<Card *> &c);
     void reset();
 
-    virtual void computePlayerScore() = 0;
+    virtual void computeScore() = 0;
     virtual Card* play(int index);
     virtual Card* dummyPlay() = 0;
     virtual Card* dummyPlay(Card* lastPlayedCard);
-    virtual Card* play(QObject *) = 0;
+    Card* play(QObject *);
     Card* play(Card* lastPlayedCard);
 
     const QList<Card *> &getScoredCards();
@@ -53,9 +53,9 @@ protected:
     QList<Card *> hand;
     QList<Card *> playedCards_;
     QList<Card *> cardsOnTable;
+    QList<Card *> scoredCards;
 
 private:
-    QList<Card *> scoredCards;
     QString playerName;
     QTcpSocket *sock;
 

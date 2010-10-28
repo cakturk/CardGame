@@ -39,6 +39,7 @@ public:
     bool pisti(bool);
     bool pisti(Player *p);
     bool tGetMyself() {return t_Myself;}
+    virtual bool checkRound(Player *player);
 
     QList<Card *> & getCards();
     QList<Card *> & cardsOnTable();

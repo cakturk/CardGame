@@ -1,11 +1,11 @@
 #include "batakplayer.h"
 
 BatakPlayer::BatakPlayer(int r_pos, QObject *parent) :
-        Player(r_pos, parent), seenKozSoFar(false)
+        Player(r_pos, parent), seenKozSoFar(false), bet_(0), scoredBet(0)
 { }
 
 BatakPlayer::BatakPlayer(QString name, int pos, QObject *parent) :
-        Player(name, pos, parent), seenKozSoFar(false)
+        Player(name, pos, parent), seenKozSoFar(false), bet_(0), scoredBet(0)
 { }
 
 Card* BatakPlayer::play(int index)
@@ -32,10 +32,10 @@ Card* BatakPlayer::play(int index)
 
         if (selectedCard->cardType == valueToRaise->cardType
             && selectedCard->cardNumber > valueToRaise->cardNumber)
-            return selectedCard;
-    } else {
-        if (selectedCard->cardType != Card::MACA)
-            return selectedCard;
+            return (hand.takeAt(index));
+
+    } else if (selectedCard->cardType != Card::MACA) {
+            return (hand.takeAt(index));
     }
 
     return NULL;
@@ -49,17 +49,18 @@ Card* BatakPlayer::dummyPlay()
     return NULL;
 }
 
-Card* BatakPlayer::play(QObject *obj)
+void BatakPlayer::computeScore()
 {
-    Card *clickedCard = static_cast<Card *>(obj);
+    int roundScore = scoredCards.size() / 4;
 
-    int index = 0;
-    for (int j = 0; j < hand.size(); ++j) {
-        if (clickedCard == hand.at(j)) {
-            index = j;
-            break;
-        }
+    if (roundScore >= bet_) {
+        score += (bet_ * 10);
+    } else {
+        score += (bet_ * (-10));
     }
+}
 
-    return (this->play(index));
+int BatakPlayer::estimateBet()
+{
+    return 0;
 }

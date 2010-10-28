@@ -11,9 +11,7 @@ public:
 
     /* override */
     Card* dummyPlay();
-    Card* play(QObject *);
-
-    void computePlayerScore();
+    void computeScore();
 };
 
 #endif // PISTIPLAYER_H
