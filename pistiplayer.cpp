@@ -25,7 +25,7 @@ Card* PistiPlayer::dummyPlay()
         Card *vale;
         for (int i = 0; i < hand.size(); ++i) {
             vale = hand.at(i);
-            if (vale->cardNumber == 11)
+            if (vale->value == 11)
                 return (hand.takeAt(i));
         }
 
@@ -56,13 +56,13 @@ void PistiPlayer::computeScore()
     for (int i = 0; i < getScoredCards().size(); i++) {
         Card *card = getScoredCards().at(i);
 
-        if (card->cardNumber == 1)
+        if (card->value == 1)
             score++;
-        if (card->cardNumber == 11)
+        if (card->value == 11)
             score++;
-        if (card->type == Card::SINEK && card->cardNumber == 2)
+        if (card->type == Card::SINEK && card->value == 2)
             score += 2;
-        if (card->type == Card::KARO && card->cardNumber == 10)
+        if (card->type == Card::KARO && card->value == 10)
             score += 3;
     }
 }

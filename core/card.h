@@ -15,11 +15,12 @@ public:
 
     QString toString();
     static void shuffleList(QList<Card *> &p);
-    bool operator ==(const Card &other) const;
+    bool operator==(const Card &other) const;
+    bool operator <(const Card &rhs) const;
     bool equals(Card *c);
     QWidget* getButton();
 
-    enum card_type {
+    enum Suit {
         KUPA,
         KARO,
         SINEK,
@@ -28,8 +29,8 @@ public:
 
     /* 0 -> KUPA, 1 -> KARO, 2-> SINEK, 3-> MACA */
     int type;
-    card_type cardType;
-    int cardNumber;
+    Suit suit;
+    int value;
     QString cardName;
     QString cardImageName;
     void *buttonPtr;
@@ -37,6 +38,7 @@ public:
     QWidget *toolButton;
 
 private:
+    int compareTo(const Card *rhs) const;
 
 private slots:
 

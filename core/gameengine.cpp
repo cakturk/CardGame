@@ -152,7 +152,7 @@ bool GameEngine::pisti()
         lastWinner = currentPlayer;
 
     // Vale
-    } else if (currentCard->cardNumber == 11) {
+    } else if (currentCard->value == 11) {
         currentPlayer->collectCards(cards_on_table);
         lastWinner = currentPlayer;
         retVal = true;
@@ -183,7 +183,7 @@ bool GameEngine::pisti(bool)
         lastWinner = currentPlayer;
 
         // Vale
-    } else if (currentCard->cardNumber == 11) {
+    } else if (currentCard->value == 11) {
         lastWinner = currentPlayer;
         retVal = true;
     }
@@ -214,7 +214,7 @@ bool GameEngine::pisti(Player *p)
         retVal = true;
 
         // Vale
-    } else if (currentCard->cardNumber == 11) {
+    } else if (currentCard->value == 11) {
         lastWinner = currentPlayer;
         retVal = true;
     }
@@ -245,13 +245,13 @@ void GameEngine::computePlayerScore(Player *player) const
     for (int i = 0; i < tmplist.size(); i++) {
         Card *card = tmplist.at(i);
 
-        if (card->cardNumber == 1)
+        if (card->value == 1)
             player->score++;
-        if (card->cardNumber == 11)
+        if (card->value == 11)
             player->score++;
-        if (card->type == Card::SINEK && card->cardNumber == 2)
+        if (card->type == Card::SINEK && card->value == 2)
             player->score += 2;
-        if (card->type == Card::KARO && card->cardNumber == 10)
+        if (card->type == Card::KARO && card->value == 10)
             player->score += 3;
     }
 }

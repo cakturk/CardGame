@@ -38,7 +38,7 @@ public:
     bool pisti();
     bool pisti(bool);
     bool pisti(Player *p);
-    bool tGetMyself() {return t_Myself;}
+    bool tGetMyself() { return t_Myself; }
     virtual bool checkRound(Player *player);
 
     QList<Card *> & getCards();
@@ -54,8 +54,11 @@ public:
     Player* at(int index);
     Card* lastPlayedCard();
 
-private:
+protected:
     QList<Card *> cards_on_table;
+    Player *currentPlayer, *lastWinner;
+
+private:
     QList<Card *> played_cards;
     QList<Card *> cards;
     QList<Player *> gamePlayers;
@@ -73,7 +76,6 @@ private:
 
     // Player players[4];
     Player *tPlayers[4];
-    Player *currentPlayer, *lastWinner;
     Player *sPlayer, *nPlayer, *ePlayer, *wPlayer;
 
     bool cardsEquals(Card *first, Card *sec);

@@ -1,23 +1,23 @@
 #include "card.h"
 
 Card::Card(int ct, int cn) :
-        type(ct), cardNumber(cn)
+        type(ct), value(cn)
 {
     switch (type) {
     case 0:
-        cardType = KUPA;
+        suit = KUPA;
         break;
 
     case 1:
-        cardType = KARO;
+        suit = KARO;
         break;
 
     case 2:
-        cardType = SINEK;
+        suit = SINEK;
         break;
 
     case 3:
-        cardType = MACA;
+        suit = MACA;
         break;
 
     default:
@@ -46,7 +46,7 @@ QString Card::toString()
 {
     QString retVal;
 
-    switch (cardType) {
+    switch (suit) {
     case KARO:
         retVal = "Karo";
         break;
@@ -61,7 +61,7 @@ QString Card::toString()
         break;
     }
 
-    switch (cardNumber) {
+    switch (value) {
     case 1:
         retVal += "As";
         break;
@@ -75,7 +75,7 @@ QString Card::toString()
         retVal += "Papaz";
         break;
     default:
-        retVal += QString::number(cardNumber);
+        retVal += QString::number(value);
     }
 
     return retVal;
@@ -94,16 +94,25 @@ void Card::shuffleList(QList<Card *> &p)
     }
 }
 
-bool Card::operator ==(const Card &other) const {
-    if (this->cardNumber == other.cardNumber)
+bool Card::operator ==(const Card &other) const
+{
+    if (this->value == other.value)
         return true;
 
     return false;
 }
 
-bool Card::equals(Card *c)
+bool Card::operator <(const Card &rhs) const
 {
-    return (this->cardNumber == c->cardNumber);
+    if (this->compareTo(&rhs) == -1)
+        return true;
+    else
+        return false;
+}
+
+bool Card::equals(Card *other)
+{
+    return (this->value == other->value);
 }
 
 QWidget* Card::getButton()
@@ -121,4 +130,20 @@ QWidget* Card::getButton()
     qDebug() << "getButton()";
 
     return old;
+}
+
+int Card::compareTo(const Card *rhs) const
+{
+    /* special case, we found ace */
+    if (value == 1)
+        return 1;
+    else if (rhs->value == 1)
+        return -1;
+
+    if (value == rhs->value)
+        return 0;
+    else if (value > rhs->value)
+        return 1;
+    else
+        return -1;
 }

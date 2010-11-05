@@ -319,7 +319,7 @@ void Widget::modifiedstart()
     }
     /* vale disinda bir kart ac */
     for (int i = 0; i < game->getCards().size(); i++)
-        if (game->getCards().at(i)->cardNumber != 11) {
+        if (game->getCards().at(i)->value != 11) {
         game->appendToPlayedCards(game->getCards().takeAt(i));
         break;
     }
@@ -944,7 +944,7 @@ void Widget::n_play()
 
     /* inform others about played cards */
     args.clear();
-    args << cardPos << card->cardType << card->cardNumber;
+    args << cardPos << card->suit << card->value;
     network->broadcast(GameNet::SHOW_CARD_ONTABLE, args);
     delay(150);
 
@@ -1154,7 +1154,7 @@ void Widget::n_cardClicked(QObject *obj)
         game->appendToPlayedCards(card);
 
     if (host) {
-        args << currentPlayer->getPosition() << card->cardType << card->cardNumber;
+        args << currentPlayer->getPosition() << card->suit << card->value;
         network->broadcast(GameNet::SHOW_CARD_ONTABLE, args);
     } else {
         args << cardIndex;
@@ -1226,13 +1226,13 @@ void Widget::SNetworkStart()
         network->broadcast(GameNet::SHOW_CARD_BACK, operand);
 
         for (int j = 0; j < game->getCards().size(); j++)
-            if (game->getCards().at(j)->cardNumber != 11) {
+            if (game->getCards().at(j)->value != 11) {
             game->appendToPlayedCards(game->getCards().takeAt(j));
             break;
         }
         operand.clear();
         card = game->cardsOnTable().last();
-        operand << 4 << card->cardType << card->cardNumber;
+        operand << 4 << card->suit << card->value;
         network->broadcast(GameNet::SHOW_CARD_ONTABLE, operand);
 
         QToolButton *button = new QToolButton(ui->tableCenter);
@@ -1270,7 +1270,7 @@ void Widget::SNetworkStart()
 
                 args << currentPlayer->getPosition();
                 foreach (Card *card, m) {
-                    args << card->cardType << card->cardNumber;
+                    args << card->suit << card->value;
                 }
 
                 if (currentPlayer->getSocket() != 0) {
@@ -1394,7 +1394,7 @@ void Widget::SCardClicked(QObject *obj)
     int location = currentPlayer->getPosition();
 
     if (host) {
-        args << location << card->cardType << card->cardNumber;
+        args << location << card->suit << card->value;
         network->broadcast(GameNet::SHOW_CARD_ONTABLE, args);
         args.clear();
         args << location << currentPlayer->getNumberOfCards();
@@ -1550,7 +1550,7 @@ void Widget::renewTurn()
 
             list << currentPlayer->getPosition();
             foreach (Card *card, hand) {
-                list << card->cardType << card->cardNumber;
+                list << card->suit << card->value;
             }
 
             if (currentPlayer->getSocket() != 0) {

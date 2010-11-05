@@ -1,11 +1,11 @@
 #include "batakplayer.h"
 
 BatakPlayer::BatakPlayer(int r_pos, QObject *parent) :
-        Player(r_pos, parent), seenKozSoFar(false), bet_(0), scoredBet(0)
+        Player(r_pos, parent), kozBroken(false), bid_(0), trick_(0)
 { }
 
 BatakPlayer::BatakPlayer(QString name, int pos, QObject *parent) :
-        Player(name, pos, parent), seenKozSoFar(false), bet_(0), scoredBet(0)
+        Player(name, pos, parent), kozBroken(false), bid_(0), trick_(0)
 { }
 
 Card* BatakPlayer::play(int index)
@@ -25,26 +25,35 @@ Card* BatakPlayer::play(int index)
         it.toBack();
         while (it.hasPrevious()) {
             valueToRaise = it.previous();
-            if (valueToRaise->cardType == typeToPlay->cardType) {
+            if (valueToRaise->suit == typeToPlay->suit) {
                 break;
             }
         }
 
-        if (selectedCard->cardType == valueToRaise->cardType
-            && selectedCard->cardNumber > valueToRaise->cardNumber)
+        if (selectedCard->suit == valueToRaise->suit
+            && selectedCard->value > valueToRaise->value)
             return (hand.takeAt(index));
 
-    } else if (selectedCard->cardType != Card::MACA) {
+    } else if (selectedCard->suit != Card::MACA) {
             return (hand.takeAt(index));
     }
 
     return NULL;
 }
 
-Card* BatakPlayer::dummyPlay()
+Card* BatakPlayer::dummyPlay(State *state)
 {
-    if (cardsOnTable.size()) {
+    Card *card;
 
+    if (state->sizeofCardsOnBoard()) {
+        Card *bottom = state->bottom();
+        const Card *highestRankedCard = state->highestRankedCardOnBoard(bottom->suit);
+
+        if (hasGreaterRankedCard(highestRankedCard)) {
+
+        } else {
+
+        }
     }
     return NULL;
 }
@@ -53,14 +62,25 @@ void BatakPlayer::computeScore()
 {
     int roundScore = scoredCards.size() / 4;
 
-    if (roundScore >= bet_) {
-        score += (bet_ * 10);
+    if (roundScore >= bid_) {
+        score += (bid_ * 10);
     } else {
-        score += (bet_ * (-10));
+        score += (bid_ * (-10));
     }
 }
 
-int BatakPlayer::estimateBet()
+int BatakPlayer::makeDecisionOnBid()
 {
     return 0;
+}
+
+bool BatakPlayer::hasGreaterRankedCard(const Card *rhs) const
+{
+    foreach (Card *card, hand) {
+        if (card->value > rhs->value &&
+            card->suit == rhs->suit)
+            return true;
+    }
+
+    return false;
 }

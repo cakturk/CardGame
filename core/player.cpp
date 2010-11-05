@@ -58,7 +58,7 @@ Card* Player::play(Card *lastPlayedCard)
         for (int index = 0; index < hand.size(); index++) {
             vale = hand.at(index);
 
-            if (vale->cardNumber == 11)
+            if (vale->value == 11)
                 return (hand.takeAt(index));
         }
     }
@@ -91,7 +91,7 @@ Card* Player::dummyPlay(Card* lastPlayedCard)
             Card *vale;
             for (int i = 0; i < hand.size(); i++) {
                 vale = hand.at(i);
-                if (vale->cardNumber == 11)
+                if (vale->value == 11)
                     return (hand.takeAt(i));
             }
         }
@@ -99,7 +99,7 @@ Card* Player::dummyPlay(Card* lastPlayedCard)
         for (int i = 0; i < hand.size(); i++) {
             Card *c;
             c = hand.at(i);
-            if (c->cardNumber != 11)
+            if (c->value != 11)
                 return (hand.takeAt(i));
         }
     }
