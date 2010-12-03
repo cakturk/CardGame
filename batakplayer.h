@@ -16,16 +16,13 @@ public:
     void computeScore();
 
     inline void bidFor(int number) { bid_ = number; }
-    inline void kozPlayed() { kozBroken = true; }
     inline void resetBid() { bid_ = 0; }
     inline int trick() const { return bid_; }
 
 private:
     int makeBidDecision();
     bool hasGreaterRankedCard(const Card *rhs) const;
-    inline bool isKozBroken() const { return kozBroken; }
 
-    bool kozBroken;
     int bid_, trick_;
 };
 

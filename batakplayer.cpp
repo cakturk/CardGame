@@ -1,11 +1,11 @@
 #include "batakplayer.h"
 
 BatakPlayer::BatakPlayer(int r_pos, QObject *parent) :
-        Player(r_pos, parent), kozBroken(false), bid_(0), trick_(0)
+        Player(r_pos, parent), bid_(0), trick_(0)
 { }
 
 BatakPlayer::BatakPlayer(QString name, int pos, QObject *parent) :
-        Player(name, pos, parent), kozBroken(false), bid_(0), trick_(0)
+        Player(name, pos, parent), bid_(0), trick_(0)
 { }
 
 Card* BatakPlayer::play(int index)
