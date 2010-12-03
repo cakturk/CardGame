@@ -2,6 +2,7 @@
 #define STATE_H
 
 #include "core/card.h"
+#include "core/cardsequence.h"
 template <class T> class QList;
 
 /**
@@ -12,20 +13,17 @@ class State
 public:
     State();
 
-    inline void appendToBoard(Card *card) { cardsOnBoard_.append(card); }
+    inline void appendToBoard(Card *card) { m_cardsOnBoard->append(card); }
     void appendToPlayedCard(Card *card);
+    void append(Card *card);
 
-    inline const QList<Card *> cardsOnBoard() const { return cardsOnBoard_; }
-    inline const QList<Card *> playedCards() const { return playedCards_; }
-    inline int sizeofCardsOnBoard() const { return cardsOnBoard_.size(); }
-    inline int sizeofPlayedCards() const { return playedCards_.size(); }
+    inline const CardSequence* cardsOnBoard() const { return m_cardsOnBoard; }
+    inline const CardSequence* playedCards() const { return m_playedCards; }
+    inline int sizeofCardsOnBoard() const { return m_cardsOnBoard->size(); }
+    inline int sizeofPlayedCards() const { return m_playedCards->size(); }
     inline bool contains(Card *card) const { return (playedCards_.contains(card)); }
-    inline Card* bottom() const { return cardsOnBoard_.last(); }
-    inline Card* top() const { return cardsOnBoard_.first(); }
-    inline int karoCount() const { return karoCount_; }
-    inline int kupaCount() const { return kupaCount_; }
-    inline int sinekCount() const { return sinekCount_; }
-    inline int macaCount() const { return macaCount_; }
+    inline Card* bottom() const { return m_cardsOnBoard->takeLast(); }
+    inline Card* top() const { return m_cardsOnBoard->takeFirst(); }
 
     const Card* highestRankedCardOnBoard(Card::Suit suit) const;
     const Card* lowstRankedCardBoard(Card::Suit suit) const;
@@ -34,6 +32,10 @@ public:
 private:
     QList<Card *> cardsOnBoard_;
     QList<Card *> playedCards_;
+
+    /* cardsOnBoard is a subset of playedCards */
+    CardSequence *m_cardsOnBoard;
+    CardSequence *m_playedCards;
 
     int karoCount_, kupaCount_, sinekCount_, macaCount_;
     bool playedKozSoFar;

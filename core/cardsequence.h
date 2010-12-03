@@ -30,8 +30,8 @@ public:
     inline bool isKozBroken() const { return kozBroken; }
     inline void setKozBroken(bool breakeKoz) { kozBroken = breakeKoz; }
 
-    Card* highestRankedCardFor(Card::Suit suit);
-    Card* lowestRankedCardFor(Card::Suit suit);
+    const Card* highestRankedCardFor(Card::Suit suit) const;
+    const Card* lowestRankedCardFor(Card::Suit suit) const;
 
     bool hasKaro() const;
     bool hasKupa() const;

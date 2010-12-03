@@ -2,8 +2,7 @@
 #include <QList>
 
 CardSequence::CardSequence()
-{
-}
+{ }
 
 void CardSequence::append(Card *card)
 {
@@ -58,10 +57,10 @@ Card* CardSequence::take(Card *card)
     return returnee;
 }
 
-Card* CardSequence::highestRankedCardFor(Card::Suit suit)
+const Card* CardSequence::highestRankedCardFor(Card::Suit suit) const
 {
     Card *currentCard = NULL;
-    Card* previousCard = cardSequence.first();
+    Card *previousCard = cardSequence.first();
 
     int max = 0;
     for (int j = 0; j < cardSequence.size(); ++j) {
@@ -76,6 +75,23 @@ Card* CardSequence::highestRankedCardFor(Card::Suit suit)
     }
 
     return cardSequence.at(max);
+}
+
+const Card* CardSequence::lowestRankedCardFor(Card::Suit suit) const
+{
+    Card *currentCard = NULL;
+    Card *previousCard = cardSequence.first();
+
+    int min= 0;
+    for (int j = 0; j < cardSequence.size(); ++j) {
+        currentCard = cardSequence.at(j);
+
+        if (currentCard->suit == suit &&
+            currentCard->value < previousCard->value)
+            min = j;
+    }
+
+    return cardSequence.at(min);
 }
 
 bool CardSequence::hasKaro() const
