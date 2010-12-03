@@ -27,7 +27,7 @@ public:
     inline int sinekCount() const { return sinekCount_; }
     inline int macaCount() const { return macaCount_; }
 
-    const Card* highestRankedCardOnBoard(Card::Suit type) const;
+    const Card* highestRankedCardOnBoard(Card::Suit suit) const;
     const Card* lowstRankedCardBoard(Card::Suit suit) const;
     bool boardContainsKoz() const;
 
@@ -36,7 +36,6 @@ private:
     QList<Card *> playedCards_;
 
     int karoCount_, kupaCount_, sinekCount_, macaCount_;
-
     bool playedKozSoFar;
 };
 

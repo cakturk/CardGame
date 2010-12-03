@@ -21,7 +21,7 @@ public:
     inline int trick() const { return bid_; }
 
 private:
-    int makeDecisionOnBid();
+    int makeBidDecision();
     bool hasGreaterRankedCard(const Card *rhs) const;
     inline bool isKozBroken() const { return kozBroken; }
 

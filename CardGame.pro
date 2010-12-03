@@ -21,7 +21,8 @@ HEADERS += core/card.h \
     batakplayer.h \
     core/pistiengine.h \
     core/batakengine.h \
-    state.h
+    state.h \
+    core/cardsequence.h
 FORMS += widget.ui
 SOURCES += core/player.cpp \
     core/card.cpp \
@@ -36,7 +37,8 @@ SOURCES += core/player.cpp \
     batakplayer.cpp \
     core/pistiengine.cpp \
     state.cpp \
-    core/batakengine.cpp
+    core/batakengine.cpp \
+    core/cardsequence.cpp
 LIBS += -ldns_sd \
     -lavahi-core \
     -lavahi-client

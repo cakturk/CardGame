@@ -348,12 +348,12 @@ void Widget::modifiedstart()
     currentPlayer = game->toSouth();
     // connect button signals to slots
     for (int i = 0; i < currentPlayer->getNumberOfCards(); i++) {
-        QList<Card *> l = currentPlayer->getHand();
-        connect(static_cast<QToolButton *>(l.at(i)->buttonPtr), SIGNAL(clicked()),
+        QList<Card *> list = currentPlayer->getHand();
+        connect(static_cast<QToolButton *>(list.at(i)->buttonPtr), SIGNAL(clicked()),
                 mapper, SLOT(map()));
-        mapper->setMapping(static_cast<QObject *>(l.at(i)->buttonPtr),
-                           static_cast<QObject *>(l.at(i)));
-        ui->southHand->layout()->addWidget(static_cast<QWidget *>(l.at(i)->buttonPtr));
+        mapper->setMapping(static_cast<QObject *>(list.at(i)->buttonPtr),
+                           static_cast<QObject *>(list.at(i)));
+        ui->southHand->layout()->addWidget(static_cast<QWidget *>(list.at(i)->buttonPtr));
     }
 }
 

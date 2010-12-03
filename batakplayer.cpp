@@ -60,16 +60,16 @@ Card* BatakPlayer::dummyPlay(State *state)
 
 void BatakPlayer::computeScore()
 {
-    int roundScore = scoredCards.size() / 4;
+    int numberOfTricks = scoredCards.size() / 4;
 
-    if (roundScore >= bid_) {
+    if (numberOfTricks >= bid_) {
         score += (bid_ * 10);
     } else {
         score += (bid_ * (-10));
     }
 }
 
-int BatakPlayer::makeDecisionOnBid()
+int BatakPlayer::makeBidDecision()
 {
     return 0;
 }

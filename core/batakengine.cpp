@@ -13,8 +13,8 @@ bool BatakEngine::checkState(Player *, State *state)
         return false;
 
     Card *bottom = state->bottom();
-    Card *lastPlayed = state->top();
-    const Card *highestRankedCard = state->highestRankedCardOnBoard(bottom->suit);
+    //Card *lastPlayed = state->top();
+    //const Card *highestRankedCard = state->highestRankedCardOnBoard(bottom->suit);
 
     return true;
 }
