@@ -24,8 +24,3 @@ const Card* State::lowstRankedCardBoard(Card::Suit suit) const
 {
     return m_cardsOnBoard->lowestRankedCardFor(suit);
 }
-
-bool State::boardContainsKoz() const
-{
-    return m_playedCards->hasMaca();
-}

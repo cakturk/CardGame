@@ -19,20 +19,20 @@ public:
 
     inline const CardSequence* cardsOnBoard() const { return m_cardsOnBoard; }
     inline const CardSequence* playedCards() const { return m_playedCards; }
+
     inline int sizeofCardsOnBoard() const { return m_cardsOnBoard->size(); }
     inline int sizeofPlayedCards() const { return m_playedCards->size(); }
-    inline bool contains(Card *card) const { return (playedCards_.contains(card)); }
+
+    inline bool contains(Card *card) const { return (m_playedCards->contains(card)); }
+    inline bool isKozBroken() const { return m_playedCards->hasMaca(); }
+
     inline Card* bottom() const { return m_cardsOnBoard->takeLast(); }
     inline Card* top() const { return m_cardsOnBoard->takeFirst(); }
 
     const Card* highestRankedCardOnBoard(Card::Suit suit) const;
     const Card* lowstRankedCardBoard(Card::Suit suit) const;
-    bool boardContainsKoz() const;
 
 private:
-    QList<Card *> cardsOnBoard_;
-    QList<Card *> playedCards_;
-
     /* cardsOnBoard is a subset of playedCards */
     CardSequence *m_cardsOnBoard;
     CardSequence *m_playedCards;

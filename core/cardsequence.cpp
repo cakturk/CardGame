@@ -4,6 +4,18 @@
 CardSequence::CardSequence()
 { }
 
+CardSequence::CardSequence(const CardSequence &rhs)
+{
+    if (this == &rhs)
+        return;
+
+    this->cardSequence = rhs.cardSequence;
+    this->karoCount_ = rhs.karoCount_;
+    this->kupaCount_ = rhs.kupaCount_;
+    this->sinekCount_ = rhs.sinekCount_;
+    this->macaCount_ = rhs.macaCount_;
+}
+
 void CardSequence::append(Card *card)
 {
     incSuitCount(card->suit);
@@ -21,6 +33,11 @@ void CardSequence::removeAt(int index)
     Card::Suit suit = cardSequence.at(index)->suit;
     decSuitCount(suit);
     cardSequence.removeAt(index);
+}
+
+void CardSequence::clear()
+{
+    cardSequence.clear();
 }
 
 Card* CardSequence::takeFirst()

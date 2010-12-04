@@ -7,7 +7,10 @@
 #include <QList>
 #include <QTcpSocket>
 #include "card.h"
+//#include "core/cardsequence.h"
 
+class CardSequence;
+class State;
 class Player : public QObject
 {
     Q_OBJECT
@@ -54,6 +57,10 @@ protected:
     QList<Card *> playedCards_;
     QList<Card *> cardsOnTable;
     QList<Card *> scoredCards;
+
+    CardSequence *m_hand;
+    CardSequence *m_scoredCards;
+    State *state;
 
 private:
     QString playerName;

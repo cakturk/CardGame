@@ -25,7 +25,9 @@ Player::~Player()
     }
 
     if (hand.size()) {
-        foreach (Card *card, hand) {
+        Card *card;
+        for (int j = 0; j < hand.size(); j++) {
+            card = hand.at(j);
             delete card;
         }
     }

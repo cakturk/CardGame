@@ -8,10 +8,13 @@ class CardSequence
 {
 public:
     CardSequence();
+    CardSequence(const CardSequence &rhs);
 
     void append(Card *card);
     bool remove(Card *card);
     void removeAt(int index);
+    void clear();
+
     Card* takeFirst();
     Card* takeLast();
     Card* takeAt(int n);
@@ -27,8 +30,7 @@ public:
     inline int sinekCount() const { return sinekCount_; }
     inline int macaCount() const { return macaCount_; }
     inline bool contains(Card *card) const { return cardSequence.contains(card); }
-    inline bool isKozBroken() const { return kozBroken; }
-    inline void setKozBroken(bool breakeKoz) { kozBroken = breakeKoz; }
+    inline bool isKozBroken() const { return hasMaca(); }
 
     const Card* highestRankedCardFor(Card::Suit suit) const;
     const Card* lowestRankedCardFor(Card::Suit suit) const;
@@ -51,7 +53,6 @@ private:
 
     QList<Card *> cardSequence;
     int karoCount_, kupaCount_, sinekCount_, macaCount_;
-    bool kozBroken;
 };
 
 bool lessThan(Card *lhs, Card *rhs);
