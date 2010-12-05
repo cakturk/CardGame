@@ -4,6 +4,9 @@
 CardSequence::CardSequence()
 { }
 
+/*
+ * Copy constructor
+ */
 CardSequence::CardSequence(const CardSequence &rhs)
 {
     if (this == &rhs)
@@ -141,6 +144,70 @@ bool CardSequence::hasOtherThan(Card::Suit suit) const
     }
 
     return true;
+}
+
+bool CardSequence::hasOtherThan(int value) const
+{
+    Card *card;
+    for (int j = 0; j < cardSequence.size(); ++j) {
+        card = cardSequence.at(j);
+        if (card->value != value)
+            return true;
+    }
+
+    return false;
+}
+
+CardSequence CardSequence::filterOut(Card::Suit suit) const
+{
+    CardSequence retVal;
+    Card *card;
+    for (int j = 0; j < cardSequence.size(); ++j) {
+        card = cardSequence.at(j);
+        if (card->suit != suit)
+            retVal.append(card);
+    }
+
+    return retVal;
+}
+
+CardSequence CardSequence::filterOut(int value) const
+{
+    CardSequence retVal;
+    Card *card;
+    for (int j = 0; j < cardSequence.size(); ++j) {
+        card = cardSequence.at(j);
+        if (card->value != value)
+            retVal.append(card);
+    }
+
+    return retVal;
+}
+
+CardSequence CardSequence::filter(Card::Suit suit) const
+{
+    CardSequence retVal;
+    Card *card;
+    for (int j = 0; j < cardSequence.size(); ++j) {
+        card = cardSequence.at(j);
+        if (card->suit == suit)
+            retVal.append(card);
+    }
+
+    return retVal;
+}
+
+CardSequence CardSequence::filter(int value) const
+{
+    CardSequence retVal;
+    Card *card;
+    for (int j = 0; j < cardSequence.size(); ++j) {
+        card = cardSequence.at(j);
+        if (card->value == value)
+            retVal.append(card);
+    }
+
+    return retVal;
 }
 
 bool CardSequence::hasSuit(Card::Suit suit) const

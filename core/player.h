@@ -7,7 +7,7 @@
 #include <QList>
 #include <QTcpSocket>
 #include "card.h"
-//#include "core/cardsequence.h"
+#include "core/cardsequence.h"
 
 class CardSequence;
 class State;
@@ -21,7 +21,7 @@ public:
     ~Player();
 
     int getNumberOfCards() const;
-    void setHand(QList<Card *> &h);
+    void setHand(CardSequence &rhs);
     void collectCards(QList<Card *> &c);
     void reset();
 
@@ -33,7 +33,7 @@ public:
     Card* play(Card* lastPlayedCard);
 
     const QList<Card *> &getScoredCards();
-    QList<Card *> & getHand();
+    CardSequence & getHand();
     void setTurn(bool b);
 
     inline QString getPlayerName() const { return this->playerName; }
@@ -53,7 +53,7 @@ public:
     int score;
 
 protected:
-    QList<Card *> hand;
+    CardSequence hand;
     QList<Card *> playedCards_;
     QList<Card *> cardsOnTable;
     QList<Card *> scoredCards;
@@ -70,7 +70,7 @@ private:
     bool turn;
     bool _myself;
 
-    virtual bool isAcceptable(Card *c);
+    virtual bool isAcceptable(const Card *c) const;
 };
 
 #endif // PLAYER_H

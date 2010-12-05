@@ -19,10 +19,9 @@ Card* PistiPlayer::dummyPlay()
         qDebug() << "lastplayedcar == Nil";
 
     if (hand.contains(lastPlayedCard)) {
-        int index = hand.indexOf(lastPlayedCard);
-        return (hand.takeAt(index));
+        return (hand.take(lastPlayedCard));
     } else {
-        Card *vale;
+        const Card *vale;
         for (int i = 0; i < hand.size(); ++i) {
             vale = hand.at(i);
             if (vale->value == 11)
@@ -33,6 +32,7 @@ Card* PistiPlayer::dummyPlay()
         if (playedCards_.size()) {
             for (int i = 0; i < hand.size(); ++i) {
                 vale = hand.at(i);
+                // Card *foo = const_cast<Card *>(vale);
                 count = playedCards_.count(vale);
                 if (count > previousCount)
                     imax = i;

@@ -25,7 +25,7 @@ Player::~Player()
     }
 
     if (hand.size()) {
-        Card *card;
+        const Card *card;
         for (int j = 0; j < hand.size(); j++) {
             card = hand.at(j);
             delete card;
@@ -33,9 +33,9 @@ Player::~Player()
     }
 }
 
-void Player::setHand(QList<Card *> &h)
+void Player::setHand(CardSequence &rhs)
 {
-    this->hand = h;
+    this->hand = rhs;
 }
 
 Card* Player::play(int index)
@@ -43,7 +43,7 @@ Card* Player::play(int index)
     if (index < 0 || 3 < index)
         return hand.takeFirst();
 
-    Card *c = hand.at(index);
+    const Card *c = hand.at(index);
     if (isAcceptable(c))
         return ( hand.takeAt(index) );
 
@@ -53,10 +53,9 @@ Card* Player::play(int index)
 Card* Player::play(Card *lastPlayedCard)
 {
     if (hand.contains(lastPlayedCard)) {
-        int index = hand.indexOf(lastPlayedCard);
-        return (hand.takeAt(index));
+        return (hand.take(lastPlayedCard));
     } else {
-        Card *vale;
+        const Card *vale;
         for (int index = 0; index < hand.size(); index++) {
             vale = hand.at(index);
 
@@ -87,10 +86,9 @@ Card* Player::dummyPlay(Card* lastPlayedCard)
 {
     if (lastPlayedCard != NULL) {
         if(hand.contains(lastPlayedCard)) {
-            int index = hand.indexOf(lastPlayedCard);
-            return (hand.takeAt(index));
+            return (hand.take(lastPlayedCard));
         } else {
-            Card *vale;
+            const Card *vale;
             for (int i = 0; i < hand.size(); i++) {
                 vale = hand.at(i);
                 if (vale->value == 11)
@@ -99,7 +97,7 @@ Card* Player::dummyPlay(Card* lastPlayedCard)
         }
     } else {
         for (int i = 0; i < hand.size(); i++) {
-            Card *c;
+            const Card *c;
             c = hand.at(i);
             if (c->value != 11)
                 return (hand.takeAt(i));
@@ -127,7 +125,7 @@ void Player::reset()
     score = 0;
 }
 
-bool Player::isAcceptable(Card *)
+bool Player::isAcceptable(const Card *) const
 {
     // TODO atilan kart uygun mu
     return true;
@@ -143,7 +141,7 @@ int Player::getNumberOfCards() const
     return (this->hand.size());
 }
 
-QList<Card *>& Player::getHand()
+CardSequence & Player::getHand()
 {
     return hand;
 }

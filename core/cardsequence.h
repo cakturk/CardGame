@@ -40,6 +40,12 @@ public:
     bool hasSinek() const;
     bool hasMaca() const;
     bool hasOtherThan(Card::Suit suit) const;
+    bool hasOtherThan(int value) const;
+
+    CardSequence filterOut(Card::Suit suit) const;
+    CardSequence filterOut(int value) const;
+    CardSequence filter(Card::Suit suit) const;
+    CardSequence filter(int value) const;
 
 private:
     bool hasSuit(Card::Suit suit) const;

@@ -119,7 +119,7 @@ void GameEngine::createCards()
 /* overloaded distrubuteCards() */
 void GameEngine::distributeCards(Player &p, int number)
 {
-    QList<Card *> tmp;
+    CardSequence tmp;
 
     for (int i = 0; i < number; i++) {
         tmp.append(cards.takeFirst());
