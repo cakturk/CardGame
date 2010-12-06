@@ -158,6 +158,14 @@ bool CardSequence::hasOtherThan(int value) const
     return false;
 }
 
+bool CardSequence::hasGreaterThan(Card *card) const
+{
+    if (hasSuit(card->suit))
+        return filter(card->suit).hasGreaterThan(card->value);
+
+    return false;
+}
+
 CardSequence CardSequence::filterOut(Card::Suit suit) const
 {
     CardSequence retVal;

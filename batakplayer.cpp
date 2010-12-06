@@ -44,10 +44,16 @@ Card* BatakPlayer::play(int index)
 Card* BatakPlayer::dummyPlay(State *state)
 {
     Card *card;
+    CardSequence seq;
 
     if (state->sizeofCardsOnBoard()) {
-        Card *bottom = state->bottom();
-        const Card *highestRankedCard = state->highestRankedCardOnBoard(bottom->suit);
+        Card *firstCard = state->firstPlayedCard();
+        const Card *highestRankedCard = state->highestRankedCardOnBoard(firstCard->suit);
+        seq = state->cardsOnBoard()->filter(firstCard->suit);
+
+        if (! seq.isEmpty()) {
+            seq.highestRankedCardFor()
+        }
 
         if (hasGreaterRankedCard(highestRankedCard)) {
 

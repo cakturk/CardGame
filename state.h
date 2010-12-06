@@ -26,8 +26,8 @@ public:
     inline bool contains(Card *card) const { return (m_playedCards->contains(card)); }
     inline bool isKozBroken() const { return m_playedCards->hasMaca(); }
 
-    inline Card* bottom() const { return m_cardsOnBoard->takeLast(); }
-    inline Card* top() const { return m_cardsOnBoard->takeFirst(); }
+    inline Card* lastPlayedCard() const { return m_cardsOnBoard->takeLast(); }
+    inline Card* firstPlayedCard() const { return m_cardsOnBoard->takeFirst(); }
 
     const Card* highestRankedCardOnBoard(Card::Suit suit) const;
     const Card* lowstRankedCardBoard(Card::Suit suit) const;

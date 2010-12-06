@@ -12,7 +12,7 @@ bool BatakEngine::checkState(Player *, State *state)
     if (state->sizeofCardsOnBoard() < 4)
         return false;
 
-    Card *bottom = state->bottom();
+    Card *bottom = state->lastPlayedCard();
     //Card *lastPlayed = state->top();
     //const Card *highestRankedCard = state->highestRankedCardOnBoard(bottom->suit);
 

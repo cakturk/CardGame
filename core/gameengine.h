@@ -4,6 +4,7 @@
 #include <QObject>
 #include "card.h"
 #include "pistiplayer.h"
+#include "core/cardsequence.h"
 
 class GameEngine : public QObject
 {
@@ -43,7 +44,7 @@ public:
 
     QList<Card *> & getCards();
     QList<Card *> & cardsOnTable();
-    const QList<Card *> & playedCards() const;
+    const CardSequence & playedCards() const;
 
     Player* getPlayers();
     Player* nextPlayer();
@@ -59,7 +60,7 @@ protected:
     Player *currentPlayer, *lastWinner;
 
 private:
-    QList<Card *> played_cards;
+    CardSequence played_cards;
     QList<Card *> cards;
     QList<Player *> gamePlayers;
     QVector<Player *> vector;

@@ -23,6 +23,7 @@ public:
     int getNumberOfCards() const;
     void setHand(CardSequence &rhs);
     void collectCards(QList<Card *> &c);
+    void collectCards(CardSequence *sequence);
     void reset();
 
     virtual void computeScore() = 0;
@@ -54,12 +55,12 @@ public:
 
 protected:
     CardSequence hand;
+    CardSequence m_scoredCards;
     QList<Card *> playedCards_;
     QList<Card *> cardsOnTable;
     QList<Card *> scoredCards;
 
     CardSequence *m_hand;
-    CardSequence *m_scoredCards;
     State *state;
 
 private:

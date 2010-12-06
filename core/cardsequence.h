@@ -20,7 +20,8 @@ public:
     Card* takeAt(int n);
     Card* take(Card *card);
 
-    inline const QList<Card *> getSequence() const { return cardSequence; }
+    inline bool isEmpty() const { cardSequence.isEmpty(); }
+    inline const QList<Card *> toQlist() const { return cardSequence; }
     inline const Card* first() const { return cardSequence.last(); }
     inline const Card* last() const { return cardSequence.first(); }
     inline const Card* at(int index) { return cardSequence.at(index); }
@@ -41,6 +42,9 @@ public:
     bool hasMaca() const;
     bool hasOtherThan(Card::Suit suit) const;
     bool hasOtherThan(int value) const;
+    bool hasGreaterThan(int value) const;
+    bool hasGreaterThan(Card *card) const;
+    bool hasSuit(Card::Suit suit) const;
 
     CardSequence filterOut(Card::Suit suit) const;
     CardSequence filterOut(int value) const;
@@ -48,7 +52,6 @@ public:
     CardSequence filter(int value) const;
 
 private:
-    bool hasSuit(Card::Suit suit) const;
     bool hasCard(Card *card) const;
     void sortCards();
 

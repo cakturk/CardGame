@@ -463,7 +463,7 @@ Player* GameEngine::at(int index)
     }
 }
 
-const QList<Card *> & GameEngine::playedCards() const
+const CardSequence & GameEngine::playedCards() const
 {
     return played_cards;
 }

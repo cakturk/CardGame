@@ -32,7 +32,7 @@ Card* PistiPlayer::dummyPlay()
         if (playedCards_.size()) {
             for (int i = 0; i < hand.size(); ++i) {
                 vale = hand.at(i);
-                // Card *foo = const_cast<Card *>(vale);
+//                Card *foo = const_cast<Card *>(vale);
                 count = playedCards_.count(vale);
                 if (count > previousCount)
                     imax = i;
