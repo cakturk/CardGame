@@ -43,25 +43,46 @@ Card* BatakPlayer::play(int index)
 
 Card* BatakPlayer::dummyPlay(State *state)
 {
-    Card *card;
+    // TODO: improve decision
     CardSequence seq;
+    Card *retVal;
+    Card *lastPlayedCard;
+
+    if (! hand.size())
+        return NULL;
 
     if (state->sizeofCardsOnBoard()) {
-        Card *firstCard = state->firstPlayedCard();
-        const Card *highestRankedCard = state->highestRankedCardOnBoard(firstCard->suit);
-        seq = state->cardsOnBoard()->filter(firstCard->suit);
+        lastPlayedCard = state->lastPlayedCard();
+        seq = hand.filterOutLessThan(lastPlayedCard);
+        if (seq.size()) {
+            retVal = seq.first();
+        } else if ((seq = hand.filterBySuit(lastPlayedCard->suit)).size()) {
+            retVal = seq.first();
+        } else if ((seq = hand.filterBySuit(Card::MACA)).size()) {
+            CardSequence spadesOnBoard = state->playedCards()->filterBySuit(Card::MACA);
+            // Daha onceden birisi kozlamis
+            if (spadesOnBoard.size()) {
+                spadesOnBoard.sortCards();
+                CardSequence filteredSeq = seq.filterOutLessThan(spadesOnBoard.last());
 
-        if (! seq.isEmpty()) {
-            seq.highestRankedCardFor()
+                if (filteredSeq.size())
+                    retVal = filteredSeq.first();
+                else
+                    retVal = seq.first();
+            }
         }
-
-        if (hasGreaterRankedCard(highestRankedCard)) {
-
-        } else {
-
-        }
+    } else {
+        // TODO: Eger elinde baska kart varsa koz acilmadan koz atmamali.
+        seq = hand.filterOut(Card::MACA);
+        if (seq.size())
+            retVal = seq.first();
+        else
+            retVal = hand.first();
     }
-    return NULL;
+
+    retVal = hand.take(retVal);
+
+    return retVal;
 }
 
 void BatakPlayer::computeScore()
@@ -80,13 +101,7 @@ int BatakPlayer::makeBidDecision()
     return 0;
 }
 
-bool BatakPlayer::hasGreaterRankedCard(const Card *rhs) const
+bool BatakPlayer::hasGreaterRankedCard(const Card *) const
 {
-    foreach (Card *card, hand) {
-        if (card->value > rhs->value &&
-            card->suit == rhs->suit)
-            return true;
-    }
-
     return false;
 }

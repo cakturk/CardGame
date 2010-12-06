@@ -70,14 +70,14 @@ Card* CardSequence::take(Card *card)
     int n = find(card);
 
     if (n >= 0)
-        returnee = cardSequence.at(n);
+        returnee = cardSequence.takeAt(n);
     else
         returnee = NULL;
 
     return returnee;
 }
 
-const Card* CardSequence::highestRankedCardFor(Card::Suit suit) const
+Card* CardSequence::highestRankedCardFor(Card::Suit suit) const
 {
     Card *currentCard = NULL;
     Card *previousCard = cardSequence.first();
@@ -97,7 +97,7 @@ const Card* CardSequence::highestRankedCardFor(Card::Suit suit) const
     return cardSequence.at(max);
 }
 
-const Card* CardSequence::lowestRankedCardFor(Card::Suit suit) const
+Card* CardSequence::lowestRankedCardFor(Card::Suit suit) const
 {
     Card *currentCard = NULL;
     Card *previousCard = cardSequence.first();
@@ -158,10 +158,22 @@ bool CardSequence::hasOtherThan(int value) const
     return false;
 }
 
+bool CardSequence::hasGreaterThan(int value) const
+{
+    Card *card;
+    for (int j = 0; j < cardSequence.size(); ++j) {
+        card = cardSequence.at(j);
+        if (card->value > value)
+            return true;
+    }
+
+    return false;
+}
+
 bool CardSequence::hasGreaterThan(Card *card) const
 {
     if (hasSuit(card->suit))
-        return filter(card->suit).hasGreaterThan(card->value);
+        return filterBySuit(card->suit).hasGreaterThan(card->value);
 
     return false;
 }
@@ -192,7 +204,25 @@ CardSequence CardSequence::filterOut(int value) const
     return retVal;
 }
 
-CardSequence CardSequence::filter(Card::Suit suit) const
+CardSequence CardSequence::filterOutLessThan(Card *card) const
+{
+    Card *c;
+    CardSequence retVal;
+    CardSequence seq = filterBySuit(card->suit);
+
+    for (int j = 0; j < seq.size(); ++j) {
+        c = seq.at(j);
+
+        if (c->value == 1)
+            retVal.append(c);
+        else if (card->value < c->value)
+            retVal.append(c);
+    }
+
+    return retVal;
+}
+
+CardSequence CardSequence::filterBySuit(Card::Suit suit) const
 {
     CardSequence retVal;
     Card *card;
@@ -205,7 +235,7 @@ CardSequence CardSequence::filter(Card::Suit suit) const
     return retVal;
 }
 
-CardSequence CardSequence::filter(int value) const
+CardSequence CardSequence::filterByValue(int value) const
 {
     CardSequence retVal;
     Card *card;

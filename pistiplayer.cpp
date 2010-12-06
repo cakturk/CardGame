@@ -21,7 +21,7 @@ Card* PistiPlayer::dummyPlay()
     if (hand.contains(lastPlayedCard)) {
         return (hand.take(lastPlayedCard));
     } else {
-        const Card *vale;
+        Card *vale;
         for (int i = 0; i < hand.size(); ++i) {
             vale = hand.at(i);
             if (vale->value == 11)
@@ -32,8 +32,8 @@ Card* PistiPlayer::dummyPlay()
         if (playedCards_.size()) {
             for (int i = 0; i < hand.size(); ++i) {
                 vale = hand.at(i);
-//                Card *foo = const_cast<Card *>(vale);
-                count = playedCards_.count(vale);
+                Card *foo = vale;
+                count = playedCards_.count(foo);
                 if (count > previousCount)
                     imax = i;
                 previousCount = count;

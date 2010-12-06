@@ -14,17 +14,18 @@ public:
     bool remove(Card *card);
     void removeAt(int index);
     void clear();
+    void sortCards();
 
     Card* takeFirst();
     Card* takeLast();
     Card* takeAt(int n);
     Card* take(Card *card);
 
-    inline bool isEmpty() const { cardSequence.isEmpty(); }
-    inline const QList<Card *> toQlist() const { return cardSequence; }
-    inline const Card* first() const { return cardSequence.last(); }
-    inline const Card* last() const { return cardSequence.first(); }
-    inline const Card* at(int index) { return cardSequence.at(index); }
+    inline bool isEmpty() const { return cardSequence.isEmpty(); }
+    inline QList<Card *> toQlist() const { return cardSequence; }
+    inline Card* first() const { return cardSequence.last(); }
+    inline Card* last() const { return cardSequence.first(); }
+    inline Card* at(int index) { return cardSequence.at(index); }
     inline int size() const { return cardSequence.size(); }
     inline int karoCount() const { return karoCount_; }
     inline int kupaCount() const { return kupaCount_; }
@@ -33,8 +34,8 @@ public:
     inline bool contains(Card *card) const { return cardSequence.contains(card); }
     inline bool isKozBroken() const { return hasMaca(); }
 
-    const Card* highestRankedCardFor(Card::Suit suit) const;
-    const Card* lowestRankedCardFor(Card::Suit suit) const;
+    Card* highestRankedCardFor(Card::Suit suit) const;
+    Card* lowestRankedCardFor(Card::Suit suit) const;
 
     bool hasKaro() const;
     bool hasKupa() const;
@@ -48,12 +49,12 @@ public:
 
     CardSequence filterOut(Card::Suit suit) const;
     CardSequence filterOut(int value) const;
-    CardSequence filter(Card::Suit suit) const;
-    CardSequence filter(int value) const;
+    CardSequence filterOutLessThan(Card *card) const;
+    CardSequence filterBySuit(Card::Suit suit) const;
+    CardSequence filterByValue(int value) const;
 
 private:
     bool hasCard(Card *card) const;
-    void sortCards();
 
     /* helper functions */
     void incSuitCount(Card::Suit suit);

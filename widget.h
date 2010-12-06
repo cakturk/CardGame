@@ -70,7 +70,6 @@ private:
     AvahiResolver *resolver;
     AvahiRegistrar *registrar;
 
-    void modifiedstart();
     void preNetStart(bool);
     void centerMyWindow();
     void showCardOnTable(Card *c, int playerindex);
@@ -112,22 +111,13 @@ private slots:
     void on_buttonEnterName_clicked();
     void updateRecords(const QList<AvahiRecord> &);
     void on_buttonConnect_clicked();
-    void on_buttonCreateServer_clicked();
     void on_buttonToggle_toggled(bool checked);
     void on_buttonMultiplayer_clicked();
     void on_styletoolMulti_clicked();
     void on_styletoolSingle_clicked();
     void on_pushButton_clicked();
-    void cardClicked(QObject *obj);
-    void n_cardClicked(QObject *obj);
-    void processMessage(QTcpSocket*);
-    void slotPrepareNetworkUI(int n);
-    void prepareNetworkUI();
 
-    void SCardClicked(QObject *obj);
-    void SNetworkStart();
     void connectToServer(const QHostInfo &hostinfo, quint16 port);
-    void clientInit(QTcpSocket *sock);
     void sendPrepareUi();
 };
 
