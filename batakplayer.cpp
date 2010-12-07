@@ -1,11 +1,11 @@
 #include "batakplayer.h"
 
 BatakPlayer::BatakPlayer(int r_pos, QObject *parent) :
-        Player(r_pos, parent), bid_(0), trick_(0)
+        Player(r_pos, parent), bid_(0), tricks_(0)
 { }
 
 BatakPlayer::BatakPlayer(QString name, int pos, QObject *parent) :
-        Player(name, pos, parent), bid_(0), trick_(0)
+        Player(name, pos, parent), bid_(0), tricks_(0)
 { }
 
 Card* BatakPlayer::play(int index)
@@ -36,6 +36,19 @@ Card* BatakPlayer::play(int index)
 
     } else if (selectedCard->suit != Card::MACA) {
             return (hand.takeAt(index));
+    }
+
+    return NULL;
+}
+
+Card* BatakPlayer::play(int index, State &state)
+{
+    if (index < 0 || index > 12 || hand.isEmpty())
+        return NULL;
+
+    Card *selectedCard = hand.at(index);
+
+    if (state.sizeofCardsOnBoard()) {
     }
 
     return NULL;
@@ -101,6 +114,48 @@ void BatakPlayer::computeScore()
 int BatakPlayer::makeBidDecision()
 {
     return 0;
+}
+
+bool BatakPlayer::isValid(Card *selectedCard, State &state)
+{
+    bool retVal;
+    Card *leadingCard;
+
+    leadingCard = state.firstPlayedCard();
+
+    if (selectedCard->suit == leadingCard->suit) {
+        Card *highestRankedCard = state.cardsOnBoard().
+                                  highestRankedCardFor(leadingCard->suit);
+        if (selectedCard->value > highestRankedCard->value) {
+            retVal = true;
+        } else {
+            if (hand.hasGreaterThan(selectedCard->value))
+                retVal = false;
+            else
+                retVal = true;
+        }
+    } else {
+        if (hand.hasSuit(leadingCard->suit))
+            retVal = false;
+        else {
+            if (selectedCard->suit == Card::MACA) {
+                if (state.cardsOnBoard().hasMaca()) {
+                    Card *highestRankedCard = state.cardsOnBoard().
+                                              highestRankedCardFor(Card::MACA);
+                    if (selectedCard->value > highestRankedCard->value)
+                        retVal = true;
+                    else if (hand.hasGreaterThan(highestRankedCard))
+                        retVal = false;
+                    else
+                        retVal = true;
+                }
+            } else {
+                retVal = true;
+            }
+        }
+    }
+
+    return retVal;
 }
 
 bool BatakPlayer::hasGreaterRankedCard(const Card *) const

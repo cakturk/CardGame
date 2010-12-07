@@ -47,8 +47,6 @@ public:
     inline bool isMyTurn() const { return turn; }
     inline int getPosition() const { return realPosition; }
     inline int numberOfScoredCards() const { return scoredCards.size(); }
-    inline void appendToPlayedCards(Card *card) { playedCards_.append(card); }
-    inline const QList<Card *> playedCards() const { return playedCards_; }
 
     int pistiCount;
     int score;

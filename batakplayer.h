@@ -11,6 +11,7 @@ public:
     BatakPlayer(QString name, int pos = 0, QObject *parent = 0);
 
     Card* play(int index);
+    Card* play(int index, State &state);
     Card* dummyPlay(State &state);
 
     void computeScore();
@@ -21,9 +22,10 @@ public:
 
 private:
     int makeBidDecision();
-    bool hasGreaterRankedCard(const Card *rhs) const;
 
-    int bid_, trick_;
+    bool isValid(Card *selectedCard, State &state);
+    bool hasGreaterRankedCard(const Card *rhs) const;
+    int bid_, tricks_;
 };
 
 #endif // BATAKPLAYER_H
