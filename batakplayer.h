@@ -11,7 +11,7 @@ public:
     BatakPlayer(QString name, int pos = 0, QObject *parent = 0);
 
     Card* play(int index);
-    Card* dummyPlay(State *state);
+    Card* dummyPlay(State &state);
 
     void computeScore();
 

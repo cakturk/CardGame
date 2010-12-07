@@ -28,7 +28,7 @@ public:
 
     virtual void computeScore() = 0;
     virtual Card* play(int index);
-    virtual Card* dummyPlay() = 0;
+    // virtual Card* dummyPlay() = 0;
     virtual Card* dummyPlay(Card* lastPlayedCard);
     Card* play(QObject *);
     Card* play(Card* lastPlayedCard);

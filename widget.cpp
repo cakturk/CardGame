@@ -1,6 +1,9 @@
 #include "widget.h"
 #include "ui_widget.h"
 
+#include "state.h"
+#include "batakplayer.h"
+
 #define TESTT
 #define TEST_CONST
 #undef TEST_CONST
@@ -47,8 +50,36 @@ Widget::Widget(QWidget *parent) :
     vbox->setAlignment(Qt::AlignCenter);
     ui->westHand->setLayout(vbox);
 
+    test();
     // modifiedstart();
 }
+
+void Widget::test()
+{
+    State state;
+    GameEngine *engine = new GameEngine(this);
+    engine->createCards();
+
+    PistiPlayer *mazhar = new PistiPlayer;
+    CardSequence seq;
+    for (int j = 0; j < 4; ++j)
+        seq.append(engine->getCards().takeFirst());
+
+    mazhar->setHand(seq);
+
+    foreach (Card *kart, engine->getCards()) {
+        static int count = 0;
+        state.append(kart);
+
+        if (++count == 40)
+            break;
+        qDebug() << "break";
+    }
+
+    //CardSequence board = state.takeCardsFromBoard();
+    mazhar->dummyPlay(state);
+}
+
 
 Widget::~Widget()
 {

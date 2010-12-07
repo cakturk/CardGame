@@ -9,6 +9,7 @@ class CardSequence
 public:
     CardSequence();
     CardSequence(const CardSequence &rhs);
+    CardSequence & operator=(const CardSequence &rhs);
 
     void append(Card *card);
     bool remove(Card *card);
@@ -23,8 +24,8 @@ public:
 
     inline bool isEmpty() const { return cardSequence.isEmpty(); }
     inline QList<Card *> toQlist() const { return cardSequence; }
-    inline Card* first() const { return cardSequence.last(); }
-    inline Card* last() const { return cardSequence.first(); }
+    inline Card* first() const { return cardSequence.first(); }
+    inline Card* last() const { return cardSequence.last(); }
     inline Card* at(int index) { return cardSequence.at(index); }
     inline int size() const { return cardSequence.size(); }
     inline int karoCount() const { return karoCount_; }
@@ -33,6 +34,7 @@ public:
     inline int macaCount() const { return macaCount_; }
     inline bool contains(Card *card) const { return cardSequence.contains(card); }
     inline bool isKozBroken() const { return hasMaca(); }
+    int count(Card *card) const;
 
     Card* highestRankedCardFor(Card::Suit suit) const;
     Card* lowestRankedCardFor(Card::Suit suit) const;

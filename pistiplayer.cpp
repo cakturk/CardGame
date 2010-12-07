@@ -1,4 +1,5 @@
 #include "pistiplayer.h"
+#include "state.h"
 
 PistiPlayer::PistiPlayer(int r_pos, QObject *parent) :
         Player(r_pos, parent)
@@ -16,7 +17,7 @@ Card* PistiPlayer::dummyPlay()
         lastPlayedCard = cardsOnTable.last();
 
     if (lastPlayedCard == NULL)
-        qDebug() << "lastplayedcar == Nil";
+        qDebug() << "lastplayedcard == Nil";
 
     if (hand.contains(lastPlayedCard)) {
         return (hand.take(lastPlayedCard));
@@ -43,6 +44,43 @@ Card* PistiPlayer::dummyPlay()
     }
 
     return hand.takeFirst();
+}
+
+Card* PistiPlayer::dummyPlay(State &state)
+{
+    CardSequence sequence;
+    Card* lastPlayedCard;
+    Card* retVal;
+
+    if (! hand.size())
+        return NULL;
+
+    if (state.sizeofCardsOnBoard()) {
+        lastPlayedCard = state.lastPlayedCard();
+
+        sequence = hand.filterByValue(lastPlayedCard->value);
+        if (sequence.size()) {
+            retVal = sequence.first();
+            // Vale varsa bul.
+        } else if ((sequence = hand.filterByValue(11)).size()) {
+            retVal = sequence.first();
+        } else {
+            Card *card;
+            int imax = 0, count = 0, previousCount = 0;
+            for (int j = 0; j < hand.size(); ++j) {
+                card = hand.at(j);
+                count = state.playedCards().count(card);
+                if (count > previousCount)
+                    imax = j;
+
+                previousCount = count;
+            }
+            retVal = hand.at(imax);
+        }
+    }
+    retVal = hand.take(retVal);
+
+    return retVal;
 }
 
 void PistiPlayer::computeScore()

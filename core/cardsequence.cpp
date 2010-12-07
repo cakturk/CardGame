@@ -1,7 +1,8 @@
 #include "cardsequence.h"
 #include <QList>
 
-CardSequence::CardSequence()
+CardSequence::CardSequence() :
+        karoCount_(0), kupaCount_(0), sinekCount_(0), macaCount_(0)
 { }
 
 /*
@@ -9,6 +10,7 @@ CardSequence::CardSequence()
  */
 CardSequence::CardSequence(const CardSequence &rhs)
 {
+    qDebug() << "copy constructor";
     if (this == &rhs)
         return;
 
@@ -17,6 +19,18 @@ CardSequence::CardSequence(const CardSequence &rhs)
     this->kupaCount_ = rhs.kupaCount_;
     this->sinekCount_ = rhs.sinekCount_;
     this->macaCount_ = rhs.macaCount_;
+}
+
+CardSequence & CardSequence::operator =(const CardSequence &rhs)
+{
+    qDebug() << "assignment operator";
+    this->cardSequence = rhs.cardSequence;
+    this->karoCount_ = rhs.karoCount_;
+    this->kupaCount_ = rhs.kupaCount_;
+    this->sinekCount_ = rhs.sinekCount_;
+    this->macaCount_ = rhs.macaCount_;
+
+    return *this;
 }
 
 void CardSequence::append(Card *card)
@@ -75,6 +89,17 @@ Card* CardSequence::take(Card *card)
         returnee = NULL;
 
     return returnee;
+}
+
+int CardSequence::count(Card *card) const
+{
+    int retVal = 0;
+    for (int j = 0; j < cardSequence.size(); ++j) {
+        if (cardSequence.at(j)->value == card->value)
+            ++retVal;
+    }
+
+    return retVal;
 }
 
 Card* CardSequence::highestRankedCardFor(Card::Suit suit) const
@@ -276,26 +301,7 @@ void CardSequence::sortCards()
 }
 
 inline
-        void CardSequence::incSuitCount(Card::Suit suit)
-{
-    switch (suit) {
-    case Card::KARO:
-        --karoCount_;
-        break;
-    case Card::KUPA:
-        --kupaCount_;
-        break;
-    case Card::SINEK:
-        --sinekCount_;
-        break;
-    case Card::MACA:
-        --macaCount_;
-        break;
-    }
-}
-
-inline
-        void CardSequence::decSuitCount(Card::Suit suit)
+void CardSequence::incSuitCount(Card::Suit suit)
 {
     switch (suit) {
     case Card::KARO:
@@ -309,6 +315,25 @@ inline
         break;
     case Card::MACA:
         ++macaCount_;
+        break;
+    }
+}
+
+inline
+void CardSequence::decSuitCount(Card::Suit suit)
+{
+    switch (suit) {
+    case Card::KARO:
+        --karoCount_;
+        break;
+    case Card::KUPA:
+        --kupaCount_;
+        break;
+    case Card::SINEK:
+        --sinekCount_;
+        break;
+    case Card::MACA:
+        --macaCount_;
         break;
     }
 }

@@ -3,6 +3,7 @@
 
 #include "core/player.h"
 
+class State;
 class PistiPlayer : public Player
 {
 public:
@@ -11,6 +12,7 @@ public:
 
     /* override */
     Card* dummyPlay();
+    Card* dummyPlay(State &state);
     void computeScore();
 };
 

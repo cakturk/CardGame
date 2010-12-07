@@ -32,6 +32,8 @@ public:
     Widget(QWidget *parent = 0);
     ~Widget();
 
+    void test();
+
 protected:
     void changeEvent(QEvent *e);
     virtual void resizeEvent(QResizeEvent *);

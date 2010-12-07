@@ -41,41 +41,43 @@ Card* BatakPlayer::play(int index)
     return NULL;
 }
 
-Card* BatakPlayer::dummyPlay(State *state)
+Card* BatakPlayer::dummyPlay(State &state)
 {
     // TODO: improve decision
-    CardSequence seq;
+    CardSequence sequence;
     Card *retVal;
-    Card *lastPlayedCard;
+    Card *firstPlayedCard;
 
     if (! hand.size())
         return NULL;
 
-    if (state->sizeofCardsOnBoard()) {
-        lastPlayedCard = state->lastPlayedCard();
-        seq = hand.filterOutLessThan(lastPlayedCard);
-        if (seq.size()) {
-            retVal = seq.first();
-        } else if ((seq = hand.filterBySuit(lastPlayedCard->suit)).size()) {
-            retVal = seq.first();
-        } else if ((seq = hand.filterBySuit(Card::MACA)).size()) {
-            CardSequence spadesOnBoard = state->playedCards()->filterBySuit(Card::MACA);
+    if (state.sizeofCardsOnBoard()) {
+        firstPlayedCard = state.firstPlayedCard();
+        Card *c = state.cardsOnBoard().highestRankedCardFor(firstPlayedCard->suit);
+
+        sequence = hand.filterOutLessThan(c);
+        if (sequence.size()) {
+            retVal = sequence.first();
+        } else if ((sequence = hand.filterBySuit(firstPlayedCard->suit)).size()) {
+            retVal = sequence.first();
+        } else if ((sequence = hand.filterBySuit(Card::MACA)).size()) {
+            CardSequence spadesOnBoard = state.playedCards().filterBySuit(Card::MACA);
             // Daha onceden birisi kozlamis
             if (spadesOnBoard.size()) {
                 spadesOnBoard.sortCards();
-                CardSequence filteredSeq = seq.filterOutLessThan(spadesOnBoard.last());
+                CardSequence filteredSeq = sequence.filterOutLessThan(spadesOnBoard.last());
 
                 if (filteredSeq.size())
                     retVal = filteredSeq.first();
                 else
-                    retVal = seq.first();
+                    retVal = sequence.first();
             }
         }
     } else {
         // TODO: Eger elinde baska kart varsa koz acilmadan koz atmamali.
-        seq = hand.filterOut(Card::MACA);
-        if (seq.size())
-            retVal = seq.first();
+        sequence = hand.filterOut(Card::MACA);
+        if (sequence.size())
+            retVal = sequence.first();
         else
             retVal = hand.first();
     }
