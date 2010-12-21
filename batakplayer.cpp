@@ -100,6 +100,17 @@ Card* BatakPlayer::dummyPlay(State &state)
     return retVal;
 }
 
+Card* BatakPlayer::dummyPlayV2(State &state)
+{
+    CardSequence validSeq = validCards(state);
+
+    if (! validSeq.size())
+        return NULL;
+
+    state.playedCards().hasGreaterThan(validSeq.first());
+    return NULL;
+}
+
 void BatakPlayer::computeScore()
 {
     int numberOfTricks = scoredCards.size() / 4;
@@ -114,6 +125,16 @@ void BatakPlayer::computeScore()
 int BatakPlayer::makeBidDecision()
 {
     return 0;
+}
+
+CardSequence BatakPlayer::validCards(State &state)
+{
+    CardSequence retVal;
+    for (int j = 0; j < hand.size(); ++j)
+        if (isValid(hand.at(j), state))
+            retVal.append(hand.takeAt(j));
+
+    return retVal;
 }
 
 bool BatakPlayer::isValid(Card *selectedCard, State &state)

@@ -13,6 +13,7 @@ public:
     Card* play(int index);
     Card* play(int index, State &state);
     Card* dummyPlay(State &state);
+    Card* dummyPlayV2(State &state);
 
     void computeScore();
 
@@ -22,6 +23,7 @@ public:
 
 private:
     int makeBidDecision();
+    CardSequence validCards(State&);
 
     bool isValid(Card *selectedCard, State &state);
     bool hasGreaterRankedCard(const Card *rhs) const;
