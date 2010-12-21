@@ -48,14 +48,14 @@ Card* BatakPlayer::play(int index, State &state)
 
     Card *selectedCard = hand.at(index);
 
-    if (state.sizeofCardsOnBoard()) {
-    }
+    if (isValid(selectedCard, state))
+        return hand.takeAt(index);
 
     return NULL;
 }
 
 Card* BatakPlayer::dummyPlay(State &state)
-{
+{    
     // TODO: improve decision
     CardSequence sequence;
     Card *retVal;
@@ -145,8 +145,12 @@ bool BatakPlayer::isValid(Card *selectedCard, State &state)
     leadingCard = state.firstPlayedCard();
 
     if (selectedCard->suit == leadingCard->suit) {
+        // TODO: Masaya daha onceden kart atildi mi ?
         Card *highestRankedCard = state.cardsOnBoard().
                                   highestRankedCardFor(leadingCard->suit);
+
+        // TODO: Sadece degerleri karsilasirdigi icin hatali calisiyor
+        // e.g. Maca As > Maca 10 olmali.
         if (selectedCard->value > highestRankedCard->value) {
             retVal = true;
         } else {
@@ -169,6 +173,8 @@ bool BatakPlayer::isValid(Card *selectedCard, State &state)
                         retVal = false;
                     else
                         retVal = true;
+                } else {
+                    retVal = true;
                 }
             } else {
                 retVal = true;
