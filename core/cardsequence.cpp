@@ -10,7 +10,7 @@ CardSequence::CardSequence() :
  */
 CardSequence::CardSequence(const CardSequence &rhs)
 {
-    qDebug() << "copy constructor";
+    // "copy constructor";
     if (this == &rhs)
         return;
 
@@ -23,7 +23,7 @@ CardSequence::CardSequence(const CardSequence &rhs)
 
 CardSequence & CardSequence::operator =(const CardSequence &rhs)
 {
-    qDebug() << "assignment operator";
+    // "assignment operator";
     this->cardSequence = rhs.cardSequence;
     this->karoCount_ = rhs.karoCount_;
     this->kupaCount_ = rhs.kupaCount_;
@@ -276,7 +276,7 @@ CardSequence CardSequence::filterByValue(int value) const
 bool CardSequence::hasSuit(Card::Suit suit) const
 {
     Card *card;
-    for (int j = 0; cardSequence.size(); ++j) {
+    for (int j = 0; j < cardSequence.size(); ++j) {
         card = cardSequence.at(j);
         if (card->suit == suit)
             return true;
