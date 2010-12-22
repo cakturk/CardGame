@@ -20,13 +20,13 @@ public:
     inline void bidFor(int number) { bid_ = number; }
     inline void resetBid() { bid_ = 0; }
     inline int trick() const { return bid_; }
+    int makeBidDecision() const;
 
 private:
-    int makeBidDecision();
+    int bidDecisionHelper(CardSequence &) const;
     CardSequence validCards(State&);
 
     bool isValid(Card *selectedCard, State &state);
-    bool hasGreaterRankedCard(const Card *rhs) const;
     int compare(Card *lhs, Card *rhs) const;
 
     int bid_, tricks_;

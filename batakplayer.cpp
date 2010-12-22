@@ -122,9 +122,51 @@ void BatakPlayer::computeScore()
     }
 }
 
-int BatakPlayer::makeBidDecision()
+int BatakPlayer::makeBidDecision() const
 {
-    return 0;
+    int bid = 0;
+    CardSequence seq;
+
+    if (hand.karoCount()) {
+        seq = hand.filterBySuit(Card::KARO);
+        bid += bidDecisionHelper(seq);
+    }
+
+    if (hand.sinekCount()) {
+        seq = hand.filterBySuit(Card::SINEK);
+        bid += bidDecisionHelper(seq);
+    }
+
+    if (hand.kupaCount()) {
+        seq = hand.filterBySuit(Card::KUPA);
+        bid += bidDecisionHelper(seq);
+    }
+
+    if (hand.macaCount()) {
+        seq = hand.filterBySuit(Card::MACA);
+        bid += bidDecisionHelper(seq);
+    }
+
+    return bid;
+}
+
+// CardSeq icindeki kartlarin hepsi ayni seri (maca, kupa vs..) olmali.
+int BatakPlayer::bidDecisionHelper(CardSequence &seq) const
+{
+    if (seq.isEmpty() || seq.size() > 9)
+        return 0;
+
+    Card *card;
+    Card dummy(seq.first()->suit, 11);
+    int bid = 0;
+
+    for (int j = 0; j < seq.size(); ++j) {
+        card = seq.at(j);
+        if (compare(card, &dummy) > 0)
+            ++bid;
+    }
+
+    return bid;
 }
 
 CardSequence BatakPlayer::validCards(State &state)
