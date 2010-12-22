@@ -151,7 +151,8 @@ bool BatakPlayer::isValid(Card *selectedCard, State &state)
 
         // TODO: Sadece degerleri karsilasirdigi icin hatali calisiyor
         // e.g. Maca As > Maca 10 olmali.
-        if (selectedCard->value > highestRankedCard->value) {
+        // compare(lhs, rhs) fonksiyonu buna cozum getiriyor mu?
+        if (compare(selectedCard, highestRankedCard) > 0) {
             retVal = true;
         } else {
             if (hand.hasGreaterThan(selectedCard->value))
@@ -188,4 +189,14 @@ bool BatakPlayer::isValid(Card *selectedCard, State &state)
 bool BatakPlayer::hasGreaterRankedCard(const Card *) const
 {
     return false;
+}
+
+int BatakPlayer::compare(Card *lhs, Card *rhs) const
+{
+    if (lhs->value == rhs->value)
+        return 0;
+    else if (lhs->value == 1)
+        return 1;
+    else
+        return -1;
 }

@@ -27,6 +27,8 @@ private:
 
     bool isValid(Card *selectedCard, State &state);
     bool hasGreaterRankedCard(const Card *rhs) const;
+    int compare(Card *lhs, Card *rhs) const;
+
     int bid_, tricks_;
 };
 
