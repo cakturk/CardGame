@@ -16,6 +16,7 @@ public:
     void removeAt(int index);
     void clear();
     void sortCards();
+    void shuffle();
 
     Card* takeFirst();
     Card* takeLast();

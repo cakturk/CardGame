@@ -300,6 +300,18 @@ void CardSequence::sortCards()
     qSort(cardSequence.begin(), cardSequence.end(), lessThan);
 }
 
+void CardSequence::shuffle()
+{
+    qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
+
+    for (int i = cardSequence.size(); i > 0; --i) {
+        int random = qrand() % cardSequence.size();
+        Card *temp = cardSequence.at(i);
+        cardSequence[i] = cardSequence.at(random);
+        cardSequence[random] = temp;
+    }
+}
+
 inline
 void CardSequence::incSuitCount(Card::Suit suit)
 {
