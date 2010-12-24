@@ -228,11 +228,6 @@ bool BatakPlayer::isValid(Card *selectedCard, State &state)
     return retVal;
 }
 
-bool BatakPlayer::hasGreaterRankedCard(const Card *) const
-{
-    return false;
-}
-
 int BatakPlayer::compare(Card *lhs, Card *rhs) const
 {
     if (lhs->value == rhs->value)
