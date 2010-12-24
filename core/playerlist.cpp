@@ -5,9 +5,12 @@
 PlayerList::PlayerList(int playerNum, QObject *parent) :
         QObject(parent), current_(0), count_(0)
 {
-    for (int i = 0; i < playerNum; ++i)
-        playerList_.append(NULL);
+    setSize(playerNum);
 }
+
+PlayerList::PlayerList(QObject *parent) :
+        QObject(parent), current_(0), count_(0)
+{ }
 
 void PlayerList::insert(Player *player)
 {
@@ -82,6 +85,12 @@ int PlayerList::currentPlayerIndex() const
 int PlayerList::size() const
 {
     return playerList_.size();
+}
+
+void PlayerList::setSize(int size)
+{
+    for (int i = 0; i < size; ++i)
+        playerList_.append(NULL);
 }
 
 bool PlayerList::isEmpty() const

@@ -9,6 +9,7 @@ class PlayerList : public QObject
     Q_OBJECT
 public:
     explicit PlayerList(int playerNum, QObject *parent = 0);
+    explicit PlayerList(QObject *parent = 0);
 
     enum POSITION {
         SOUTH = 0,
@@ -26,6 +27,7 @@ public:
     Player* currentPlayer() const;
     int currentPlayerIndex() const;
     int size() const;
+    void setSize(int size);
     bool isEmpty() const;
     void setCurrentPlayer(Player *player);
     void setCurrentPlayer(PlayerList::POSITION);
