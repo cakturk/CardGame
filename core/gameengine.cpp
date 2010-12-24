@@ -1,6 +1,61 @@
 #include "gameengine.h"
 
 GameEngine::GameEngine(QObject *parent) :
+        QObject(parent)
+{ }
+
+GameEngine::GameEngine(int playerNum, QObject *parent) :
+        QObject(parent)
+{
+    if (playerNum < 1 || playerNum > 4) {
+        qWarning() << "Error in GameEngine constructor!";
+        return;
+    }
+
+    playerList_.setSize(playerNum);
+}
+
+GameEngine::~GameEngine()
+{ }
+
+void GameEngine::distributeCards(int number)
+{
+    CardSequence hand;
+    Player *player;
+
+    for (int i = 0; i < playerList_.size(); ++i) {
+        for (int i = 0; i < number; ++i)
+            hand.append(deck_.takeFirst());
+
+        player = playerList_.nextPlayer();
+        player->setHand(hand);
+    }
+}
+
+void GameEngine::distributeCards(Player *player, int number)
+{
+    CardSequence hand;
+
+    for (int i = 0; i < number; ++i)
+        hand.append(deck_.takeFirst());
+    player->setHand(hand);
+}
+
+void GameEngine::createCards()
+{
+    Card *newCard;
+
+    for (int i = 0; i < 4; i++)
+        for (int j = 1; j <= 13; j++) {
+           newCard = new Card(i, j);
+           this->deck_.append(newCard);
+        }
+
+    deck_.shuffle();
+}
+
+#if 0
+GameEngine::GameEngine(QObject *parent) :
     QObject(parent), lastWinner(0)
 {
     size = 0;
@@ -472,3 +527,4 @@ bool GameEngine::checkRound(Player *)
 {
     return false;
 }
+#endif

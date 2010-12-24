@@ -5,11 +5,26 @@
 #include "card.h"
 #include "pistiplayer.h"
 #include "core/cardsequence.h"
+#include "core/playerlist.h"
 
 class GameEngine : public QObject
 {
     Q_OBJECT
 
+public:
+    explicit GameEngine(QObject *parent = 0);
+    explicit GameEngine(int playerNum, QObject *parent = 0);
+    ~GameEngine();
+
+    void distributeCards(int number);
+    void distributeCards(Player *player, int number);
+
+private:
+    CardSequence deck_;
+    PlayerList playerList_;
+
+    void createCards();
+#if 0
 public:
     explicit GameEngine(QObject *parent = 0);
     explicit GameEngine(int playerNumber, QObject *parent = 0);
@@ -81,10 +96,10 @@ private:
 
     bool cardsEquals(Card *first, Card *sec);
     void computePlayerScore(Player *player) const;
-    void startGameSession();
 
 signals:
     void ready();
+#endif
 };
 
 #endif // GAMEENGINE_H
