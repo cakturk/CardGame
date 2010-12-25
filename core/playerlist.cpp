@@ -82,6 +82,23 @@ int PlayerList::currentPlayerIndex() const
     return current_;
 }
 
+PlayerList::POSITION PlayerList::currentPlayerPosition() const
+{
+    switch (currentPlayerIndex()) {
+    case SOUTH:
+        return PlayerList::SOUTH;
+    case EAST:
+        return PlayerList::EAST;
+    case NORTH:
+        return PlayerList::WEST;
+    case WEST:
+        return PlayerList::WEST;
+    default:
+        qWarning() << "Error in Playerlist::currentPlayerPosition function!";
+        return PlayerList::ILLEGAL;
+    }
+}
+
 int PlayerList::size() const
 {
     return playerList_.size();

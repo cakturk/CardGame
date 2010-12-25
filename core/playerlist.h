@@ -15,7 +15,8 @@ public:
         SOUTH = 0,
         EAST = 1,
         NORTH = 2,
-        WEST = 3
+        WEST = 3,
+        ILLEGAL = -1
     };
 
     void insert(Player *player);
@@ -26,6 +27,7 @@ public:
     Player* nextPlayer();
     Player* currentPlayer() const;
     int currentPlayerIndex() const;
+    PlayerList::POSITION currentPlayerPosition() const;
     int size() const;
     void setSize(int size);
     bool isEmpty() const;
@@ -44,7 +46,6 @@ private:
     QList<Player *> playerList_;
     int current_;
     int count_;
-
 };
 
 #endif // PLAYERLIST_H
