@@ -56,9 +56,9 @@ Widget::Widget(QWidget *parent) :
 
 void Widget::test()
 {
+#if 0
     State state;
     GameEngine *engine = new GameEngine(this);
-    engine->createCards();
 
     PistiPlayer *mazhar = new PistiPlayer;
     CardSequence seq;
@@ -78,6 +78,7 @@ void Widget::test()
 
     //CardSequence board = state.takeCardsFromBoard();
     mazhar->dummyPlay(state);
+#endif
 }
 
 
@@ -246,6 +247,7 @@ inline void Widget::delay(int count, int sleep)
 
 QFrame* Widget::getCurrentPlayerFrame() const
 {
+#if 0
     QFrame *currentPlayerFrame;
     switch (game->playerIndex()) {
     case 0:
@@ -263,6 +265,7 @@ QFrame* Widget::getCurrentPlayerFrame() const
     }
 
     return currentPlayerFrame;
+#endif
 }
 
 QFrame* Widget::getPlayerFrame(int pos) const
@@ -745,6 +748,7 @@ void Widget::resizeEvent(QResizeEvent *)
 
 void Widget::on_buttonSinglePlayer_clicked()
 {
+#if 0
     Player *newPlayer = 0;
 
     if (ui->comboSinglePlayer->currentIndex() == 0) {
@@ -767,4 +771,5 @@ void Widget::on_buttonSinglePlayer_clicked()
     ui->frame_2->setVisible(false);
     ui->stackedWidget->setCurrentIndex(1);
     connect(mapper, SIGNAL(mapped(QObject *)), this, SLOT(cardClicked(QObject *)));
+#endif
 }

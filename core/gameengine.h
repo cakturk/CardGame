@@ -6,6 +6,7 @@
 #include "pistiplayer.h"
 #include "core/cardsequence.h"
 #include "core/playerlist.h"
+#include "state.h"
 
 class GameEngine : public QObject
 {
@@ -21,6 +22,7 @@ public:
 
 private:
     CardSequence deck_;
+    State state;
     PlayerList playerList_;
 
     void createCards();
