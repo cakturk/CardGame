@@ -10,8 +10,10 @@ class State;
 class BatakEngine : public GameEngine
 {
 public:
-    BatakEngine(int playerNumber, QObject *parent = 0);
-    bool checkState(Player *player, State *state);
+    explicit BatakEngine(QObject *parent = 0);
+    explicit BatakEngine(int playerNumber, QObject *parent = 0);
+    ~BatakEngine();
+
 };
 
 #endif // BATAKENGINE_H

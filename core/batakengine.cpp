@@ -2,19 +2,15 @@
 #include "batakengine.h"
 #include "state.h"
 
-BatakEngine::BatakEngine(int playerNumber, QObject *parent) :
-        GameEngine(playerNumber, parent)
-{
-}
+BatakEngine::BatakEngine(QObject *parent) :
+        GameEngine(parent)
+{ }
 
-bool BatakEngine::checkState(Player *, State *state)
-{
-    if (state->sizeofCardsOnBoard() < 4)
-        return false;
+BatakEngine::BatakEngine(int playerNum, QObject *parent) :
+        GameEngine(playerNum, parent)
+{ }
 
-    Card *bottom = state->lastPlayedCard();
-    //Card *lastPlayed = state->top();
-    //const Card *highestRankedCard = state->highestRankedCardOnBoard(bottom->suit);
+BatakEngine::~BatakEngine()
+{ }
 
-    return true;
 }

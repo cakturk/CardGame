@@ -6,7 +6,10 @@
 class PistiEngine : public GameEngine
 {
 public:
-    PistiEngine(int playerNumber, QObject *parent = 0);
+    explicit PistiEngine(QObject *parent = 0);
+    explicit PistiEngine(int playerNum, QObject *parent = 0);
+    ~PistiEngine();
+
 };
 
 #endif // PISTIENGINE_H

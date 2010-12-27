@@ -1,6 +1,15 @@
 #include "pistiengine.h"
 
-PistiEngine::PistiEngine(int playerNumber, QObject *parent) :
-        GameEngine(playerNumber, parent)
+PistiEngine::PistiEngine(QObject *parent) :
+        GameEngine(parent)
+{ }
+
+PistiEngine::PistiEngine(int playerNum, QObject *parent) :
+        GameEngine(playerNum, parent)
+{ }
+
+PistiEngine::~PistiEngine()
+{ }
+
 {
 }
