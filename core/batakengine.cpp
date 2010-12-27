@@ -13,4 +13,6 @@ BatakEngine::BatakEngine(int playerNum, QObject *parent) :
 BatakEngine::~BatakEngine()
 { }
 
+void BatakEngine::checkState(State &)
+{
 }

@@ -10,6 +10,7 @@ public:
     explicit PistiEngine(int playerNum, QObject *parent = 0);
     ~PistiEngine();
 
+    void checkState(State &state);
 };
 
 #endif // PISTIENGINE_H

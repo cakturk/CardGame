@@ -1,11 +1,11 @@
 #include "gameengine.h"
 
 GameEngine::GameEngine(QObject *parent) :
-        QObject(parent)
+        QObject(parent), lastWinner(0)
 { }
 
 GameEngine::GameEngine(int playerNum, QObject *parent) :
-        QObject(parent)
+        QObject(parent), lastWinner(0)
 {
     if (playerNum < 1 || playerNum > 4) {
         qWarning() << "Error in GameEngine constructor!";

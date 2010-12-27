@@ -15,15 +15,17 @@ class GameEngine : public QObject
 public:
     explicit GameEngine(QObject *parent = 0);
     explicit GameEngine(int playerNum, QObject *parent = 0);
-    ~GameEngine();
+    virtual ~GameEngine();
 
     void distributeCards(int number);
     void distributeCards(Player *player, int number);
+    virtual void checkState(State &state) = 0;
 
 private:
     CardSequence deck_;
     State state;
     PlayerList playerList_;
+    Player *lastWinner;
 
     void createCards();
 #if 0

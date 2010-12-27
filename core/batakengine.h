@@ -14,6 +14,7 @@ public:
     explicit BatakEngine(int playerNumber, QObject *parent = 0);
     ~BatakEngine();
 
+    void checkState(State &state);
 };
 
 #endif // BATAKENGINE_H
