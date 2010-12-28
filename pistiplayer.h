@@ -14,6 +14,7 @@ public:
     Card* dummyPlay();
     Card* dummyPlay(State &state);
     void computeScore();
+    void reset();
 };
 
 #endif // PISTIPLAYER_H

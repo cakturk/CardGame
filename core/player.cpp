@@ -4,7 +4,7 @@ Player::Player(int r_pos, QObject *parent) :
     QObject(parent), realPosition(r_pos)
 {
     turn = _myself = false;
-    pistiCount = score = 0;
+    score = 0;
     sock = 0;
 }
 
@@ -12,7 +12,7 @@ Player::Player(QString name, int r_pos, QObject *parent) :
         QObject(parent), playerName(name), realPosition(r_pos)
 {
     turn = _myself = false;
-    pistiCount = score = 0;
+    score = 0;
     sock = 0;
 }
 
@@ -129,9 +129,9 @@ void Player::collectCards(CardSequence *sequence)
 
 void Player::reset()
 {
+    turn = _myself = false;
     hand.clear();
     scoredCards.clear();
-    pistiCount = 0;
     score = 0;
 }
 

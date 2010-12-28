@@ -24,7 +24,7 @@ public:
     void setHand(CardSequence &rhs);
     void collectCards(QList<Card *> &c);
     void collectCards(CardSequence *sequence);
-    void reset();
+    virtual void reset();
 
     virtual void computeScore() = 0;
     virtual Card* play(int index);

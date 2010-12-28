@@ -20,12 +20,22 @@ public:
     void distributeCards(int number);
     void distributeCards(Player *player, int number);
     virtual void checkState(State &state) = 0;
+    virtual void startGame() = 0;
+
+signals:
+    void pisti();
+    void bingo();
+    void reset();
+    void next();
+    void gameOver();
+
+protected:
+    PlayerList playerList_;
+    Player *lastWinner;
+    State state;
 
 private:
     CardSequence deck_;
-    State state;
-    PlayerList playerList_;
-    Player *lastWinner;
 
     void createCards();
 #if 0

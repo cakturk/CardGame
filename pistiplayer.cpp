@@ -104,3 +104,8 @@ void PistiPlayer::computeScore()
             score += 3;
     }
 }
+
+void PistiPlayer::reset()
+{
+    Player::reset();
+}
