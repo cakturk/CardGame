@@ -2,11 +2,11 @@
 #define AVAHIRESOLVER_H
 
 #include <QObject>
-#include <QSocketNotifier>
 #include <QHostInfo>
 #include <dns_sd.h>
 #include "AvahiRecord.h"
 
+class QSocketNotifier;
 class AvahiResolver : public QObject
 {
     Q_OBJECT

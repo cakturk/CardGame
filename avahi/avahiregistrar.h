@@ -2,11 +2,11 @@
 #define AVAHIREGISTRAR_H
 
 #include <QObject>
-#include <QSocketNotifier>
 #include <QDebug>
 #include "AvahiRecord.h"
 #include "dns_sd.h"
 
+class QSocketNotifier;
 class AvahiRegistrar : public QObject
 {
     Q_OBJECT

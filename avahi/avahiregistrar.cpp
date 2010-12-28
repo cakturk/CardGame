@@ -1,4 +1,5 @@
 #include "avahiregistrar.h"
+#include <QSocketNotifier>
 
 AvahiRegistrar::AvahiRegistrar(QObject *parent) :
         QObject(parent), dnssref(0), avahiSocket(0)

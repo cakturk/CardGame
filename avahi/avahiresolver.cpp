@@ -1,4 +1,5 @@
 #include "avahiresolver.h"
+#include <QSocketNotifier>
 
 AvahiResolver::AvahiResolver(QObject *parent) :
         QObject(parent), dnssref(0), avahiSocket(0), avahiPort(-1)

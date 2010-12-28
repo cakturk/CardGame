@@ -6,6 +6,7 @@
 #include <dns_sd.h>
 #include "AvahiRecord.h"
 
+class QSocketNotifier;
 class AvahiBrowser : public QObject
 {
     Q_OBJECT

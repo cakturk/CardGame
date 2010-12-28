@@ -1,5 +1,5 @@
 #include "avahibrowser.h"
-#include <qdebug.h>
+#include <QSocketNotifier>
 
 AvahiBrowser::AvahiBrowser(QObject *parent) :
         QObject(parent), dnssref(0), avahiSocket(0)
