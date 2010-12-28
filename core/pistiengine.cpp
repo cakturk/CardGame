@@ -15,17 +15,49 @@ void PistiEngine::checkState(State &state)
 {
     CardSequence seq = state.cardsOnBoard();
     Card *last, *nextToLast;
+    Player *currentPlayer;
 
     if (seq.size() > 1) {
+        currentPlayer = playerList_.currentPlayer();
         last = seq.first();
         nextToLast = seq.at(seq.size() - 1);
 
         if (last->equals(nextToLast)) {
             if (seq.size() == 2) {
-                // TODO: pisti sayacini bir artir.
+                currentPlayer->pistiCount++;
             }
+
+            lastWinner = currentPlayer;
         }
 
     } else {
     }
+}
+
+bool PistiEngine::pisti() const
+{
+    CardSequence seq = state.cardsOnBoard();
+    Card *last, *nextToLast;
+
+    if (seq.size() == 2) {
+        last = seq.first();
+        nextToLast = seq.at(seq.size() - 1);
+        return last->value == nextToLast->value;
+    }
+
+    return false;
+}
+
+bool PistiEngine::wins() const
+{
+    CardSequence seq = state.cardsOnBoard();
+    Card *last, *nextToLast;
+
+    if (seq.size() < 2)
+        return false;
+
+    last = seq.first();
+    nextToLast = seq.at(seq.size() - 1);
+
+    return last->value == nextToLast->value;
 }

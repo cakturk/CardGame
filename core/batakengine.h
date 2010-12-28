@@ -15,6 +15,13 @@ public:
     ~BatakEngine();
 
     void checkState(State &state);
+    void startGame();
+
+private:
+    Card* winingCard() const;
+    Player *winingPlayer(Card *card) const;
+
+    QMap<Card *, Player *> map;
 };
 
 #endif // BATAKENGINE_H

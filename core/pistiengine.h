@@ -11,6 +11,10 @@ public:
     ~PistiEngine();
 
     void checkState(State &state);
+
+private:
+    bool pisti() const;
+    bool wins() const;
 };
 
 #endif // PISTIENGINE_H
