@@ -117,12 +117,12 @@ void Player::collectCards(QList<Card *> &c)
     }
 }
 
-void Player::collectCards(CardSequence *sequence)
+void Player::collectCards(CardSequence sequence)
 {
     Card *card;
 
-    for (int j = 0; j < sequence->size();) {
-        card = sequence->takeFirst();
+    for (int j = 0; j < sequence.size();) {
+        card = sequence.takeFirst();
         m_scoredCards.append(card);
     }
 }
