@@ -17,10 +17,13 @@ public:
     explicit GameEngine(int playerNum, QObject *parent = 0);
     virtual ~GameEngine();
 
+    inline int deckSize() const { return deck_.size(); }
     void distributeCards(int number);
     void distributeCards(Player *player, int number);
     virtual void checkState(State &state) = 0;
-    virtual void startGame() = 0;
+    virtual void loopGame() = 0;
+    virtual void addPlayer(Player *player);
+    virtual void addPlayer(Player *player, PlayerList::POSITION);
 
 signals:
     void pisti();
@@ -33,6 +36,9 @@ protected:
     PlayerList playerList_;
     Player *lastWinner;
     State state;
+
+private slots:
+    virtual void cardClicked(Card *card) = 0;
 
 private:
     CardSequence deck_;

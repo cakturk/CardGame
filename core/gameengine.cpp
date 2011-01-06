@@ -2,7 +2,9 @@
 
 GameEngine::GameEngine(QObject *parent) :
         QObject(parent), lastWinner(0)
-{ }
+{
+    createCards();
+}
 
 GameEngine::GameEngine(int playerNum, QObject *parent) :
         QObject(parent), lastWinner(0)
@@ -13,6 +15,7 @@ GameEngine::GameEngine(int playerNum, QObject *parent) :
     }
 
     playerList_.setSize(playerNum);
+    createCards();
 }
 
 GameEngine::~GameEngine()
@@ -29,6 +32,7 @@ void GameEngine::distributeCards(int number)
 
         player = playerList_.nextPlayer();
         player->setHand(hand);
+        hand.clear();
     }
 }
 

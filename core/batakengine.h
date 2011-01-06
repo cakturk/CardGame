@@ -15,7 +15,7 @@ public:
     ~BatakEngine();
 
     void checkState(State &state);
-    void startGame();
+    void loopGame();
 
 private:
     Card* winingCard() const;

@@ -17,7 +17,7 @@ void BatakEngine::checkState(State &)
 {
 }
 
-void BatakEngine::startGame()
+void BatakEngine::loopGame()
 {
 }
 

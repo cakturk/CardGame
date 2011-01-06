@@ -20,16 +20,17 @@ public:
     explicit Player(QString name, int pos = 0, QObject *parent = 0);
     ~Player();
 
+    inline int handSize() { return hand.size(); }
     int getNumberOfCards() const;
     void setHand(CardSequence &rhs);
     void collectCards(QList<Card *> &c);
-    void collectCards(CardSequence *sequence);
+    void collectCards(CardSequence sequence);
     virtual void reset();
 
     virtual void computeScore() = 0;
     virtual Card* play(int index);
-    // virtual Card* dummyPlay() = 0;
     virtual Card* dummyPlay(Card* lastPlayedCard);
+    virtual Card* dummyPlay(State &state) = 0;
     Card* play(QObject *);
     Card* play(Card* lastPlayedCard);
 
@@ -48,8 +49,8 @@ public:
     inline int getPosition() const { return realPosition; }
     inline int numberOfScoredCards() const { return scoredCards.size(); }
 
-    int pistiCount;
     int score;
+    int pistiCount;
 
 protected:
     CardSequence hand;

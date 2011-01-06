@@ -26,11 +26,11 @@ public:
 
     Player* nextPlayer();
     Player* currentPlayer() const;
-    int currentPlayerIndex() const;
     PlayerList::POSITION currentPlayerPosition() const;
+    int currentPlayerIndex() const;
     int size() const;
-    void setSize(int size);
     bool isEmpty() const;
+    void setSize(int size);
     void setCurrentPlayer(Player *player);
     void setCurrentPlayer(PlayerList::POSITION);
     void clear();

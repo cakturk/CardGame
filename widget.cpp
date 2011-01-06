@@ -4,6 +4,9 @@
 #include "state.h"
 #include "batakplayer.h"
 
+#include "core/pistiengine.h"
+#include "pistiplayer.h"
+
 #define TESTT
 #define TEST_CONST
 #undef TEST_CONST
@@ -78,6 +81,17 @@ void Widget::test()
 
     //CardSequence board = state.takeCardsFromBoard();
     mazhar->dummyPlay(state);
+#else
+    GameEngine *engine = new PistiEngine(4, this);
+    engine->addPlayer(new PistiPlayer("Terry", 0, this));
+    engine->addPlayer(new PistiPlayer("Quin", 0, this));
+    engine->addPlayer(new PistiPlayer("Kathy", 0, this));
+    engine->addPlayer(new PistiPlayer("Perry", 0, this));
+
+    engine->distributeCards(4);
+    engine->loopGame();
+
+    QString();
 #endif
 }
 
@@ -266,6 +280,7 @@ QFrame* Widget::getCurrentPlayerFrame() const
 
     return currentPlayerFrame;
 #endif
+    return NULL;
 }
 
 QFrame* Widget::getPlayerFrame(int pos) const
