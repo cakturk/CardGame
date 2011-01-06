@@ -55,6 +55,10 @@ void CardSequence::removeAt(int index)
 void CardSequence::clear()
 {
     cardSequence.clear();
+    karoCount_ = 0;
+    kupaCount_ = 0;
+    sinekCount_ = 0;
+    macaCount_ = 0;
 }
 
 Card* CardSequence::takeFirst()
