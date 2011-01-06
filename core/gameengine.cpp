@@ -41,6 +41,16 @@ void GameEngine::distributeCards(Player *player, int number)
     player->setHand(hand);
 }
 
+void GameEngine::addPlayer(Player *player)
+{
+    playerList_.insert(player);
+}
+
+void GameEngine::addPlayer(Player *player, PlayerList::POSITION pos)
+{
+    playerList_.insert(player, pos);
+}
+
 void GameEngine::createCards()
 {
     Card *newCard;
