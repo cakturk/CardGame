@@ -19,8 +19,12 @@ public:
     void append(Card *card);
 
     CardSequence takeCardsFromBoard();
-    inline const CardSequence cardsOnBoard() const { return m_cardsOnBoard; }
-    inline const CardSequence playedCards() const { return m_playedCards; }
+    inline CardSequence cardsOnBoard() const { return m_cardsOnBoard; }
+    inline CardSequence playedCards() const { return m_playedCards; }
+
+    inline void clearBoard() { m_cardsOnBoard.clear(); }
+    inline void clearPlayedCards() { m_playedCards.clear(); }
+    void clear();
 
     inline int sizeofCardsOnBoard() const { return m_cardsOnBoard.size(); }
     inline int sizeofPlayedCards() const { return m_playedCards.size(); }

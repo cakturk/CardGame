@@ -22,6 +22,12 @@ CardSequence State::takeCardsFromBoard()
     return cs;
 }
 
+void State::clear()
+{
+    m_cardsOnBoard.clear();
+    m_playedCards.clear();
+}
+
 const Card* State::highestRankedCardOnBoard(Card::Suit suit) const
 {
     return m_cardsOnBoard.highestRankedCardFor(suit);
