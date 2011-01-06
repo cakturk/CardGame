@@ -75,12 +75,11 @@ Card* PistiPlayer::dummyPlay(State &state)
 
                 previousCount = count;
             }
-            retVal = hand.at(imax);
+            return hand.at(imax);
         }
     }
-    retVal = hand.take(retVal);
 
-    return retVal;
+    return hand.takeFirst();
 }
 
 void PistiPlayer::computeScore()
