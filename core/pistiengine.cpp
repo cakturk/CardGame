@@ -34,6 +34,45 @@ void PistiEngine::checkState(State &state)
     }
 }
 
+void PistiEngine::loopGame()
+{
+    /* loop until we find a real player */
+    Player *currentPlayer;
+    Card* card;
+
+#if 0
+    for (int i = 0; i < playerList_.size(); ++i) {
+        currentPlayer = playerList_.nextPlayer();
+        if (playerList_.currentPlayerPosition() != PlayerList::SOUTH) {
+            if((card = currentPlayer->dummyPlay(state)) != NULL) {
+                if (wins()) {
+                    if (pisti())
+                        currentPlayer->pistiCount++;
+                    currentPlayer->collectCards(state.cardsOnBoard());
+                }
+            }
+        } else {
+            waitForPlayer();
+        }
+    }
+#endif
+
+    for (currentPlayer = playerList_.nextPlayer();
+    playerList_.currentPlayerPosition() != PlayerList::SOUTH;
+    currentPlayer = playerList_.nextPlayer()) {
+
+        if ((card = currentPlayer->dummyPlay(state)) != NULL) {
+            state.append(card);
+            if (wins()) {
+                if (pisti())
+                    currentPlayer->pistiCount++;
+                currentPlayer->collectCards(state.cardsOnBoard());
+                state.clearBoard();
+            }
+        }
+    }
+}
+
 bool PistiEngine::pisti() const
 {
     CardSequence seq = state.cardsOnBoard();
@@ -41,7 +80,7 @@ bool PistiEngine::pisti() const
 
     if (seq.size() == 2) {
         last = seq.first();
-        nextToLast = seq.at(seq.size() - 1);
+        nextToLast = seq.at(seq.size() - 2);
         return last->value == nextToLast->value;
     }
 
@@ -56,8 +95,39 @@ bool PistiEngine::wins() const
     if (seq.size() < 2)
         return false;
 
-    last = seq.first();
-    nextToLast = seq.at(seq.size() - 1);
+    last = seq.last();
+    nextToLast = seq.at(seq.size() - 2);
 
-    return last->value == nextToLast->value;
+    if (last->value == nextToLast->value)
+        return true;
+    else if (last->value == 11)
+        return true;
+    else
+        return false;
+}
+
+void PistiEngine::waitForPlayer()
+{
+}
+
+void PistiEngine::cardClicked(Card *card)
+{
+    Player *currentPlayer = playerList_.currentPlayer();
+
+    if (currentPlayer->getHand().isEmpty()) {
+        qWarning() << "Error in PistiEngine::cardClicked method";
+        qWarning() << "current player has no cards.";
+        return;
+    }
+
+    Card *retVal = currentPlayer->play(card);
+    state.append(retVal);
+    if (wins()) {
+        if (pisti())
+            currentPlayer->pistiCount++;
+        currentPlayer->collectCards(state.cardsOnBoard());
+    }
+
+    /* continue loop */
+    loopGame();
 }
