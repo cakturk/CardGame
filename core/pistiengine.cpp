@@ -1,4 +1,5 @@
 #include "pistiengine.h"
+#define MINIMUM_NUMBER_OF_CARDS 4
 
 PistiEngine::PistiEngine(QObject *parent) :
         GameEngine(parent)
@@ -38,28 +39,17 @@ void PistiEngine::loopGame()
 {
     /* loop until we find a real player */
     Player *currentPlayer;
-    Card* card;
-
-#if 0
-    for (int i = 0; i < playerList_.size(); ++i) {
-        currentPlayer = playerList_.nextPlayer();
-        if (playerList_.currentPlayerPosition() != PlayerList::SOUTH) {
-            if((card = currentPlayer->dummyPlay(state)) != NULL) {
-                if (wins()) {
-                    if (pisti())
-                        currentPlayer->pistiCount++;
-                    currentPlayer->collectCards(state.cardsOnBoard());
-                }
-            }
-        } else {
-            waitForPlayer();
-        }
-    }
-#endif
+    Card *card;
 
     for (currentPlayer = playerList_.nextPlayer();
     playerList_.currentPlayerPosition() != PlayerList::SOUTH;
     currentPlayer = playerList_.nextPlayer()) {
+
+        if (currentPlayer->handSize() < 1 &&
+            deckSize() >= (MINIMUM_NUMBER_OF_CARDS * playerList_.size())) {
+            /* do something reasonable */
+            distributeCards(MINIMUM_NUMBER_OF_CARDS);
+        }
 
         if ((card = currentPlayer->dummyPlay(state)) != NULL) {
             state.append(card);
@@ -113,6 +103,12 @@ void PistiEngine::waitForPlayer()
 void PistiEngine::cardClicked(Card *card)
 {
     Player *currentPlayer = playerList_.currentPlayer();
+
+    if (currentPlayer->handSize() < 1 &&
+        deckSize() >= (MINIMUM_NUMBER_OF_CARDS * playerList_.size())) {
+        /* do something reasonable */
+        distributeCards(MINIMUM_NUMBER_OF_CARDS);
+    }
 
     if (currentPlayer->getHand().isEmpty()) {
         qWarning() << "Error in PistiEngine::cardClicked method";
