@@ -5,7 +5,6 @@
 #include <QHostAddress>
 #include <QTcpSocket>
 #include <QHostInfo>
-#include <QStringList>
 
 class GameNet : public QTcpServer
 {

@@ -38,7 +38,7 @@ protected:
     State state;
 
 private slots:
-    virtual void cardClicked(Card *card) = 0;
+    //virtual void cardClicked(Card *card) = 0;
 
 private:
     CardSequence deck_;

@@ -6,6 +6,7 @@ Player::Player(int r_pos, QObject *parent) :
     turn = _myself = false;
     score = 0;
     sock = 0;
+    pistiCount = 0;
 }
 
 Player::Player(QString name, int r_pos, QObject *parent) :
@@ -14,6 +15,7 @@ Player::Player(QString name, int r_pos, QObject *parent) :
     turn = _myself = false;
     score = 0;
     sock = 0;
+    pistiCount = 0;
 }
 
 Player::~Player()
@@ -133,6 +135,7 @@ void Player::reset()
     hand.clear();
     scoredCards.clear();
     score = 0;
+    pistiCount = 0;
 }
 
 bool Player::isAcceptable(const Card *) const
