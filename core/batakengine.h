@@ -3,12 +3,13 @@
 
 #include "gameengine.h"
 
-class QObject;
 class Player;
 class State;
 
 class BatakEngine : public GameEngine
 {
+    Q_OBJECT
+
 public:
     explicit BatakEngine(QObject *parent = 0);
     explicit BatakEngine(int playerNumber, QObject *parent = 0);

@@ -1,6 +1,7 @@
 #include "gameengine.h"
 #include "batakengine.h"
 #include "state.h"
+#define MINIMUM_NUMBER_OF_CARDS 13
 
 BatakEngine::BatakEngine(QObject *parent) :
         GameEngine(parent)
@@ -19,6 +20,25 @@ void BatakEngine::checkState(State &)
 
 void BatakEngine::loopGame()
 {
+    Player *currentPlayer;
+    Card *card;
+
+    for (currentPlayer = playerList_.nextPlayer();
+    /*playerList_.currentPlayerPosition() != PlayerList::SOUTH*/;
+    currentPlayer = playerList_.nextPlayer()) {
+
+        if ((card = currentPlayer->dummyPlay(state)) != NULL) {
+            state.append(card);
+            map[card] = currentPlayer;
+
+            if (state.sizeofCardsOnBoard() == 4) {
+                Card *wCard = winingCard();
+                Player *wPlayer = map[wCard];
+                wPlayer->score++;
+                state.clearBoard();
+            }
+        }
+    }
 }
 
 Card* BatakEngine::winingCard() const
