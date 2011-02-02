@@ -84,7 +84,13 @@ Card* BatakPlayer::dummyPlay(State &state)
                     retVal = filteredSeq.first();
                 else
                     retVal = sequence.first();
+            } else {
+                // Dirty hack.
+                retVal = sequence.first();
             }
+        // What if we do not have any spades.
+        } else {
+            retVal = hand.first();
         }
     } else {
         // TODO: Eger elinde baska kart varsa koz acilmadan koz atmamali.
