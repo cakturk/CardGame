@@ -369,12 +369,10 @@ int CardSequence::find(Card *card)
 
 bool lessThan(Card *lhs, Card *rhs)
 {
-    if (lhs->suit < rhs->suit) {
+    if (rhs->value == 1) {
         return true;
     } else {
-        if (rhs->value == 1)
-            return true;
-        else if (lhs->value < rhs->value)
+        if (lhs->value < rhs->value)
             return true;
         else
             return false;
