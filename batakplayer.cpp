@@ -234,11 +234,13 @@ bool BatakPlayer::isValid(Card *selectedCard, State &state)
     return retVal;
 }
 
-int BatakPlayer::compare(Card *lhs, Card *rhs) const
+int BatakPlayer::compare(const Card *lhs, const Card *rhs) const
 {
     if (lhs->value == rhs->value)
         return 0;
     else if (lhs->value == 1)
+        return 1;
+    else if (lhs->value > rhs->value)
         return 1;
     else
         return -1;
