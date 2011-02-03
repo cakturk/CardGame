@@ -128,7 +128,7 @@ void BatakPlayer::computeScore()
     }
 }
 
-int BatakPlayer::makeBidDecision() const
+int BatakPlayer::makeBidDecision()
 {
     int bid = 0;
     CardSequence seq;
@@ -152,24 +152,39 @@ int BatakPlayer::makeBidDecision() const
         seq = hand.filterBySuit(Card::MACA);
         bid += bidDecisionHelper(seq);
     }
+    this->bid_ = bid;
 
-    return bid;
+    return bid_;
 }
 
 // CardSeq icindeki kartlarin hepsi ayni seri (maca, kupa vs..) olmali.
 int BatakPlayer::bidDecisionHelper(CardSequence &seq) const
 {
-    if (seq.isEmpty() || seq.size() > 9)
+    if (seq.isEmpty())
         return 0;
 
-    Card *card;
-    Card dummy(seq.first()->suit, 11);
     int bid = 0;
 
-    for (int j = 0; j < seq.size(); ++j) {
-        card = seq.at(j);
-        if (compare(card, &dummy) > 0)
+    if (seq.macaCount() > 3) {
+        if (hand.kupaCount() < 3)
             ++bid;
+        if (hand.sinekCount() < 3)
+            ++bid;
+        if (hand.karoCount() < 3)
+            ++bid;
+
+    } else {
+        if (seq.size() > 9)
+            return 0;
+
+        Card *card;
+        Card dummy(seq.first()->suit, 11);
+
+        for (int j = 0; j < seq.size(); ++j) {
+            card = seq.at(j);
+            if (compare(card, &dummy) > 0)
+                ++bid;
+        }
     }
 
     return bid;
