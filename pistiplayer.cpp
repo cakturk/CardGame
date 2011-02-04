@@ -82,6 +82,11 @@ Card* PistiPlayer::dummyPlay(State &state)
     return hand.takeFirst();
 }
 
+Card* PistiPlayer::play(Card *card, State &state)
+{
+    return NULL;
+}
+
 void PistiPlayer::computeScore()
 {
     int pCount = pistiCount;
@@ -107,4 +112,11 @@ void PistiPlayer::computeScore()
 void PistiPlayer::reset()
 {
     Player::reset();
+}
+
+int PistiPlayer::makeBidDecision()
+{
+    qWarning() << "This function hasn't implemented yet"
+               << "Don't use this function for PistiEngine";
+    return -1;
 }

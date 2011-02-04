@@ -41,6 +41,15 @@ Card* BatakPlayer::play(int index)
     return NULL;
 }
 
+Card* BatakPlayer::play(Card *card, State &state)
+{
+    for (int i = 0; i < hand.size(); ++i)
+        if (card == hand.at(i))
+            return play(i, state);
+
+    return NULL;
+}
+
 Card* BatakPlayer::play(int index, State &state)
 {
     if (index < 0 || index > 12 || hand.isEmpty())
@@ -200,7 +209,7 @@ CardSequence BatakPlayer::validCards(State &state)
     return retVal;
 }
 
-bool BatakPlayer::isValid(Card *selectedCard, State &state)
+bool BatakPlayer::isValid(const Card *selectedCard, State &state)
 {
     bool retVal;
     Card *leadingCard;
@@ -224,9 +233,9 @@ bool BatakPlayer::isValid(Card *selectedCard, State &state)
                 retVal = true;
         }
     } else {
-        if (hand.hasSuit(leadingCard->suit))
+        if (hand.hasSuit(leadingCard->suit)) {
             retVal = false;
-        else {
+        } else {
             if (selectedCard->suit == Card::MACA) {
                 if (state.cardsOnBoard().hasMaca()) {
                     Card *highestRankedCard = state.cardsOnBoard().

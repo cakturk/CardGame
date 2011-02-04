@@ -27,8 +27,10 @@ public:
     void collectCards(CardSequence sequence);
     virtual void reset();
 
+    virtual int makeBidDecision() = 0;
     virtual void computeScore() = 0;
     virtual Card* play(int index);
+    virtual Card* play(Card *card, State &state) = 0;
     virtual Card* dummyPlay(Card* lastPlayedCard);
     virtual Card* dummyPlay(State &state) = 0;
     Card* play(QObject *);

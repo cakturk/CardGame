@@ -24,13 +24,17 @@ public:
     virtual void loopGame() = 0;
     virtual void addPlayer(Player *player);
     virtual void addPlayer(Player *player, PlayerList::POSITION);
+    virtual void resetDeck();
 
 signals:
     void pisti();
     void bingo();
-    void reset();
     void next();
     void gameOver();
+    void cardPlayed(PlayerList::POSITION, Card *);
+    void clearBoard();
+    void invalidCardSelected(PlayerList::POSITION);
+    void cardsDealed(PlayerList::POSITION, CardSequence &seq);
 
 protected:
     PlayerList playerList_;

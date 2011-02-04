@@ -93,7 +93,7 @@ PlayerList::POSITION PlayerList::currentPlayerPosition() const
     case EAST:
         return PlayerList::EAST;
     case NORTH:
-        return PlayerList::WEST;
+        return PlayerList::NORTH;
     case WEST:
         return PlayerList::WEST;
     default:

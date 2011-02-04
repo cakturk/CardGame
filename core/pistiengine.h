@@ -15,13 +15,14 @@ public:
     void checkState(State &state);
     void loopGame();
 
+private slots:
+    void cardClicked(Card *card);
+
 private:
     bool pisti() const;
     bool wins() const;
     void waitForPlayer();
 
-private slots:
-    void cardClicked(Card *card);
 };
 
 #endif // PISTIENGINE_H

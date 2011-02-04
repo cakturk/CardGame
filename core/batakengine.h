@@ -17,10 +17,16 @@ public:
 
     void checkState(State &state);
     void loopGame();
+    void startGame();
+    void startNextRound();
+
+private slots:
+    void cardClicked(Card *card);
 
 private:
     Card* winingCard() const;
-    Player *winingPlayer(Card *card) const;
+    void handleRoundOver();
+    bool isRoundOver();
 
     QMap<Card *, Player *> map;
 };

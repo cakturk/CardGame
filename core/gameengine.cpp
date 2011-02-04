@@ -32,6 +32,7 @@ void GameEngine::distributeCards(int number)
 
         player = playerList_.nextPlayer();
         player->setHand(hand);
+        emit cardsDealed(playerList_.currentPlayerPosition(), hand);
         hand.clear();
     }
 }
@@ -53,6 +54,11 @@ void GameEngine::addPlayer(Player *player)
 void GameEngine::addPlayer(Player *player, PlayerList::POSITION pos)
 {
     playerList_.insert(player, pos);
+}
+
+void GameEngine::resetDeck()
+{
+    deck_ = state.playedCards();
 }
 
 void GameEngine::createCards()

@@ -45,6 +45,9 @@ void PistiEngine::loopGame()
     playerList_.currentPlayerPosition() != PlayerList::SOUTH;
     currentPlayer = playerList_.nextPlayer()) {
 
+        if (state.sizeofPlayedCards() == 52)
+            break;
+
         if (currentPlayer->handSize() < 1 &&
             deckSize() >= (MINIMUM_NUMBER_OF_CARDS * playerList_.size())) {
             /* do something reasonable */

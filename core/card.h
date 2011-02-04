@@ -27,7 +27,6 @@ public:
         KUPA,
     };
 
-    /* 0 -> KUPA, 1 -> KARO, 2-> SINEK, 3-> MACA */
     int type;
     Suit suit;
     int value;

@@ -13,8 +13,10 @@ public:
     /* override */
     Card* dummyPlay();
     Card* dummyPlay(State &state);
+    Card* play(Card *card, State &state);
     void computeScore();
     void reset();
+    int makeBidDecision();
 };
 
 #endif // PISTIPLAYER_H

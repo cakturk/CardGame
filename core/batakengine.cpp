@@ -30,13 +30,21 @@ void BatakEngine::loopGame()
         if ((card = currentPlayer->dummyPlay(state)) != NULL) {
             state.append(card);
             map[card] = currentPlayer;
+            emit cardPlayed(playerList_.currentPlayerPosition(), card);
 
             if (state.sizeofCardsOnBoard() == 4) {
                 Card *wCard = winingCard();
                 Player *wPlayer = map[wCard];
+                map.clear();
                 wPlayer->score++;
                 state.clearBoard();
+                emit clearBoard();
             }
+        }
+
+        if (isRoundOver()) {
+            handleRoundOver();
+            break;
         }
     }
 }
@@ -67,7 +75,72 @@ Card* BatakEngine::winingCard() const
     return highestRankedCard;
 }
 
-Player* BatakEngine::winingPlayer(Card *card) const
+void BatakEngine::startGame()
 {
-    return map[card];
+    distributeCards(MINIMUM_NUMBER_OF_CARDS);
+    Player *player;
+    for (int i = 0; i < playerList_.size(); ++i) {
+        player = playerList_.nextPlayer();
+        player->makeBidDecision();
+    }
+
+    loopGame();
+}
+
+void BatakEngine::startNextRound()
+{
+    Player *player;
+
+    resetDeck();
+    distributeCards(MINIMUM_NUMBER_OF_CARDS);
+
+    for (int i = 0; i < playerList_.size(); ++i) {
+        player = playerList_.nextPlayer();
+        player->makeBidDecision();
+    }
+
+    loopGame();
+}
+
+void BatakEngine::handleRoundOver()
+{
+    Player *player;
+
+    resetDeck();
+    distributeCards(MINIMUM_NUMBER_OF_CARDS);
+    for (int i = 0; i < playerList_.size(); ++i) {
+        player = playerList_.nextPlayer();
+        qDebug() << player->makeBidDecision();
+    }
+}
+
+bool BatakEngine::isRoundOver()
+{
+    if (state.sizeofPlayedCards() == 52)
+        return true;
+    return false;
+}
+
+void BatakEngine::cardClicked(Card *card)
+{
+    Player *currentPlayer = playerList_.currentPlayer();
+    Card *playedCard = currentPlayer->play(card, state);
+
+    if (playedCard == NULL) {
+        emit invalidCardSelected(playerList_.currentPlayerPosition());
+        return;
+    }
+
+    state.append(playedCard);
+    map[card] = currentPlayer;
+    emit cardPlayed(playerList_.currentPlayerPosition(), card);
+
+    if (state.sizeofCardsOnBoard() == 4) {
+        Card *wCard = winingCard();
+        Player *wPlayer = map[wCard];
+        map.clear();
+        wPlayer->score++;
+        state.clearBoard();
+        emit clearBoard();
+    }
 }

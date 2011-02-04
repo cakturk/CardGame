@@ -11,6 +11,7 @@ public:
     BatakPlayer(QString name, int pos = 0, QObject *parent = 0);
 
     Card* play(int index);
+    Card* play(Card *card, State &state);
     Card* play(int index, State &state);
     Card* dummyPlay(State &state);
     Card* dummyPlayV2(State &state);
@@ -20,14 +21,14 @@ public:
     inline void bidFor(int number) { bid_ = number; }
     inline void resetBid() { bid_ = 0; }
     inline int trick() const { return bid_; }
-    int makeBidDecision() const;
+    int makeBidDecision();
 
 private:
     int bidDecisionHelper(CardSequence &) const;
     CardSequence validCards(State&);
 
-    bool isValid(Card *selectedCard, State &state);
-    int compare(Card *lhs, Card *rhs) const;
+    bool isValid(const Card *selectedCard, State &state);
+    int compare(const Card *lhs, const Card *rhs) const;
 
     int bid_, tricks_;
 };
