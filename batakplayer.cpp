@@ -214,45 +214,68 @@ bool BatakPlayer::isValid(const Card *selectedCard, State &state)
     bool retVal;
     Card *leadingCard;
 
-    leadingCard = state.firstPlayedCard();
+    if (state.sizeofCardsOnBoard()) {
+        leadingCard = state.firstPlayedCard();
 
-    if (selectedCard->suit == leadingCard->suit) {
-        // TODO: Masaya daha onceden kart atildi mi ?
-        Card *highestRankedCard = state.cardsOnBoard().
-                                  highestRankedCardFor(leadingCard->suit);
+        if (selectedCard->suit == leadingCard->suit) {
+            qDebug() << "[1]";
 
-        // TODO: Sadece degerleri karsilasirdigi icin hatali calisiyor
-        // e.g. Maca As > Maca 10 olmali.
-        // compare(lhs, rhs) fonksiyonu buna cozum getiriyor mu?
-        if (compare(selectedCard, highestRankedCard) > 0) {
-            retVal = true;
-        } else {
-            if (hand.hasGreaterThan(selectedCard->value))
-                retVal = false;
-            else
+            // TODO: Masaya daha onceden kart atildi mi ?
+            Card *highestRankedCard = state.cardsOnBoard().
+                                      highestRankedCardFor(leadingCard->suit);
+
+            qDebug() << "highestRankedCard" << highestRankedCard->value;
+
+            // TODO: Sadece degerleri karsilasirdigi icin hatali calisiyor
+            // e.g. Maca As > Maca 10 olmali.
+            // compare(lhs, rhs) fonksiyonu buna cozum getiriyor mu?
+            if (compare(selectedCard, highestRankedCard) > 0) {
+                qDebug() << "[2]";
                 retVal = true;
-        }
-    } else {
-        if (hand.hasSuit(leadingCard->suit)) {
-            retVal = false;
-        } else {
-            if (selectedCard->suit == Card::MACA) {
-                if (state.cardsOnBoard().hasMaca()) {
-                    Card *highestRankedCard = state.cardsOnBoard().
-                                              highestRankedCardFor(Card::MACA);
-                    if (selectedCard->value > highestRankedCard->value)
+            } else {
+                qDebug() << "[3]";
+                if (hand.filterBySuit(highestRankedCard->suit).hasGreaterThan(highestRankedCard)) {
+                    if (compare(selectedCard, highestRankedCard) > 0)
                         retVal = true;
-                    else if (hand.hasGreaterThan(highestRankedCard))
-                        retVal = false;
+                    else if (leadingCard->suit != Card::MACA && state.cardsOnBoard().hasMaca())
+                        retVal = true;
                     else
-                        retVal = true;
+                        retVal = false;
                 } else {
                     retVal = true;
                 }
+            }
+        } else {
+            qDebug() << "[4]";
+            if (hand.hasSuit(leadingCard->suit)) {
+                qDebug() << "[5]";
+                retVal = false;
             } else {
-                retVal = true;
+                qDebug() << "[6]";
+                if (selectedCard->suit == Card::MACA) {
+                    if (state.cardsOnBoard().hasMaca()) {
+                        Card *highestRankedCard = state.cardsOnBoard().
+                                                  highestRankedCardFor(Card::MACA);
+                        if (selectedCard->value > highestRankedCard->value)
+                            retVal = true;
+                        else if (hand.hasGreaterThan(highestRankedCard))
+                            retVal = false;
+                        else
+                            retVal = true;
+                    } else {
+                        retVal = true;
+                    }
+                } else {
+                    retVal = !hand.hasMaca();
+                }
             }
         }
+    } else {
+        // Spades broken
+        if (!state.playedCards().hasMaca() && selectedCard->suit == Card::MACA)
+            retVal = false;
+        else
+            retVal = true;
     }
 
     return retVal;
