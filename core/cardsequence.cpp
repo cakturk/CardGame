@@ -108,22 +108,10 @@ int CardSequence::count(Card *card) const
 
 Card* CardSequence::highestRankedCardFor(Card::Suit suit) const
 {
-    Card *currentCard = NULL;
-    Card *previousCard = cardSequence.first();
+    CardSequence seq = filterBySuit(suit);
+    seq.sortCards();
 
-    int max = 0;
-    for (int j = 0; j < cardSequence.size(); ++j) {
-        currentCard = cardSequence.at(j);
-
-        if (currentCard->suit == suit &&
-            currentCard->value > previousCard->value) {
-            max = j;
-        }
-
-        previousCard = currentCard;
-    }
-
-    return cardSequence.at(max);
+    return seq.last();
 }
 
 Card* CardSequence::lowestRankedCardFor(Card::Suit suit) const
