@@ -32,17 +32,18 @@ signals:
     void next();
     void gameOver();
     void cardPlayed(PlayerList::POSITION, Card *);
-    void clearBoard();
+    void playerWon(PlayerList::POSITION);
     void invalidCardSelected(PlayerList::POSITION);
     void cardsDealed(PlayerList::POSITION, CardSequence &seq);
+    void roundOver();
 
 protected:
     PlayerList playerList_;
     Player *lastWinner;
     State state;
 
-private slots:
-    //virtual void cardClicked(Card *card) = 0;
+public slots:
+    virtual void cardClicked(Card *card) = 0;
 
 private:
     CardSequence deck_;

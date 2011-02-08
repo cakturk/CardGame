@@ -31,6 +31,7 @@ void GameEngine::distributeCards(int number)
             hand.append(deck_.takeFirst());
 
         player = playerList_.nextPlayer();
+        hand.sortCards();
         player->setHand(hand);
         emit cardsDealed(playerList_.currentPlayerPosition(), hand);
         hand.clear();
