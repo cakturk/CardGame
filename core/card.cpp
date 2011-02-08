@@ -39,7 +39,7 @@ Card::Card(int ct, int cn) :
 
 Card::~Card()
 {
-    delete static_cast<QToolButton *>(buttonPtr);
+    //delete static_cast<QToolButton *>(buttonPtr);
 }
 
 QString Card::toString()
