@@ -24,8 +24,10 @@ void BatakEngine::loopGame()
     Card *card;
 
     for (currentPlayer = playerList_.nextPlayer();
-    /*playerList_.currentPlayerPosition() != PlayerList::SOUTH*/;
+    playerList_.currentPlayerPosition() != PlayerList::SOUTH;
     currentPlayer = playerList_.nextPlayer()) {
+
+        qDebug() << "Foo" << playerList_.currentPlayerPosition();
 
         if ((card = currentPlayer->dummyPlay(state)) != NULL) {
             state.append(card);
@@ -38,12 +40,17 @@ void BatakEngine::loopGame()
                 map.clear();
                 wPlayer->score++;
                 state.clearBoard();
-                emit clearBoard();
+                qDebug() << "Board" << state.sizeofCardsOnBoard() << state.cardsOnBoard().size();
+                emit playerWon(playerList_.currentPlayerPosition());
+
+                playerList_.setCurrentPlayer(wPlayer);
+                playerList_.previousPlayer();
             }
         }
 
         if (isRoundOver()) {
-            handleRoundOver();
+            qDebug() << "Round over";
+            emit roundOver();
             break;
         }
     }
@@ -141,6 +148,12 @@ void BatakEngine::cardClicked(Card *card)
         map.clear();
         wPlayer->score++;
         state.clearBoard();
-        emit clearBoard();
+        qDebug() << "Board" << state.sizeofCardsOnBoard() << state.cardsOnBoard().size();
+        emit playerWon(playerList_.position(wPlayer));
+
+        playerList_.setCurrentPlayer(wPlayer);
+        playerList_.previousPlayer();
     }
+
+    loopGame();
 }

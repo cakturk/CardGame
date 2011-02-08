@@ -20,7 +20,7 @@ public:
     void startGame();
     void startNextRound();
 
-private slots:
+public slots:
     void cardClicked(Card *card);
 
 private:
@@ -29,6 +29,7 @@ private:
     bool isRoundOver();
 
     QMap<Card *, Player *> map;
+    Player *leadingPlayer;
 };
 
 #endif // BATAKENGINE_H
