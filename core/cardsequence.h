@@ -12,6 +12,7 @@ public:
     CardSequence & operator=(const CardSequence &rhs);
 
     void append(Card *card);
+    void append(CardSequence &rhs);
     bool remove(Card *card);
     void removeAt(int index);
     void clear();
@@ -62,7 +63,7 @@ private:
     /* helper functions */
     void incSuitCount(Card::Suit suit);
     void decSuitCount(Card::Suit suit);
-    int find(Card *card);
+    int find(Card *card) const;
 
     QList<Card *> cardSequence;
     int karoCount_, kupaCount_, sinekCount_, macaCount_;

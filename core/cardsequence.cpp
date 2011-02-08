@@ -39,6 +39,12 @@ void CardSequence::append(Card *card)
     cardSequence.append(card);
 }
 
+void CardSequence::append(CardSequence &rhs)
+{
+    for (int i = 0; i < rhs.size(); ++i)
+        this->append(rhs.at(i));
+}
+
 bool CardSequence::remove(Card *card)
 {
     decSuitCount(card->suit);
@@ -177,11 +183,20 @@ bool CardSequence::hasOtherThan(int value) const
 
 bool CardSequence::hasGreaterThan(int value) const
 {
+    if (value == 1)
+        return false;
+
     Card *card;
     for (int j = 0; j < cardSequence.size(); ++j) {
         card = cardSequence.at(j);
-        if (card->value > value)
+
+        if (card->value == 1)
             return true;
+
+        if (card->value != 1 && card->value > value) {
+            qDebug() << "hasGreaterThan" << card->value << "<" << value;
+            return true;
+        }
     }
 
     return false;
@@ -279,12 +294,7 @@ bool CardSequence::hasSuit(Card::Suit suit) const
 
 bool CardSequence::hasCard(Card *card) const
 {
-    if (hasSuit(card->suit))
-        foreach (Card *requestedCard, cardSequence)
-            if (requestedCard->value == card->value)
-                return true;
-
-    return false;
+    return find(card) != -1;
 }
 
 void CardSequence::sortCards()
@@ -342,7 +352,7 @@ void CardSequence::decSuitCount(Card::Suit suit)
     }
 }
 
-int CardSequence::find(Card *card)
+int CardSequence::find(Card *card) const
 {
     int n = 0;
     foreach (Card *lookFor, cardSequence) {
@@ -357,12 +367,16 @@ int CardSequence::find(Card *card)
 
 bool lessThan(Card *lhs, Card *rhs)
 {
-    if (rhs->value == 1) {
+    if (lhs->suit < rhs->suit) {
         return true;
+    } else if (lhs->suit > rhs->suit) {
+        return false;
     } else {
-        if (lhs->value < rhs->value)
+        if (rhs->value == 1)
             return true;
-        else
+        else if (lhs->value == 1)
             return false;
+        else
+            return lhs->value < rhs->value;
     }
 }
