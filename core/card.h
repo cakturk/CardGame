@@ -21,10 +21,10 @@ public:
     QWidget* getButton();
 
     enum Suit {
-        MACA,
-        KARO,
-        SINEK,
-        KUPA,
+        MACA = 4,
+        KARO = 3,
+        SINEK = 2,
+        KUPA = 1,
     };
 
     int type;
