@@ -85,6 +85,12 @@ Player* PlayerList::currentPlayer() const
     return playerList_.at(current_);
 }
 
+Player* PlayerList::previousPlayer()
+{
+    current_ = (current_ + playerList_.size() - 1) % playerList_.size();
+    return playerList_.at(current_);
+}
+
 PlayerList::POSITION PlayerList::currentPlayerPosition() const
 {
     switch (currentPlayerIndex()) {
@@ -100,6 +106,29 @@ PlayerList::POSITION PlayerList::currentPlayerPosition() const
         qWarning() << "Error in Playerlist::currentPlayerPosition function!";
         return PlayerList::ILLEGAL;
     }
+}
+
+PlayerList::POSITION PlayerList::position(Player *player)
+{
+    Player *tmp;
+    for (int i = 0; i < playerList_.size(); ++i) {
+        tmp = playerList_[i];
+        if (player == tmp) {
+            switch (i) {
+            case SOUTH:
+                return PlayerList::SOUTH;
+            case EAST:
+                return PlayerList::EAST;
+            case NORTH:
+                return PlayerList::NORTH;
+            case WEST:
+                return PlayerList::WEST;
+            }
+        }
+    }
+
+    qWarning() << "Error in Playerlist::currentPlayerPosition function!";
+    return PlayerList::ILLEGAL;
 }
 
 int PlayerList::currentPlayerIndex() const

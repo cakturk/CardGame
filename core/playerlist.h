@@ -26,7 +26,9 @@ public:
 
     Player* nextPlayer();
     Player* currentPlayer() const;
+    Player* previousPlayer();
     PlayerList::POSITION currentPlayerPosition() const;
+    PlayerList::POSITION position(Player *);
     int currentPlayerIndex() const;
     int size() const;
     bool isEmpty() const;
